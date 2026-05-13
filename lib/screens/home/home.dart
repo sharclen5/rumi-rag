@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rumi/models/baby.dart';
+import 'package:rumi/screens/home/settings_forms.dart';
 import 'package:rumi/services/auth.dart';
 import 'package:rumi/services/database.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +27,7 @@ class Home extends StatelessWidget {
         builder: (context) {
           return Container(
             padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-            child: Text('Bottom Sheet'),
+            child: SettingsForm(),
           );
         },
       );
