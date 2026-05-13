@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:rumi/models/baby.dart';
 import 'package:rumi/services/auth.dart';
 import 'package:rumi/services/database.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rumi/screens/home/baby_list.dart';
-import 'package:rumi/shared/loading.dart';
+
+// $env:CHROME_EXECUTABLE="C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+// flutter run -d chrome
+// pake ini buat jalanin di brave
+
+// powertoys buat bikin tab brave stay on top
+// win + ctrl + t
 
 class Home extends StatelessWidget {
   Home({super.key});
@@ -13,9 +20,9 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<QuerySnapshot?>.value(
+    return StreamProvider<List<Baby?>>.value(
       value: DatabaseService(uid: '').babies,
-      initialData: null,
+      initialData: [],
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 113, 222, 255),
         appBar: AppBar(

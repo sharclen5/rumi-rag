@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:rumi/models/baby.dart';
 
 class BabyList extends StatefulWidget {
   const BabyList({super.key});
@@ -12,11 +12,16 @@ class BabyList extends StatefulWidget {
 class _BabyListState extends State<BabyList> {
   @override
   Widget build(BuildContext context) {
-    final babies = Provider.of<QuerySnapshot?>(context);
-    // debugPrint(babies?.docs.toString());
-    for (var doc in babies!.docs) {
-      debugPrint(doc.data().toString());
-    }
+    final babies = Provider.of<List<Baby?>>(context);
+    babies.forEach((baby) {
+      if (baby != null) {
+        debugPrint(baby.name);
+        debugPrint(baby.age.toString());
+        debugPrint(baby.gender);
+        debugPrint(baby.weight.toString());
+        debugPrint(baby.height.toString());
+      }
+    });
 
     return const Placeholder();
   }
