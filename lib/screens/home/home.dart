@@ -6,6 +6,7 @@ import 'package:rumi/services/database.dart';
 import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rumi/screens/home/baby_list.dart';
+import 'package:rumi/models/user.dart';
 
 // $env:CHROME_EXECUTABLE="C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
 // flutter run -d chrome
@@ -21,6 +22,8 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<User?>(context);
+
     void _showSettingsPanel() {
       showModalBottomSheet(
         context: context,
@@ -34,7 +37,7 @@ class Home extends StatelessWidget {
     }
 
     return StreamProvider<List<Baby>>.value(
-      value: DatabaseService(uid: '').babies,
+      value: DatabaseService(uid: user!.uid).babies, // use actual uid
       initialData: [],
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 113, 222, 255),

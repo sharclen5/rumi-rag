@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:rumi/models/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rumi/services/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService {
   final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
@@ -56,9 +57,10 @@ class AuthService {
       firebase_auth.User? user = result.user;
 
       // create a new document for the user with the uid
-      await DatabaseService(
-        uid: user!.uid,
-      ).updateUserData('placeholder', 'placeholder', 0, 0, 0);
+      // create parent document for the user
+      await FirebaseFirestore.instance.collection('babies').doc(user!.uid).set({
+        'exists': true,
+      });
       return _userFromFirebase(user);
     } catch (e) {
       debugPrint(e.toString());

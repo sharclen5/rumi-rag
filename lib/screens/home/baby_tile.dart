@@ -16,12 +16,20 @@ class BabyTile extends StatelessWidget {
             radius: 25.0,
             backgroundColor: Colors.deepOrange,
             child: Text(
-              baby.name[0].toUpperCase(),
+              baby.name.isNotEmpty ? baby.name[0].toUpperCase() : '?',
               style: TextStyle(color: Colors.white, fontSize: 20.0),
             ),
           ),
           title: Text(baby.name),
           subtitle: Text('Age: ${baby.age} months'),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text('Weight: ${baby.weight} kg'),
+              Text('Height: ${baby.height} cm'),
+            ],
+          ),
         ),
       ),
     );
