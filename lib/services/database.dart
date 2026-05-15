@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rumi/models/baby.dart';
+import 'package:rumi/models/user.dart';
 
 class DatabaseService {
   final String uid;
@@ -13,8 +14,8 @@ class DatabaseService {
     String name,
     String gender,
     int age,
-    int weight,
-    int height,
+    double weight,
+    double height,
   ) async {
     return await babyCollection.doc(uid).set({
       'name': name,
@@ -39,8 +40,26 @@ class DatabaseService {
     }).toList();
   }
 
+  // userData from snapshot
+UserData _userDataFromSnapshot(DocumentSnapshot snapshot) {
+  Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+  return UserData(
+    uid: uid,
+    name: data['name'],
+    gender: data['gender'],
+    age: data['age'],
+    weight: (data['weight'] as num).toDouble(),
+    height: (data['height'] as num).toDouble(),
+  );
+}
+
   // get baby stream
   Stream<List<Baby>> get babies {
     return babyCollection.snapshots().map(_babyListFromSnapshot);
+  }
+
+  // get user doc stream
+  Stream<UserData> get userData {
+    return babyCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
   }
 }

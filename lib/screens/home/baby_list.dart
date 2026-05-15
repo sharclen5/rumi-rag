@@ -13,7 +13,7 @@ class BabyList extends StatefulWidget {
 class _BabyListState extends State<BabyList> {
   @override
   Widget build(BuildContext context) {
-    final babies = Provider.of<List<Baby>>(context);
+    final babies = Provider.of<List<Baby>>(context) ?? [];
 
     return ListView.builder(
       itemCount: babies.length,
