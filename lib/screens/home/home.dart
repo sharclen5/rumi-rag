@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rumi/models/baby.dart';
 import 'package:rumi/screens/home/baby/add_baby_forms.dart';
-import 'package:rumi/services/auth.dart';
 import 'package:rumi/services/database.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rumi/screens/home/baby/baby_list.dart';
 import 'package:rumi/models/user.dart';
 import 'package:rumi/shared/bottomnavbar.dart';
@@ -17,9 +15,8 @@ import 'package:rumi/shared/bottomnavbar.dart';
 // win + ctrl + t
 
 class Home extends StatelessWidget {
-  Home({super.key});
-
-  final AuthService _auth = AuthService();
+  final Function(int) onTabTapped;
+  Home({super.key, required this.onTabTapped});
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +42,8 @@ class Home extends StatelessWidget {
         builder: (context, snapshot) {
           // get first name only, fallback to empty string while loading
           final firstName = snapshot.data?.firstName ?? '';
+          final isMale = snapshot.data?.gender.toLowerCase() == 'male';
+          final greetingTitle = isMale ? 'Bapak $firstName' : 'Ibu $firstName';
           return Scaffold(
             backgroundColor: const Color.fromARGB(255, 113, 222, 255),
             appBar: AppBar(
@@ -66,7 +65,7 @@ class Home extends StatelessWidget {
                         style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                       Text(
-                        firstName,
+                        greetingTitle,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -77,15 +76,6 @@ class Home extends StatelessWidget {
                   ),
                 ),
               ),
-              actions: <Widget>[
-                TextButton.icon(
-                  icon: Icon(Icons.person, color: Colors.white),
-                  label: Text('Logout', style: TextStyle(color: Colors.white)),
-                  onPressed: () async {
-                    await _auth.signOut();
-                  },
-                ),
-              ],
             ),
             body: Container(
               padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
@@ -96,7 +86,10 @@ class Home extends StatelessWidget {
               onPressed: () => _showAddBabyPanel(),
               child: Icon(Icons.add, color: Colors.white),
             ),
-            bottomNavigationBar: BottomNavBar(currentIndex: 0),
+            bottomNavigationBar: BottomNavBar(
+              currentIndex: 0,
+              onTap: onTabTapped,
+            ),
           );
         },
       ),

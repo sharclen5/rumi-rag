@@ -4,45 +4,52 @@ import 'package:rumi/shared/bottomnavbar.dart';
 import 'package:rumi/services/auth.dart';
 
 class ProfilePage extends StatelessWidget {
-  ProfilePage({super.key});
+  final Function(int) onTabTapped;
+  ProfilePage({super.key, required this.onTabTapped});
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text("Profile"),
-      ),
+      backgroundColor: const Color.fromARGB(255, 113, 222, 255),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Column(
           children: [
+            const SizedBox(height: 20),
+            const Text(
+              "Profile",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
             const ProfilePic(),
             const SizedBox(height: 20),
             ProfileMenu(
               text: "My Account",
-              icon: "assets/icons/User Icon.svg",
+              icon: Icon(Icons.person, color: Color(0xFFFF7643), size: 22),
               press: () => {},
             ),
             ProfileMenu(
               text: "Notifications",
-              icon: "assets/icons/Bell.svg",
+              icon: Icon(
+                Icons.notifications,
+                color: Color(0xFFFF7643),
+                size: 22,
+              ),
               press: () {},
             ),
             ProfileMenu(
               text: "Settings",
-              icon: "assets/icons/Settings.svg",
+              icon: Icon(Icons.settings, color: Color(0xFFFF7643), size: 22),
               press: () {},
             ),
             ProfileMenu(
               text: "Help Center",
-              icon: "assets/icons/Question mark.svg",
+              icon: Icon(Icons.help, color: Color(0xFFFF7643), size: 22),
               press: () {},
             ),
             ProfileMenu(
               text: "Log Out",
-              icon: "assets/icons/Log out.svg",
+              icon: Icon(Icons.logout, color: Color(0xFFFF7643), size: 22),
               press: () async {
                 await _auth.signOut();
               },
@@ -50,7 +57,7 @@ class ProfilePage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(currentIndex: 3),
+      bottomNavigationBar: BottomNavBar(currentIndex: 3, onTap: onTabTapped),
     );
   }
 }
@@ -106,7 +113,8 @@ class ProfileMenu extends StatelessWidget {
     this.press,
   }) : super(key: key);
 
-  final String text, icon;
+  final String text;
+  final dynamic icon;
   final VoidCallback? press;
 
   @override
@@ -125,14 +133,17 @@ class ProfileMenu extends StatelessWidget {
         onPressed: press,
         child: Row(
           children: [
-            SvgPicture.asset(
+            if (icon is String)
+              SvgPicture.asset(
+                icon,
+                colorFilter: const ColorFilter.mode(
+                  Color(0xFFFF7643),
+                  BlendMode.srcIn,
+                ),
+                width: 22,
+              )
+            else
               icon,
-              colorFilter: const ColorFilter.mode(
-                Color(0xFFFF7643),
-                BlendMode.srcIn,
-              ),
-              width: 22,
-            ),
             const SizedBox(width: 20),
             Expanded(
               child: Text(
