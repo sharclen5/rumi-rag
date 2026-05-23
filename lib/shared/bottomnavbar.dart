@@ -17,7 +17,11 @@ class BottomNavBar extends StatelessWidget {
       elevation: 0.0,
       type: BottomNavigationBarType.fixed,
       currentIndex: currentIndex,
-      onTap: onTap,
+      onTap: (index) {
+        if (index == 1 || index == 2)
+          return; // disable page Rekomendasi sama Riwayat buat sementara
+        onTap(index);
+      },
       selectedItemColor: const Color.fromARGB(255, 113, 222, 255),
       unselectedItemColor: Colors.white,
       items: const [

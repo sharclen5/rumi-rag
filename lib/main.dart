@@ -16,7 +16,7 @@ import 'package:rumi/models/user.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    // ✅ initialize Firebase first
+    //  init Firebase dulu
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
@@ -26,7 +26,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  // widget ini root dari appnya.
   @override
   Widget build(BuildContext context) {
     return StreamProvider<User?>.value(

@@ -78,14 +78,28 @@ class Home extends StatelessWidget {
               ),
             ),
             body: Container(
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-              child: BabyList(),
+              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Data Bayi',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Expanded(child: BabyList(onAddBaby: _showAddBabyPanel)),
+                ],
+              ),
             ),
-            floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.deepOrange,
-              onPressed: () => _showAddBabyPanel(),
-              child: Icon(Icons.add, color: Colors.white),
-            ),
+            // floatingActionButton: FloatingActionButton(
+            //   backgroundColor: Colors.deepOrange,
+            //   onPressed: () => _showAddBabyPanel(),
+            //   child: Icon(Icons.add, color: Colors.white),
+            // ),
             bottomNavigationBar: BottomNavBar(
               currentIndex: 0,
               onTap: onTabTapped,

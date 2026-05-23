@@ -101,7 +101,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
         child: Column(
           children: [
             ProfileDetailPic(
-              image: 'https://i.postimg.cc/0jqKB6mS/Profile-Image.png',
+              image: 'assets/images/placeholder.jpg',
               imageUploadBtnPress: () {},
             ),
             const Divider(),
@@ -225,7 +225,7 @@ class ProfileDetailPic extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomRight,
         children: [
-          CircleAvatar(radius: 50, backgroundImage: NetworkImage(image)),
+          CircleAvatar(radius: 50, backgroundImage: AssetImage(image)),
           InkWell(
             onTap: imageUploadBtnPress,
             child: const CircleAvatar(
