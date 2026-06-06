@@ -50,7 +50,20 @@ class BabyPage extends StatelessWidget {
               foregroundColor: Colors.white,
               title: const Text("Data Bayi"),
             ),
+
             body: Container(
+              constraints: const BoxConstraints(minHeight: double.infinity),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color.fromARGB(255, 113, 222, 255), // ✏️ top color
+                    Color.fromARGB(255, 220, 235, 240),
+                  ],
+                  stops: [0.0, 1.0],
+                ),
+              ),
               padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -65,6 +78,7 @@ class BabyPage extends StatelessWidget {
             //   onPressed: () => _showAddBabyPanel(),
             //   child: Icon(Icons.add, color: Colors.white),
             // ),
+            extendBody: true,
             bottomNavigationBar: BottomNavBar(
               currentIndex: 3,
               onTap: (index) {

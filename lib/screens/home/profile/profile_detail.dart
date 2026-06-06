@@ -156,112 +156,126 @@ class _ProfileDetailState extends State<ProfileDetail> {
         foregroundColor: Colors.white,
         title: const Text("Update Profile"),
       ),
-      body: SingleChildScrollView(
-        // padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
-        child: Column(
-          children: [
-            ProfileDetailPic(
-              imageFile: _imageFile,
-              photoUrl: widget.user.photoUrl,
-              imageUploadBtnPress: _showImageSourcePicker,
-            ),
-            const Divider(),
-            Form(
-              child: Column(
+
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromARGB(255, 113, 222, 255), // ✏️ top color
+              Color.fromARGB(255, 220, 235, 240),
+            ],
+            stops: [0.0, 1.0],
+          ),
+        ),
+
+        child: SingleChildScrollView(
+          // padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
+          child: Column(
+            children: [
+              ProfileDetailPic(
+                imageFile: _imageFile,
+                photoUrl: widget.user.photoUrl,
+                imageUploadBtnPress: _showImageSourcePicker,
+              ),
+              const Divider(),
+              Form(
+                child: Column(
+                  children: [
+                    SizedBox(height: 20.0),
+                    UserInfoEditField(
+                      text: "First Name",
+                      child: TextFormField(
+                        controller: _firstNameController,
+                        decoration: _inputDecoration(),
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    UserInfoEditField(
+                      text: "Last Name",
+                      child: TextFormField(
+                        controller: _lastNameController,
+                        decoration: _inputDecoration(),
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    UserInfoEditField(
+                      text: "Email",
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: _inputDecoration(),
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    UserInfoEditField(
+                      text: "Phone",
+                      child: TextFormField(
+                        controller: _phoneController,
+                        decoration: _inputDecoration(),
+                      ),
+                    ),
+                    SizedBox(height: 20.0),
+                    UserInfoEditField(
+                      text: "Gender",
+                      child: DropdownButtonFormField<String>(
+                        value: _selectedGender,
+                        decoration: _inputDecoration(),
+                        items: const [
+                          DropdownMenuItem(value: 'Male', child: Text('Male')),
+                          DropdownMenuItem(
+                            value: 'Female',
+                            child: Text('Female'),
+                          ),
+                        ],
+                        onChanged: (value) =>
+                            setState(() => _selectedGender = value),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 50.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 20.0),
-                  UserInfoEditField(
-                    text: "First Name",
-                    child: TextFormField(
-                      controller: _firstNameController,
-                      decoration: _inputDecoration(),
+                  SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF5F6F9),
+                        foregroundColor: const Color(0xFF757575),
+                        minimumSize: const Size(double.infinity, 48),
+                        shape: const StadiumBorder(),
+                      ),
+                      child: const Text("Cancel"),
                     ),
                   ),
-                  SizedBox(height: 20.0),
-                  UserInfoEditField(
-                    text: "Last Name",
-                    child: TextFormField(
-                      controller: _lastNameController,
-                      decoration: _inputDecoration(),
-                    ),
-                  ),
-                  SizedBox(height: 20.0),
-                  UserInfoEditField(
-                    text: "Email",
-                    child: TextFormField(
-                      controller: _emailController,
-                      decoration: _inputDecoration(),
-                    ),
-                  ),
-                  SizedBox(height: 20.0),
-                  UserInfoEditField(
-                    text: "Phone",
-                    child: TextFormField(
-                      controller: _phoneController,
-                      decoration: _inputDecoration(),
-                    ),
-                  ),
-                  SizedBox(height: 20.0),
-                  UserInfoEditField(
-                    text: "Gender",
-                    child: DropdownButtonFormField<String>(
-                      value: _selectedGender,
-                      decoration: _inputDecoration(),
-                      items: const [
-                        DropdownMenuItem(value: 'Male', child: Text('Male')),
-                        DropdownMenuItem(
-                          value: 'Female',
-                          child: Text('Female'),
-                        ),
-                      ],
-                      onChanged: (value) =>
-                          setState(() => _selectedGender = value),
+                  const SizedBox(width: 16.0),
+                  SizedBox(
+                    width: 160,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(255, 0, 138, 218),
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(double.infinity, 48),
+                        shape: const StadiumBorder(),
+                      ),
+                      onPressed: () {
+                        if (user != null) _saveUpdate(user.uid);
+                      },
+                      child: const Text("Save Update"),
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 50.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 120,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFF5F6F9),
-                      foregroundColor: const Color(0xFF757575),
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: const StadiumBorder(),
-                    ),
-                    child: const Text("Cancel"),
-                  ),
-                ),
-                const SizedBox(width: 16.0),
-                SizedBox(
-                  width: 160,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 0, 138, 218),
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: const StadiumBorder(),
-                    ),
-                    onPressed: () {
-                      if (user != null) _saveUpdate(user.uid);
-                    },
-                    child: const Text("Save Update"),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24.0),
-          ],
+              const SizedBox(height: 24.0),
+            ],
+          ),
         ),
       ),
-
       extendBody: true,
       bottomNavigationBar: BottomNavBar(
         currentIndex: 3,
