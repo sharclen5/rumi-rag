@@ -5,6 +5,11 @@ import 'package:rumi/models/user.dart';
 import 'package:rumi/services/database.dart';
 import 'package:rumi/shared/bottomnavbar.dart';
 import 'package:rumi/shared/calendar_strip.dart';
+import 'package:rumi/models/meal.dart';
+import 'package:rumi/models/recommendation.dart';
+import 'package:rumi/shared/loading.dart';
+import 'package:rumi/screens/home/recommendation/add_recommendation.dart';
+import 'package:rumi/screens/home/recommendation/recommendation_detail.dart';
 
 class RecommendationPage extends StatelessWidget {
   final Function(int) onTabTapped;
@@ -32,6 +37,11 @@ class _RecommendationView extends StatefulWidget {
 }
 
 class _RecommendationViewState extends State<_RecommendationView> {
+  Recommendation? _recommendation;
+  bool _isLoading = false;
+  String? _error;
+  Baby? _lastFetchedBaby;
+
   DateTime _selectedDate = DateTime.now();
 
   String _dayName(int weekday) {
@@ -55,6 +65,45 @@ class _RecommendationViewState extends State<_RecommendationView> {
       'Desember',
     ];
     return months[month - 1];
+  }
+
+  // read from Firestore instead of calling API directly
+  Future<void> _fetchRecommendation(Baby baby) async {
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
+    try {
+      final dateStr =
+          '${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}';
+
+      final result = await DatabaseService(
+        uid: widget.uid,
+      ).getRecommendation(baby.id, dateStr);
+
+      setState(() => _recommendation = result);
+    } catch (e) {
+      setState(() => _error = e.toString());
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final babies = context.watch<List<Baby>>();
+    final activeBaby = babies.cast<Baby?>().firstWhere(
+      (b) => b!.isActive,
+      orElse: () => null,
+    );
+
+    // fetch when active baby changes or on first load
+    if (activeBaby != null && activeBaby.id != _lastFetchedBaby?.id) {
+      _lastFetchedBaby = activeBaby;
+      _fetchRecommendation(activeBaby);
+    }
   }
 
   @override
@@ -238,7 +287,16 @@ class _RecommendationViewState extends State<_RecommendationView> {
                         CalendarStrip(
                           selectedDate: _selectedDate,
                           onDateSelected: (date) {
-                            setState(() => _selectedDate = date);
+                            setState(() {
+                              _selectedDate = date;
+                              _recommendation =
+                                  null; // clear previous recommendation
+                            });
+                            if (_lastFetchedBaby != null) {
+                              _fetchRecommendation(
+                                _lastFetchedBaby!,
+                              ); // fetch for new date
+                            }
                           },
                           showCard: true,
                           showArrows: true,
@@ -261,29 +319,118 @@ class _RecommendationViewState extends State<_RecommendationView> {
 
                   // Scrollable timeline
                   Expanded(
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                      child: Column(
-                        children: List.generate(24, (hour) {
-                          final slots = {
-                            7: ('Sarapan', 'Bubur Ayam Wortel'),
-                            12: ('Makan Siang', 'Nasi Tim Ikan'),
-                            18: ('Makan Malam', 'Pure Labu Kuning'),
-                          };
-                          final hasSlot = slots.containsKey(hour);
-                          final timeLabel =
-                              '${hour.toString().padLeft(2, '0')}.00';
-
-                          return _TimeLineRow(
-                            timeLabel: timeLabel,
-                            hasSlot: hasSlot,
-                            badge: hasSlot ? slots[hour]!.$1 : '',
-                            mealType: hasSlot ? slots[hour]!.$1 : '',
-                            mealName: hasSlot ? slots[hour]!.$2 : '',
-                          );
-                        }),
-                      ),
-                    ),
+                    child: _isLoading
+                        ? Loading()
+                        : _error != null
+                        ? Center(
+                            // error state
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.error_outline,
+                                  color: Colors.red,
+                                  size: 48,
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Gagal memuat rekomendasi',
+                                  style: TextStyle(color: Colors.grey.shade600),
+                                ),
+                                const SizedBox(height: 8),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    if (_lastFetchedBaby != null) {
+                                      _fetchRecommendation(_lastFetchedBaby!);
+                                    }
+                                  },
+                                  child: const Text('Coba Lagi'),
+                                ),
+                              ],
+                            ),
+                          )
+                        : _recommendation == null
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.no_meals,
+                                  size: 48,
+                                  color: Colors.grey.shade400,
+                                ),
+                                const SizedBox(height: 12),
+                                Text(
+                                  'Belum ada rencana untuk hari ini',
+                                  style: TextStyle(color: Colors.grey.shade600),
+                                ),
+                                const SizedBox(height: 16),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color.fromARGB(
+                                      255,
+                                      144,
+                                      121,
+                                      84,
+                                    ),
+                                    foregroundColor: Colors.white,
+                                  ),
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (outerContext) => Padding(
+                                        padding: EdgeInsets.only(
+                                          top: 20,
+                                          left: 20,
+                                          right: 20,
+                                          bottom:
+                                              MediaQuery.of(
+                                                context,
+                                              ).viewInsets.bottom +
+                                              20,
+                                        ),
+                                        child: Provider<List<Baby>?>.value(
+                                          value: Provider.of<List<Baby>?>(
+                                            context,
+                                            listen: false,
+                                          ),
+                                          child: const AddRecommendation(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Buat Rekomendasi'),
+                                ),
+                              ],
+                            ),
+                          )
+                        : SingleChildScrollView(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                            child: Column(
+                              children: (() {
+                                final Map<int, Meal> mealSlots = {};
+                                if (_recommendation != null) {
+                                  for (final meal in _recommendation!.meals) {
+                                    final hour =
+                                        int.tryParse(meal.time.split('.')[0]) ??
+                                        0;
+                                    mealSlots[hour] = meal;
+                                  }
+                                }
+                                return List.generate(24, (hour) {
+                                  final meal = mealSlots[hour];
+                                  final timeLabel =
+                                      '${hour.toString().padLeft(2, '0')}.00';
+                                  return _TimeLineRow(
+                                    timeLabel: timeLabel,
+                                    hasSlot: meal != null,
+                                    meal: meal,
+                                  );
+                                });
+                              })(),
+                            ),
+                          ),
                   ),
                 ],
               ),
@@ -304,16 +451,12 @@ class _RecommendationViewState extends State<_RecommendationView> {
 class _TimeLineRow extends StatelessWidget {
   final String timeLabel;
   final bool hasSlot;
-  final String badge;
-  final String mealType;
-  final String mealName;
+  final Meal? meal;
 
   const _TimeLineRow({
     required this.timeLabel,
     required this.hasSlot,
-    this.badge = '',
-    this.mealType = '',
-    this.mealName = '',
+    this.meal,
   });
 
   @override
@@ -325,10 +468,15 @@ class _TimeLineRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // left: card or empty
           Expanded(
             child: hasSlot
                 ? GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => RecommendationDetailDialog(meal: meal!),
+                      );
+                    },
                     child: Card(
                       color: Color(0xFFFDF8F2),
                       shape: RoundedRectangleBorder(
@@ -363,7 +511,8 @@ class _TimeLineRow extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Text(
-                                    badge,
+                                    meal?.type ??
+                                        '', // ✏️ badge shows meal type
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 10,
@@ -371,20 +520,23 @@ class _TimeLineRow extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(height: 4),
-                                Text(
-                                  mealType,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey.shade500,
+                                // ASI slots don't have a name
+                                if (meal?.name != null)
+                                  Text(
+                                    meal!.name!,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                else
+                                  Text(
+                                    'Air Susu Ibu',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  mealName,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
                               ],
                             ),
                             ClipRRect(
@@ -394,7 +546,10 @@ class _TimeLineRow extends StatelessWidget {
                                 height: 48,
                                 color: const Color.fromARGB(255, 122, 105, 95),
                                 child: Icon(
-                                  Icons.lunch_dining,
+                                  // different icon for ASI
+                                  meal?.type == 'ASI'
+                                      ? Icons.water_drop
+                                      : Icons.lunch_dining,
                                   color: Colors.white,
                                   size: 24,
                                 ),
@@ -415,7 +570,7 @@ class _TimeLineRow extends StatelessWidget {
                   ),
           ),
 
-          // right: line + time label
+          // right: line + time label (unchanged)
           SizedBox(
             width: 52,
             child: Column(
@@ -443,7 +598,6 @@ class _TimeLineRow extends StatelessWidget {
             ),
           ),
 
-          // time label
           SizedBox(
             width: 40,
             child: Padding(

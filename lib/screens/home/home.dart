@@ -232,7 +232,8 @@ class Home extends StatelessWidget {
                     SizedBox(height: 16),
 
                     // Meal Card
-                    MealCard(),
+                    if (activeBaby != null)
+                      MealCard(uid: user.uid, babyId: activeBaby.id),
 
                     SizedBox(height: 16),
 

@@ -4,6 +4,7 @@ import 'package:rumi/shared/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:rumi/models/user.dart';
 import 'package:rumi/shared/loading.dart';
+import 'package:rumi/shared/allergy_selector.dart';
 
 class AddBabyForms extends StatefulWidget {
   const AddBabyForms({super.key});
@@ -24,6 +25,12 @@ class _AddBabyFormsState extends State<AddBabyForms> {
   double? _currentWeight;
   double? _currentHeight;
   DateTime? _currentDOB;
+  bool _isPremature = false;
+  int? _gestationalAgeWeeks;
+  bool _isActivelyBreastfed = true;
+  int? _toothCount;
+  String? _medicalHistory;
+  List<String> _selectedAllergyIds = [];
 
   bool _isLoading = false;
 
@@ -147,6 +154,82 @@ class _AddBabyFormsState extends State<AddBabyForms> {
                   ),
                   SizedBox(height: 20.0),
 
+                  AllergySelector(
+                    onChanged: (ids) =>
+                        setState(() => _selectedAllergyIds = ids),
+                  ),
+                  SizedBox(height: 20.0),
+
+                  // tombol menyusu aktif
+                  SwitchListTile(
+                    title: Text('Masih menyusu ASI?'),
+                    value: _isActivelyBreastfed,
+                    onChanged: (val) =>
+                        setState(() => _isActivelyBreastfed = val),
+                  ),
+                  SizedBox(height: 20.0),
+
+                  // checkbox prematur, nampilin field usia gestasi kalo true
+                  SwitchListTile(
+                    title: Text('Bayi lahir prematur?'),
+                    value: _isPremature,
+                    onChanged: (val) => setState(() {
+                      _isPremature = val;
+                      // reset usia gestasi kalo toggle dimatiin
+                      if (!val) _gestationalAgeWeeks = null;
+                    }),
+                  ),
+
+                  //  field usia gestasi cuman muncul kalo isPremature == true
+                  if (_isPremature) ...[
+                    SizedBox(height: 20.0),
+                    TextFormField(
+                      decoration: textInputDecoration.copyWith(
+                        hintText: 'Usia Gestasi Saat Lahir (minggu)',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (val) {
+                        if (_isPremature && (val == null || val.isEmpty)) {
+                          return 'Masukkan usia gestasi saat lahir';
+                        }
+                        final parsed = int.tryParse(val ?? '');
+                        if (parsed == null || parsed < 24 || parsed > 36) {
+                          return 'Usia gestasi prematur biasanya 24–36 minggu';
+                        }
+                        return null;
+                      },
+                      onChanged: (val) => setState(
+                        () => _gestationalAgeWeeks = int.tryParse(val),
+                      ),
+                    ),
+                  ],
+                  SizedBox(height: 20.0),
+
+                  // jumlah gigi (opsional)
+                  TextFormField(
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Jumlah Gigi (Opsional)',
+                    ),
+                    keyboardType: TextInputType.number,
+                    onChanged: (val) =>
+                        setState(() => _toothCount = int.tryParse(val)),
+                  ),
+                  SizedBox(height: 20.0),
+
+                  // riwayat penyakit (opsional)
+                  TextFormField(
+                    decoration: textInputDecoration.copyWith(
+                      hintText: 'Riwayat Penyakit (Opsional)',
+                    ),
+                    maxLines: 3,
+                    onChanged: (val) => setState(
+                      () => _medicalHistory = val.trim().isEmpty
+                          ? null
+                          : val.trim(),
+                    ),
+                  ),
+                  SizedBox(height: 20.0),
+
                   // submit
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -170,6 +253,12 @@ class _AddBabyFormsState extends State<AddBabyForms> {
                           _currentDOB!,
                           _currentWeight!,
                           _currentHeight!,
+                          _selectedAllergyIds,
+                          _isPremature,
+                          _gestationalAgeWeeks,
+                          _isActivelyBreastfed,
+                          _toothCount,
+                          _medicalHistory,
                         );
                         Navigator.pop(context);
                       }

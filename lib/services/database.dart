@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rumi/models/baby.dart';
 import 'package:rumi/models/user.dart';
+import 'package:rumi/models/recommendation.dart';
 
 class DatabaseService {
   final String uid;
@@ -70,6 +71,12 @@ class DatabaseService {
     DateTime dateOfBirth,
     double weight,
     double height,
+    List<String> allergyIds,
+    bool isPremature,
+    int? gestationalAgeWeeks,
+    bool isActivelyBreastfed,
+    int? toothCount,
+    String? medicalHistory,
   ) async {
     return await babyCollection.add({
       'firstName': firstName,
@@ -80,6 +87,15 @@ class DatabaseService {
       'weight': weight,
       'height': height,
       'isActive': false,
+      'allergyIds': allergyIds,
+      'isPremature': isPremature,
+      // simpan kalo ada valuenya doang
+      if (gestationalAgeWeeks != null)
+        'gestationalAgeWeeks': gestationalAgeWeeks,
+      'isActivelyBreastfed': isActivelyBreastfed,
+      if (toothCount != null) 'toothCount': toothCount,
+      if (medicalHistory != null && medicalHistory.isNotEmpty)
+        'medicalHistory': medicalHistory,
     });
   }
 
@@ -109,6 +125,12 @@ class DatabaseService {
     DateTime dateOfBirth,
     double weight,
     double height,
+    List<String> allergyIds,
+    bool isPremature,
+    int? gestationalAgeWeeks,
+    bool isActivelyBreastfed,
+    int? toothCount,
+    String? medicalHistory,
   ) async {
     return await babyCollection.doc(babyId).set({
       'firstName': firstName,
@@ -118,6 +140,14 @@ class DatabaseService {
       'dateOfBirth': Timestamp.fromDate(dateOfBirth),
       'weight': weight,
       'height': height,
+      'allergyIds': allergyIds,
+      'isPremature': isPremature,
+      if (gestationalAgeWeeks != null)
+        'gestationalAgeWeeks': gestationalAgeWeeks,
+      'isActivelyBreastfed': isActivelyBreastfed,
+      if (toothCount != null) 'toothCount': toothCount,
+      if (medicalHistory != null && medicalHistory.isNotEmpty)
+        'medicalHistory': medicalHistory,
     });
   }
 
@@ -140,6 +170,15 @@ class DatabaseService {
         weight: (data['weight'] as num).toDouble(),
         height: (data['height'] as num).toDouble(),
         isActive: data['isActive'] ?? false,
+        // ID alergi, default kosong kalo belum ada datanya
+        allergyIds: List<String>.from(data['allergyIds'] ?? []),
+        // status prematur, default false
+        isPremature: data['isPremature'] ?? false,
+        // usia gestasi, null kalo ga prematur
+        gestationalAgeWeeks: data['gestationalAgeWeeks'],
+        isActivelyBreastfed: data['isActivelyBreastfed'] ?? true,
+        toothCount: data['toothCount'],
+        medicalHistory: data['medicalHistory'],
       );
     }).toList();
   }
@@ -147,5 +186,25 @@ class DatabaseService {
   // get babies stream (only current user's babies)
   Stream<List<Baby>> get babies {
     return babyCollection.snapshots().map(_babyListFromSnapshot);
+  }
+
+  // reference to user's recommendations subcollection
+  CollectionReference get recommendationCollection =>
+      userDocument.collection('recommendations');
+
+  // save recommendation to Firestore
+  Future saveRecommendation(Recommendation recommendation) async {
+    final docId = '${recommendation.babyId}_${recommendation.date}';
+    return await recommendationCollection
+        .doc(docId)
+        .set(recommendation.toJson());
+  }
+
+  // get recommendation for a specific baby and date
+  Future<Recommendation?> getRecommendation(String babyId, String date) async {
+    final docId = '${babyId}_${date}';
+    final doc = await recommendationCollection.doc(docId).get();
+    if (!doc.exists) return null;
+    return Recommendation.fromFirestore(doc.data() as Map<String, dynamic>);
   }
 }
