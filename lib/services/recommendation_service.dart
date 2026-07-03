@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:rumi/models/recommendation.dart';
 
 class RecommendationService {
-  // static const String _baseUrl = 'http://localhost:8000';
+  static const String _baseUrl = 'http://localhost:8000'; //web
   // static const String _baseUrl = 'http://10.0.2.2:8000'; // Android emulator
-  static const String _baseUrl = 'http://192.168.100.9:8000'; // physical device
+  // static const String _baseUrl = 'http://192.168.100.9:8000'; // physical device
 
-  Future<Recommendation> getRecommendation({
+  Future<void> getWeeklyRecommendation({
     // return type changed
+    required String uid,
     required String babyId,
     required int ageInMonths,
     required int correctedAgeInMonths,
@@ -20,13 +20,15 @@ class RecommendationService {
     int? toothCount,
     required List<String> allergies,
     String? medicalHistory,
-    required String date,
+    required String startDate,
+    required int days,
     List<String> previousMeals = const [],
   }) async {
     final response = await http.post(
-      Uri.parse('$_baseUrl/recommend'),
+      Uri.parse('$_baseUrl/recommend/weekly'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
+        'uid': uid,
         'baby_id': babyId,
         'baby': {
           'age_in_months': ageInMonths,
@@ -40,15 +42,12 @@ class RecommendationService {
           'allergies': allergies,
           'medical_history': medicalHistory,
         },
-        'date': date,
-        'previous_meals': previousMeals,
+        'start_date': startDate,
+        'days': days,
       }),
     );
 
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body) as Map<String, dynamic>;
-      return Recommendation.fromJson(babyId, date, json);
-    } else {
+    if (response.statusCode != 200) {
       throw Exception('Failed to get recommendation: ${response.statusCode}');
     }
   }

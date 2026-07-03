@@ -13,8 +13,9 @@ class BabyContext(BaseModel):
     allergies: Optional[List[str]] = []         # nama alergi (bukan ID)
     medical_history: Optional[str] = None
 
-class RecommendationRequest(BaseModel):
+class WeeklyRecommendationRequest(BaseModel):
+    uid: str 
     baby_id: str
     baby: BabyContext
-    date: str
-    previous_meals: Optional[List[str]] = []
+    start_date: str          # format: "YYYY-MM-DD", the date user triggers the plan
+    days: int = 7  

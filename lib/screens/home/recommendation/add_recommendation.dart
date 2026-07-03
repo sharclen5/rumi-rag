@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rumi/models/baby.dart';
 import 'package:rumi/shared/constants.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rumi/models/user.dart';
 import 'package:rumi/services/recommendation_service.dart';
-import 'package:rumi/services/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddRecommendation extends StatefulWidget {
   const AddRecommendation({super.key});
@@ -290,18 +289,27 @@ class _AddRecommendationState extends State<AddRecommendation> {
                             );
                             final uid = user?.uid ?? '';
                             final baby = _selectedBaby!;
-                            final date = DateTime.now();
-                            final dateStr =
-                                '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+                            final now = DateTime.now();
+                            final startDate =
+                                '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
                             // resolve allergyIds → names
                             final allergyNames = baby.allergyIds
                                 .map((id) => _allergyMap[id] ?? id)
                                 .toList();
 
-                            // call API
-                            final recommendation = await RecommendationService()
-                                .getRecommendation(
+                            // convert duration selection to days int
+                            final days = switch (_selectedDuration) {
+                              '1 Minggu' => 7,
+                              '2 Minggu' => 14,
+                              '1 Bulan' => 30,
+                              _ => 7,
+                            };
+
+                            // call API — backend generates each day and writes to Firestore
+                            await RecommendationService()
+                                .getWeeklyRecommendation(
+                                  uid: uid,
                                   babyId: baby.id,
                                   ageInMonths: baby.ageInMonths,
                                   correctedAgeInMonths:
@@ -314,13 +322,9 @@ class _AddRecommendationState extends State<AddRecommendation> {
                                   toothCount: baby.toothCount,
                                   allergies: allergyNames,
                                   medicalHistory: baby.medicalHistory,
-                                  date: dateStr,
+                                  startDate: startDate,
+                                  days: days,
                                 );
-
-                            // save to Firestore
-                            await DatabaseService(
-                              uid: uid,
-                            ).saveRecommendation(recommendation);
 
                             if (context.mounted) Navigator.pop(context);
                           } catch (e) {
