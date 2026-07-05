@@ -16,22 +16,9 @@ class BabyPage extends StatelessWidget {
     final user = Provider.of<User?>(context);
 
     void _showAddBabyPanel() {
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true, // bikin form jadi lebih tinggi
-        builder: (context) {
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(
-                context,
-              ).viewInsets.bottom, // biar form naik pas keyboard muncul
-            ),
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
-              child: AddBabyForms(),
-            ),
-          );
-        },
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AddBabyForms()),
       );
     }
 

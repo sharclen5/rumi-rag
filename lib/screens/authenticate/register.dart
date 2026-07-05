@@ -372,6 +372,22 @@ class _RegisterState extends State<Register> {
                                         error = 'Please enter a valid email';
                                         loading = false;
                                       });
+                                    } else {
+                                      // registrasi sukses -> balik ke loading false, kasih pesan, terus pindah ke Sign In
+                                      setState(() => loading = false);
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                              'Akun berhasil dibuat, silakan login',
+                                            ),
+                                          ),
+                                        );
+                                        widget
+                                            .toggleView(); // CHANGED: pindah balik ke Sign In screen
+                                      }
                                     }
                                   }
                                 },

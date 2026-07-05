@@ -22,7 +22,7 @@ class IntroSlides extends StatelessWidget {
             child: Icon(
               Icons.child_care,
               size: 120,
-              color: Theme.of(context).primaryColor,
+              color: const Color.fromARGB(255, 144, 121, 84),
             ),
           ),
           decoration: const PageDecoration(
@@ -45,7 +45,7 @@ class IntroSlides extends StatelessWidget {
             child: Icon(
               Icons.restaurant_menu,
               size: 120,
-              color: Theme.of(context).primaryColor,
+              color: const Color.fromARGB(255, 144, 121, 84),
             ),
           ),
           decoration: const PageDecoration(
@@ -67,7 +67,7 @@ class IntroSlides extends StatelessWidget {
       onDone: onDone,
       onSkip: onDone, // ADDED: skip juga langsung anggap intro selesai
       dotsDecorator: DotsDecorator(
-        activeColor: Theme.of(context).primaryColor,
+        activeColor: const Color.fromARGB(255, 144, 121, 84),
         size: const Size(10.0, 10.0),
         activeSize: const Size(22.0, 10.0),
         activeShape: RoundedRectangleBorder(

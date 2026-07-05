@@ -7,10 +7,10 @@ import 'package:rumi/screens/home/home.dart';
 import 'package:rumi/screens/home/profile/profile.dart';
 import 'package:rumi/screens/home/recommendation/recommendation_page.dart';
 import 'package:rumi/shared/loading.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rumi/models/baby.dart';
 import 'package:rumi/services/database.dart';
-import 'package:rumi/screens/onboarding/intro_slides.dart'; // ADDED
+import 'package:rumi/screens/onboarding/intro_slides.dart';
+import 'package:rumi/screens/home/baby/add_baby_forms.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -22,17 +22,15 @@ class Wrapper extends StatefulWidget {
 class _WrapperState extends State<Wrapper> {
   int _currentIndex = 0;
 
-  // cek flag one-time intro dari shared_preferences
-  Future<bool> _hasSeenIntro() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('hasSeenIntro') ?? false;
+  // cek flag one-time intro
+  Future<bool> _hasSeenIntro(String uid) async {
+    return DatabaseService(uid: uid).hasSeenIntro();
   }
 
   // ADDED: dipanggil pas IntroSlides selesai (baik lewat Done atau Skip)
-  Future<void> _markIntroAsSeen() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('hasSeenIntro', true);
-    // ADDED: trigger rebuild biar FutureBuilder re-check _hasSeenIntro()
+  Future<void> _markIntroAsSeen(String uid) async {
+    await DatabaseService(uid: uid).markIntroAsSeen();
+    // trigger rebuild biar FutureBuilder re-check _hasSeenIntro()
     // dan jatuh ke branch Add Baby form
     if (mounted) setState(() {});
   }
@@ -73,7 +71,7 @@ class _WrapperState extends State<Wrapper> {
 
         // ADDED: belum ada baby -> cek udah pernah liat intro apa belum
         return FutureBuilder<bool>(
-          future: _hasSeenIntro(),
+          future: _hasSeenIntro(user.uid),
           builder: (context, introSnapshot) {
             if (introSnapshot.connectionState == ConnectionState.waiting) {
               return Loading(); // CHANGED: konsisten pake Loading widget
@@ -83,13 +81,11 @@ class _WrapperState extends State<Wrapper> {
 
             // CHANGED: pake IntroSlides beneran, bukan placeholder lagi
             if (!seenIntro) {
-              return IntroSlides(onDone: _markIntroAsSeen);
+              return IntroSlides(onDone: () => _markIntroAsSeen(user.uid));
             }
 
-            // ADDED: placeholder dulu, nanti diganti Add Baby form beneran
-            return const Scaffold(
-              body: Center(child: Text('PLACEHOLDER: Add Baby form screen')),
-            );
+            // AAdd Baby form
+            return const AddBabyForms();
           },
         );
       },

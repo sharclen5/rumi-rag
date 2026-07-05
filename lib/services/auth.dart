@@ -75,6 +75,8 @@ class AuthService {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
+      await _auth.signOut();
+
       return _userFromFirebase(user);
     } catch (e) {
       debugPrint(e.toString());
