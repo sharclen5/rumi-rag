@@ -71,11 +71,6 @@ class BabyPage extends StatelessWidget {
                 ],
               ),
             ),
-            // floatingActionButton: FloatingActionButton(
-            //   backgroundColor: Colors.deepOrange,
-            //   onPressed: () => _showAddBabyPanel(),
-            //   child: Icon(Icons.add, color: Colors.white),
-            // ),
             extendBody: true,
             bottomNavigationBar: BottomNavBar(
               currentIndex: 3,

@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:rumi/models/baby.dart';
 import 'package:rumi/services/database.dart';
 import 'package:provider/provider.dart';
-import 'package:rumi/screens/home/baby/baby_tile.dart';
 import 'package:rumi/models/user.dart';
 import 'package:rumi/shared/bottomnavbar.dart';
 import 'package:rumi/shared/calendar_strip.dart';
-import 'package:rumi/shared/meal_card.dart';
 import 'package:rumi/shared/nutrition_card_stars.dart';
+import 'package:rumi/shared/today_schedule_card.dart';
 
 // $env:CHROME_EXECUTABLE="C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
 // flutter run -d chrome
@@ -203,11 +202,13 @@ class Home extends StatelessWidget {
                       NutritionCardStars(uid: user.uid, babyId: activeBaby.id),
                     SizedBox(height: 16),
 
-                    // Meal Card
+                    // Meal Plan
                     if (activeBaby != null)
-                      MealCard(uid: user.uid, babyId: activeBaby.id),
-
-                    SizedBox(height: 16),
+                      TodayScheduleCard(
+                        uid: user.uid,
+                        babyId: activeBaby.id,
+                        onTabTapped: onTabTapped,
+                      ),
 
                     // Tips Card
                     Card(
@@ -242,7 +243,7 @@ class Home extends StatelessWidget {
                             ),
                             SizedBox(height: 10),
                             Text(
-                              'Di usia 8 bulan, si kecil sudah bisa mulai dikenalkan tekstur yang lebih kasar seperti nasi tim. Pastikan porsi protein hewani terpenuhi setiap hari.',
+                              'Di usia 10 bulan, si kecil sudah bisa mulai dikenalkan tekstur yang lebih kasar seperti nasi tim. Pastikan porsi protein hewani terpenuhi setiap hari.',
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Color(0xFF363434),
