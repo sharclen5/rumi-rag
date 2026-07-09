@@ -126,6 +126,7 @@ class _CoachMarkDemoPageState extends State<CoachMarkDemoPage> {
   Widget _buildHomeSection() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 130,
         backgroundColor: const Color.fromARGB(255, 242, 218, 177),
         elevation: 0.0,
@@ -323,6 +324,7 @@ class _CoachMarkDemoPageState extends State<CoachMarkDemoPage> {
   Widget _buildRekomendasiSection() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 100,
         backgroundColor: const Color.fromARGB(255, 242, 218, 177),
         elevation: 0.0,
@@ -382,6 +384,7 @@ class _CoachMarkDemoPageState extends State<CoachMarkDemoPage> {
   Widget _buildRiwayatSection() {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         toolbarHeight: 130,
         backgroundColor: const Color.fromARGB(255, 242, 218, 177),
         elevation: 0.0,
@@ -421,9 +424,12 @@ class _CoachMarkDemoPageState extends State<CoachMarkDemoPage> {
   }
 
   // ---- Profile mimic ----
+  // ---- Profile mimic ----
   Widget _buildProfileSection() {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 113, 222, 255),
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 0,
         backgroundColor: const Color.fromARGB(255, 242, 218, 177),
         title: const Text(
@@ -432,6 +438,7 @@ class _CoachMarkDemoPageState extends State<CoachMarkDemoPage> {
         ),
       ),
       body: Container(
+        constraints: const BoxConstraints(minHeight: double.infinity),
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -440,15 +447,68 @@ class _CoachMarkDemoPageState extends State<CoachMarkDemoPage> {
             stops: [0.0, 1.0],
           ),
         ),
-        child: Showcase(
-          // CHANGED
-          key: TourKeys.profilePage,
-          title: 'Profil',
-          description:
-              'Kelola detail akun, data bayi, dan pengaturan lainnya di sini',
-          child: const Center(
-            child: Icon(Icons.person, size: 64, color: Color(0xFF8B6F47)),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(16, 20, 16, 100),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              // fake avatar, mirrors ProfilePic's empty-state look
+              const CircleAvatar(
+                radius: 57.5,
+                backgroundColor: Color(0xFFE8C99A),
+                child: Icon(Icons.person, color: Color(0xFF8B6F47), size: 40),
+              ),
+              const SizedBox(height: 20),
+              // wrapped in Showcase — the actual last tour step
+              Showcase(
+                key: TourKeys.profilePage,
+                title: 'Profil',
+                description:
+                    'Kelola detail akun, data bayi, dan pengaturan lainnya di sini',
+                onTargetClick: () => Navigator.of(context).pop(),
+                disposeOnTap: true,
+                disableBarrierInteraction: true,
+                child: Column(
+                  children: [
+                    _fakeProfileMenu('Profile Detail', Icons.person),
+                    _fakeProfileMenu('Data Bayi', Icons.child_care),
+                    _fakeProfileMenu('Settings', Icons.settings),
+                    _fakeProfileMenu('Tutorial', Icons.help),
+                    _fakeProfileMenu('Log Out', Icons.logout),
+                  ],
+                ),
+              ),
+            ],
           ),
+        ),
+      ),
+    );
+  }
+
+  // static, no-op mimic of ProfileMenu
+  Widget _fakeProfileMenu(String text, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+          color: const Color(0xFFFDF8F2),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 22, color: const Color(0xFF363434)),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(color: Color(0xFF757575)),
+              ),
+            ),
+            const Icon(Icons.arrow_forward_ios, color: Color(0xFF757575)),
+          ],
         ),
       ),
     );

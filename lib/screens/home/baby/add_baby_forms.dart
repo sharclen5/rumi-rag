@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:rumi/models/user.dart';
 import 'package:rumi/shared/loading.dart';
 import 'package:rumi/shared/allergy_selector.dart';
-import 'package:rumi/screens/onboarding/coach_mark_demo_page.dart';
 
 // CHANGED: full-screen 4-step form, bukan bottom sheet lagi.
 // Dipake di 2 tempat: (1) wajib diisi pas onboarding lewat Wrapper,
@@ -115,11 +114,6 @@ class _AddBabyFormsState extends State<AddBabyForms> {
     // StreamBuilder<List<Baby>> di Wrapper bakal otomatis switch ke homepage
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const CoachMarkDemoPage()),
-      );
     }
   }
 

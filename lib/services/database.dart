@@ -106,6 +106,9 @@ class DatabaseService {
     int? toothCount,
     String? medicalHistory,
   ) async {
+    final existing = await babyCollection.limit(1).get();
+    final isFirstBaby = existing.docs.isEmpty;
+
     return await babyCollection.add({
       'firstName': firstName,
       if (middleName != null && middleName.isNotEmpty) 'middleName': middleName,
@@ -114,7 +117,7 @@ class DatabaseService {
       'dateOfBirth': Timestamp.fromDate(dateOfBirth),
       'weight': weight,
       'height': height,
-      'isActive': false,
+      'isActive': isFirstBaby,
       'allergyIds': allergyIds,
       'isPremature': isPremature,
       // simpan kalo ada valuenya doang

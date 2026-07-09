@@ -13,6 +13,7 @@ import 'package:rumi/screens/onboarding/intro_slides.dart';
 import 'package:rumi/screens/home/baby/add_baby_forms.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:rumi/shared/tour_keys.dart';
+import 'package:rumi/screens/onboarding/coach_mark_demo_page.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -23,6 +24,8 @@ class Wrapper extends StatefulWidget {
 
 class _WrapperState extends State<Wrapper> {
   int _currentIndex = 0;
+  bool _cameFromOnboarding = false;
+  bool _tourLaunchedThisSession = false;
 
   @override
   void initState() {
@@ -87,6 +90,18 @@ class _WrapperState extends State<Wrapper> {
 
         // sudah ada baby -> tampilan normal, ga ada yang berubah
         if (babies.isNotEmpty) {
+          if (_cameFromOnboarding && !_tourLaunchedThisSession) {
+            _tourLaunchedThisSession = true;
+            _cameFromOnboarding = false;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CoachMarkDemoPage()),
+                );
+              }
+            });
+          }
           final pages = [
             Home(onTabTapped: (i) => setState(() => _currentIndex = i)),
             RecommendationPage(
@@ -115,6 +130,7 @@ class _WrapperState extends State<Wrapper> {
             }
 
             // Add Baby form
+            _cameFromOnboarding = true;
             return const AddBabyForms();
           },
         );

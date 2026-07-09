@@ -9,6 +9,7 @@ import 'package:rumi/services/database.dart';
 import 'package:rumi/shared/bottomnavbar.dart';
 import 'package:rumi/screens/home/profile/profile_detail.dart';
 import 'package:rumi/screens/onboarding/coach_mark_demo_page.dart';
+import 'package:rumi/screens/onboarding/intro_slides.dart';
 
 class ProfilePage extends StatelessWidget {
   final Function(int) onTabTapped;
@@ -86,6 +87,18 @@ class ProfilePage extends StatelessWidget {
                     text: "Settings",
                     icon: Icon(Icons.settings, size: 22),
                     press: () {},
+                  ),
+                  ProfileMenu(
+                    text: "Preview Intro Slides",
+                    icon: Icon(Icons.slideshow, size: 22),
+                    press: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        // just pop back on "Done" — no Firestore write, this is a preview only
+                        builder: (_) =>
+                            IntroSlides(onDone: () => Navigator.pop(context)),
+                      ),
+                    ),
                   ),
                   ProfileMenu(
                     text: "Tutorial",

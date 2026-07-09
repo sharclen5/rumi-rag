@@ -87,6 +87,7 @@ class BottomNavBar extends StatelessWidget {
               description:
                   'Lihat rencana menu yang sudah dibuat untuk si kecil',
               disposeOnTap: true,
+              disableBarrierInteraction: true,
               onTargetClick: () {
                 onTap(1);
                 WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -156,6 +157,7 @@ class BottomNavBar extends StatelessWidget {
               title: 'Riwayat',
               description: 'Lihat riwayat menu yang sudah pernah diberikan',
               disposeOnTap: true,
+              disableBarrierInteraction: true,
               onTargetClick: () {
                 onTap(3);
                 Future.delayed(const Duration(milliseconds: 300), () {
@@ -182,6 +184,7 @@ class BottomNavBar extends StatelessWidget {
               title: 'Profil',
               description: 'Kelola profil bayi dan pengaturan akun di sini',
               disposeOnTap: true,
+              disableBarrierInteraction: true,
               onTargetClick: () {
                 onTap(4);
                 Future.delayed(const Duration(milliseconds: 300), () {
