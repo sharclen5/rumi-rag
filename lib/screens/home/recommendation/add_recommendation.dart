@@ -23,6 +23,12 @@ class _AddRecommendationState extends State<AddRecommendation> {
   Map<String, String> _allergyMap = {};
   bool _allergyMapLoaded = false;
   bool _isLoading = false;
+  Stream<QuerySnapshot>? _progressStream;
+  int _totalDays = 7;
+
+  // ADDED: formats a DateTime the same way your startDate string is built
+  String _formatDate(DateTime d) =>
+      '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   @override
   Future<void> _loadAllergyMap() async {
@@ -44,7 +50,16 @@ class _AddRecommendationState extends State<AddRecommendation> {
     final babies = Provider.of<List<Baby>?>(context);
 
     return _isLoading
-        ? Loading()
+        ? StreamBuilder(
+            stream: _progressStream,
+            builder: (context, snapshot) {
+              final daysWritten = snapshot.data?.docs.length ?? 0;
+              return Loading(
+                progress: daysWritten / _totalDays,
+                message: 'Membuat hari ke-$daysWritten dari $_totalDays',
+              );
+            },
+          )
         : SizedBox(
             height: MediaQuery.of(context).size.height * 0.75,
             child: SingleChildScrollView(
@@ -315,6 +330,47 @@ class _AddRecommendationState extends State<AddRecommendation> {
                                     _ => 7,
                                   };
 
+                                  // test-version restriction
+                                  if (days != 7) {
+                                    if (context.mounted) {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text('Durasi Terbatas'),
+                                          content: const Text(
+                                            'Untuk versi ini, Anda hanya bisa membuat rencana dengan durasi 1 Minggu.',
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context),
+                                              child: const Text('Mengerti'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    setState(() => _isLoading = false);
+                                    return;
+                                  }
+
+                                  // build expected doc IDs and start listening for progress
+                                  _totalDays = days;
+                                  final expectedDocsIds = List.generate(
+                                    days,
+                                    (i) =>
+                                        '${baby.id}_${_formatDate(now.add(Duration(days: i)))}',
+                                  );
+                                  _progressStream = FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(uid)
+                                      .collection('recommendations')
+                                      .where(
+                                        FieldPath.documentId,
+                                        whereIn: expectedDocsIds,
+                                      )
+                                      .snapshots();
+
                                   // call API — backend generates each day and writes to Firestore
                                   await RecommendationService()
                                       .getWeeklyRecommendation(
@@ -348,8 +404,12 @@ class _AddRecommendationState extends State<AddRecommendation> {
                                     );
                                   }
                                 } finally {
-                                  if (mounted)
-                                    setState(() => _isLoading = false);
+                                  if (mounted) {
+                                    setState(() {
+                                      _isLoading = false;
+                                      _progressStream = null;
+                                    });
+                                  }
                                 }
                               },
                         // =====================

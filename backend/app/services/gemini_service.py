@@ -78,8 +78,9 @@ def _get_single_day(
 
     PENTING - Ketersediaan bahan:
     Gunakan HANYA bahan makanan yang mudah ditemukan di pasar tradisional, warung,
-    atau supermarket umum di Indonesia. Prioritaskan bahan lokal, musiman, dan
-    terjangkau secara ekonomi untuk rumah tangga Indonesia pada umumnya.
+    atau supermarket umum di Indonesia, dan tidak hanya di perkotaan, 
+    tetapi juga di pedesaan. Prioritaskan bahan lokal, musiman, dan terjangkau 
+    secara ekonomi untuk rumah tangga Indonesia pada umumnya.
     Hindari bahan impor atau sulit didapat (contoh yang HARUS dihindari: quinoa,
     chia seed, kale, blueberry, keju impor khusus). Sebagai gantinya gunakan
     padanan lokal (contoh: beras/beras merah, biji selasih atau tanpa substitusi,
