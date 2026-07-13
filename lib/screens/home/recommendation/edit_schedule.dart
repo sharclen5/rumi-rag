@@ -83,55 +83,59 @@ class EditScheduleDialog extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: List.generate(meals.length, (index) {
-                    final meal = meals[index];
-                    return InkWell(
-                      onTap: () => Navigator.pop(context, index),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 14,
-                        ),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Container(
-                                width: 42,
-                                height: 42,
-                                color: const Color.fromARGB(255, 122, 105, 95),
-                                child: Icon(
-                                  meal.type == 'ASI'
-                                      ? Icons.water_drop
-                                      : Icons.lunch_dining,
-                                  color: Colors.white,
-                                  size: 20,
+                  children: (() {
+                    final indexedMeals =
+                        List.generate(
+                          meals.length,
+                          (i) => MapEntry(i, meals[i]),
+                        )..sort(
+                          (a, b) => _timeToMinutes(
+                            a.value.time,
+                          ).compareTo(_timeToMinutes(b.value.time)),
+                        );
+
+                    return indexedMeals.map((entry) {
+                      final originalIndex = entry.key;
+                      final meal = entry.value;
+                      return InkWell(
+                        onTap: () => Navigator.pop(context, originalIndex),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 14,
+                          ),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  width: 42,
+                                  height: 42,
+                                  color: const Color.fromARGB(
+                                    255,
+                                    122,
+                                    105,
+                                    95,
+                                  ),
+                                  child: Icon(
+                                    meal.type == 'ASI'
+                                        ? Icons.water_drop
+                                        : Icons.lunch_dining,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.schedule,
-                                        size: 14,
-                                        color: Color.fromARGB(
-                                          255,
-                                          144,
-                                          121,
-                                          84,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        meal.time,
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600,
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.schedule,
+                                          size: 14,
                                           color: Color.fromARGB(
                                             255,
                                             144,
@@ -139,38 +143,52 @@ class EditScheduleDialog extends StatelessWidget {
                                             84,
                                           ),
                                         ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          meal.time,
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color.fromARGB(
+                                              255,
+                                              144,
+                                              121,
+                                              84,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      meal.name ?? 'Air Susu Ibu',
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xFF363434),
                                       ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    meal.name ?? 'Air Susu Ibu',
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF363434),
                                     ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    meal.type,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey.shade500,
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      meal.type,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey.shade500,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            const Icon(
-                              Icons.chevron_right,
-                              color: Color.fromARGB(255, 144, 121, 84),
-                            ),
-                          ],
+                              const Icon(
+                                Icons.chevron_right,
+                                color: Color.fromARGB(255, 144, 121, 84),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    }).toList();
+                  })(),
                 ),
               ),
             ),
@@ -180,7 +198,6 @@ class EditScheduleDialog extends StatelessWidget {
     );
   }
 }
-
 
 // ADDED: full edit-schedule flow — meal picker, time picker, save/revert.
 // Moved out of recommendation_page.dart to keep that file shorter.
@@ -246,4 +263,12 @@ Future<void> handleEditSchedule({
       ).showSnackBar(SnackBar(content: Text('Gagal memperbarui jadwal: $e')));
     }
   }
+}
+
+// ADDED: parses "HH.mm" into total minutes, for sorting meals by time
+int _timeToMinutes(String time) {
+  final parts = time.split('.');
+  final hour = int.tryParse(parts[0]) ?? 0;
+  final minute = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
+  return hour * 60 + minute;
 }

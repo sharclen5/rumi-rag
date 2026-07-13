@@ -46,9 +46,14 @@ class BottomNavBar extends StatelessWidget {
     // "is this a demo instance" from whether homeKey was overridden, and
     // pick the matching chain target keys.
     final isDemo = homeKey != null;
+    final systemNavInset = MediaQuery.of(context).padding.bottom;
 
     return Padding(
-      padding: const EdgeInsets.only(left: 24, right: 24, bottom: 24),
+      padding: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        bottom: 24 + systemNavInset,
+      ),
       child: Container(
         height: 64,
         decoration: BoxDecoration(
@@ -192,9 +197,7 @@ class BottomNavBar extends StatelessWidget {
                 Future.delayed(const Duration(milliseconds: 300), () {
                   if (!context.mounted)
                     return; // guard against disposed context
-                  ShowcaseView.get().startShowCase([
-                    TourKeys.profilePage,
-                  ]);
+                  ShowcaseView.get().startShowCase([TourKeys.profilePage]);
                 });
               },
               child: _AvatarNavItem(

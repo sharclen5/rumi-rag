@@ -394,6 +394,15 @@ class _AddRecommendationState extends State<AddRecommendation> {
                                       );
 
                                   if (context.mounted) Navigator.pop(context);
+                                } on PlanAlreadyExistsException catch (e) {
+                                  // ADDED: lightweight snackbar instead of an
+                                  // error dialog — this isn't really a failure
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(e.message)),
+                                    );
+                                    Navigator.pop(context); // close the sheet
+                                  }
                                 } catch (e) {
                                   if (context.mounted) {
                                     showDialog(

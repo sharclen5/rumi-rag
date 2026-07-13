@@ -1,10 +1,22 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// ADDED: thrown when today's plan already exists, so the UI can
+// distinguish this from a real network/API failure and show a
+// lightweight message instead of an error dialog.
+class PlanAlreadyExistsException implements Exception {
+  final String message;
+  PlanAlreadyExistsException([
+    this.message =
+        'Rencana MPASI untuk hari ini sudah tersedia. Silahkan coba di lain hari',
+  ]);
+
+  @override
+  String toString() => message;
+}
 
 class RecommendationService {
-  // static const String _baseUrl = 'http://localhost:8000'; //web
-  // static const String _baseUrl = 'http://10.0.2.2:8000'; // Android emulator
-  // static const String _baseUrl = 'http://192.168.100.9:8000'; // physical device
   static const String _baseUrl =
       'https://rumi-backend.fastapicloud.dev'; //tes deploy
 
@@ -26,6 +38,17 @@ class RecommendationService {
     required int days,
     List<String> previousMeals = const [],
   }) async {
+    final todayDocId = '${babyId}_$startDate';
+    final todayDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('recommendations')
+        .doc(todayDocId)
+        .get();
+
+    if (todayDoc.exists) {
+      throw PlanAlreadyExistsException();
+    }
     final response = await http.post(
       Uri.parse('$_baseUrl/recommend/weekly'),
       headers: {'Content-Type': 'application/json'},
