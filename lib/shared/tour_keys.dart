@@ -9,8 +9,8 @@ class TourKeys {
   static final homeNavIcon = GlobalKey(); // step 1
   static final babyDropdown = GlobalKey(); // step 2
   static final calendarStrip = GlobalKey(); // step 3
-  static final nutritionCard = GlobalKey(); // step 4
-  static final todayScheduleCard = GlobalKey(); // step 5
+  static final todayScheduleCard = GlobalKey(); // step 4
+  static final nutritionCard = GlobalKey(); // step 5
   static final aiTipsCard = GlobalKey(); // step 6
 
   // Rekomendasi tab

@@ -92,121 +92,10 @@ class _HistoryViewState extends State<_HistoryView> {
       builder: (context, userSnapshot) {
         return Scaffold(
           appBar: AppBar(
-            toolbarHeight: 130,
-            backgroundColor: const Color.fromARGB(255, 242, 218, 177),
-            elevation: 0.0,
-            flexibleSpace: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 12.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Riwayat MPASI',
-                      style: TextStyle(
-                        color: Color(0xFF363434),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-
-                    const SizedBox(height: 8),
-                    babies.isEmpty
-                        ? const Row(
-                            children: [
-                              Icon(
-                                Icons.circle,
-                                color: Colors.white38,
-                                size: 10,
-                              ),
-                              SizedBox(width: 6),
-                              Text(
-                                'Belum ada profil bayi yang aktif',
-                                style: TextStyle(
-                                  color: Color(0xFF363434),
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ],
-                          )
-                        : DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              isDense: true,
-                              value: activeBaby?.id,
-                              dropdownColor: const Color(0xFFF5EBD9),
-                              iconEnabledColor: const Color(0xFF363434),
-                              style: const TextStyle(
-                                color: Color(0xFF363434),
-                                fontSize: 13,
-                              ),
-                              hint: const Row(
-                                children: [
-                                  Icon(
-                                    Icons.circle,
-                                    color: Color(0xFF363434),
-                                    size: 10,
-                                  ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    'Belum ada profil bayi yang aktif',
-                                    style: TextStyle(
-                                      color: Color(0xFF363434),
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              selectedItemBuilder: (context) {
-                                return babies.map((baby) {
-                                  return Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.circle,
-                                        color: Colors.greenAccent,
-                                        size: 10,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        'Profil aktif: ${baby.fullName} · ${baby.ageInMonths} bulan',
-                                        style: const TextStyle(
-                                          color: Color(0xFF363434),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }).toList();
-                              },
-                              items: babies.map((baby) {
-                                return DropdownMenuItem<String>(
-                                  value: baby.id,
-                                  child: Text(
-                                    '${baby.fullName} · ${baby.ageInMonths} bulan',
-                                    style: const TextStyle(
-                                      color: Color(0xFF363434),
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (selectedId) {
-                                if (selectedId != null) {
-                                  DatabaseService(
-                                    uid: widget.uid,
-                                  ).setActiveBaby(selectedId);
-                                }
-                              },
-                            ),
-                          ),
-                  ],
-                ),
-              ),
-            ),
+            toolbarHeight: 0,
+            elevation: 0,
+            backgroundColor: const Color(0xFFF2DAB1),
           ),
-
           body: Container(
             width: double.infinity,
             height: double.infinity,
@@ -218,99 +107,219 @@ class _HistoryViewState extends State<_HistoryView> {
                 stops: [0.0, 1.0],
               ),
             ),
-            child: activeBaby == null
-                ? Center(
-                    child: Text(
-                      'Belum ada profil bayi yang aktif',
-                      style: TextStyle(color: Colors.grey.shade600),
-                    ),
-                  )
-                : SafeArea(
+            child: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ADDED: calendar strip for single-day selection
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                          child: CalendarStrip(
-                            selectedDate: _selectedDate,
-                            onDateSelected: (date) {
-                              setState(() {
-                                _selectedDate = date;
-                                _recommendation = null;
-                              });
-                              if (_lastFetchedBaby != null) {
-                                _fetchRecommendation(_lastFetchedBaby!);
-                              }
-                            },
-                            showCard: true,
-                            showArrows: true,
+                        const Text(
+                          'Riwayat MPASI',
+                          style: TextStyle(
+                            color: Color(0xFF363434),
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(height: 16),
-
-                        Expanded(
-                          child: _isLoading
-                              ? Loading()
-                              : _error != null
-                              ? Center(
-                                  child: Text(
-                                    'Gagal memuat riwayat: $_error',
-                                    style: TextStyle(
-                                      color: Colors.red.shade400,
-                                      fontSize: 12,
-                                    ),
-                                    textAlign: TextAlign.center,
+                        const SizedBox(height: 8),
+                        babies.isEmpty
+                            ? Row(
+                                children: [
+                                  Icon(
+                                    Icons.circle,
+                                    color: Colors.grey.shade400,
+                                    size: 10,
                                   ),
-                                )
-                              : _recommendation == null ||
-                                    _recommendation!.meals.isEmpty
-                              ? Center(
-                                  child: Text(
-                                    'Tidak ada rencana menu untuk hari ini',
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Belum ada profil bayi yang aktif',
                                     style: TextStyle(
                                       color: Colors.grey.shade600,
+                                      fontSize: 13,
                                     ),
                                   ),
-                                )
-                              : ListView(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    16,
-                                    0,
-                                    16,
-                                    100,
+                                ],
+                              )
+                            : DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  isDense: true,
+                                  value: activeBaby?.id,
+                                  dropdownColor: const Color(0xFFF5EBD9),
+                                  iconEnabledColor: const Color(0xFF363434),
+                                  style: const TextStyle(
+                                    color: Color(0xFF363434),
+                                    fontSize: 13,
                                   ),
-                                  children: [
-                                    Card(
-                                      color: const Color(0xFFFDF8F2),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                        side: const BorderSide(
-                                          color: Color(0xFFE8D5B7),
-                                          width: 1.5,
+                                  hint: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.circle,
+                                        color: Colors.grey.shade400,
+                                        size: 10,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Belum ada profil bayi yang aktif',
+                                        style: TextStyle(
+                                          color: Colors.grey.shade600,
+                                          fontSize: 13,
                                         ),
                                       ),
-                                      elevation: 2,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: _recommendation!.meals
-                                              .map(
-                                                (meal) =>
-                                                    _HistoryMealRow(meal: meal),
-                                              )
-                                              .toList(),
+                                    ],
+                                  ),
+                                  selectedItemBuilder: (context) {
+                                    return babies.map((baby) {
+                                      return Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.circle,
+                                            color: Colors.greenAccent,
+                                            size: 10,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            'Profil aktif: ${baby.fullName} · ${baby.ageInMonths} bulan',
+                                            style: const TextStyle(
+                                              color: Color(0xFF363434),
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }).toList();
+                                  },
+                                  items: babies.map((baby) {
+                                    return DropdownMenuItem<String>(
+                                      value: baby.id,
+                                      child: Text(
+                                        '${baby.fullName} · ${baby.ageInMonths} bulan',
+                                        style: const TextStyle(
+                                          color: Color(0xFF363434),
+                                          fontSize: 13,
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    );
+                                  }).toList(),
+                                  onChanged: (selectedId) {
+                                    if (selectedId != null) {
+                                      DatabaseService(
+                                        uid: widget.uid,
+                                      ).setActiveBaby(selectedId);
+                                    }
+                                  },
                                 ),
-                        ),
+                              ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 16),
+
+                  Expanded(
+                    child: activeBaby == null
+                        ? Center(
+                            child: Text(
+                              'Belum ada profil bayi yang aktif',
+                              style: TextStyle(color: Colors.grey.shade600),
+                            ),
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  16,
+                                  0,
+                                  16,
+                                  0,
+                                ),
+                                child: CalendarStrip(
+                                  selectedDate: _selectedDate,
+                                  onDateSelected: (date) {
+                                    setState(() {
+                                      _selectedDate = date;
+                                      _recommendation = null;
+                                    });
+                                    if (_lastFetchedBaby != null) {
+                                      _fetchRecommendation(_lastFetchedBaby!);
+                                    }
+                                  },
+                                  uid: widget.uid,
+                                  babyId: activeBaby.id,
+                                  showCard: true,
+                                  showArrows: true,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Expanded(
+                                child: _isLoading
+                                    ? Loading()
+                                    : _error != null
+                                    ? Center(
+                                        child: Text(
+                                          'Gagal memuat riwayat: $_error',
+                                          style: TextStyle(
+                                            color: Colors.red.shade400,
+                                            fontSize: 12,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )
+                                    : _recommendation == null ||
+                                          _recommendation!.meals.isEmpty
+                                    ? Center(
+                                        child: Text(
+                                          'Tidak ada rencana menu untuk hari ini',
+                                          style: TextStyle(
+                                            color: Colors.grey.shade600,
+                                          ),
+                                        ),
+                                      )
+                                    : ListView(
+                                        padding: const EdgeInsets.fromLTRB(
+                                          16,
+                                          0,
+                                          16,
+                                          100,
+                                        ),
+                                        children: [
+                                          Card(
+                                            color: const Color(0xFFFDF8F2),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                              side: const BorderSide(
+                                                color: Color(0xFFE8D5B7),
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            elevation: 2,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(16),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: _recommendation!.meals
+                                                    .map(
+                                                      (meal) => _HistoryMealRow(
+                                                        meal: meal,
+                                                      ),
+                                                    )
+                                                    .toList(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            ],
+                          ),
+                  ),
+                ],
+              ),
+            ),
           ),
           extendBody: true,
           bottomNavigationBar: BottomNavBar(
@@ -322,6 +331,8 @@ class _HistoryViewState extends State<_HistoryView> {
       },
     );
   }
+
+  // END CHANGE
 }
 
 class _HistoryMealRow extends StatelessWidget {

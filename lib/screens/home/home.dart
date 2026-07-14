@@ -5,8 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:rumi/models/user.dart';
 import 'package:rumi/shared/bottomnavbar.dart';
 import 'package:rumi/shared/calendar_strip.dart';
-import 'package:rumi/shared/nutrition_card_stars.dart';
+import 'package:rumi/shared/nutrition_card.dart';
 import 'package:rumi/shared/today_schedule_card.dart';
+import 'package:rumi/shared/home_hero.dart';
 
 // $env:CHROME_EXECUTABLE="C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
 // flutter run -d chrome
@@ -34,10 +35,6 @@ class _HomeState extends State<Home> {
       child: StreamBuilder<UserProfile?>(
         stream: DatabaseService(uid: user.uid).userProfile,
         builder: (context, snapshot) {
-          final firstName = snapshot.data?.firstName ?? '';
-          final isMale = snapshot.data?.gender.toLowerCase() == 'male';
-          final greetingTitle = isMale ? 'Bapak $firstName' : 'Ibu $firstName';
-
           final babies = context.watch<List<Baby>>();
           final activeBaby = babies.isEmpty
               ? null
@@ -48,125 +45,9 @@ class _HomeState extends State<Home> {
 
           return Scaffold(
             appBar: AppBar(
-              toolbarHeight: 130,
-              backgroundColor: Color.fromARGB(255, 242, 218, 177),
-              elevation: 0.0,
-              flexibleSpace: SafeArea(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 12.0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Selamat datang,',
-                        style: TextStyle(
-                          color: Color(0xFF363434),
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        greetingTitle,
-                        style: TextStyle(
-                          color: Color(0xFF363434),
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      babies.isEmpty
-                          ? Row(
-                              children: [
-                                Icon(
-                                  Icons.circle,
-                                  color: Colors.white38,
-                                  size: 10,
-                                ),
-                                SizedBox(width: 6),
-                                Text(
-                                  'Belum ada profil bayi yang aktif',
-                                  style: TextStyle(
-                                    color: Color(0xFF363434),
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                isDense: true,
-                                value: activeBaby?.id,
-                                dropdownColor: Color(0xFFF5EBD9),
-                                iconEnabledColor: Color(0xFF363434),
-                                style: TextStyle(
-                                  color: Color(0xFF363434),
-                                  fontSize: 13,
-                                ),
-                                hint: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.circle,
-                                      color: Color(0xFF363434),
-                                      size: 10,
-                                    ),
-                                    SizedBox(width: 6),
-                                    Text(
-                                      'Belum ada profil bayi yang aktif',
-                                      style: TextStyle(
-                                        color: Color(0xFF363434),
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                selectedItemBuilder: (context) {
-                                  return babies.map((baby) {
-                                    return Row(
-                                      children: [
-                                        Icon(
-                                          Icons.circle,
-                                          color: Colors.greenAccent,
-                                          size: 10,
-                                        ),
-                                        SizedBox(width: 6),
-                                        Text(
-                                          'Profil aktif: ${baby.fullName} · ${baby.ageInMonths} bulan',
-                                          style: TextStyle(
-                                            color: Color(0xFF363434),
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList();
-                                },
-                                items: babies.map((baby) {
-                                  return DropdownMenuItem<String>(
-                                    value: baby.id,
-                                    child: Text(
-                                      '${baby.fullName} · ${baby.ageInMonths} bulan',
-                                      style: TextStyle(
-                                        color: Color(0xFF363434),
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: (selectedId) {
-                                  if (selectedId != null) {
-                                    DatabaseService(
-                                      uid: user.uid,
-                                    ).setActiveBaby(selectedId);
-                                  }
-                                },
-                              ),
-                            ),
-                    ],
-                  ),
-                ),
-              ),
+              toolbarHeight: 0,
+              elevation: 0,
+              backgroundColor: const Color(0xFFF2DAB1),
             ),
 
             body: Container(
@@ -192,29 +73,51 @@ class _HomeState extends State<Home> {
                     //     ).deleteBaby(activeBaby.id),
                     //   ),
                     // SizedBox(height: 16),
-
-                    // Calendar Strip
-                    CalendarStrip(
-                      selectedDate: DateTime.now(),
-                      onDateSelected: (_) {},
-                      showCard: true,
-                      showArrows: true,
+                    HomeHero(
+                      profile: snapshot.data,
+                      activeBaby: activeBaby,
+                      babies: babies,
+                      onBabyChanged: (selectedId) {
+                        if (selectedId != null) {
+                          DatabaseService(
+                            uid: user.uid,
+                          ).setActiveBaby(selectedId);
+                        }
+                      },
                     ),
 
-                    SizedBox(height: 16),
+                    const SizedBox(height: 20),
 
-                    // Kelengkapan Gizi Hari Ini
+                    // Calendar Strip
                     if (activeBaby != null)
-                      NutritionCardStars(uid: user.uid, babyId: activeBaby.id),
-                    SizedBox(height: 16),
+                      CalendarStrip(
+                        selectedDate: DateTime.now(),
+                        onDateSelected: (_) {},
+                        uid: user.uid,
+                        babyId: activeBaby.id,
+                        showCard: true,
+                        showArrows: true,
+                      ),
 
                     // Meal Plan
+                    const SizedBox(height: 24),
                     if (activeBaby != null)
                       TodayScheduleCard(
+                        key: ValueKey(activeBaby.id),
                         uid: user.uid,
                         babyId: activeBaby.id,
                         onTabTapped: widget.onTabTapped,
                       ),
+
+                    // Kelengkapan Gizi Hari Ini
+                    const SizedBox(height: 12),
+                    if (activeBaby != null)
+                      NutritionCard(
+                        uid: user.uid,
+                        babyId: activeBaby.id,
+                        babyName: activeBaby.firstName,
+                      ),
+                    const SizedBox(height: 24),
 
                     // Tips Card
                     Card(
@@ -231,14 +134,9 @@ class _HomeState extends State<Home> {
                           children: [
                             Row(
                               children: [
-                                Icon(
-                                  Icons.lightbulb_outline,
-                                  color: Color.fromARGB(255, 144, 121, 84),
-                                  size: 18,
-                                ),
                                 SizedBox(width: 6),
                                 Text(
-                                  'Tips untuk ${activeBaby?.firstName ?? 'si Kecil'} hari ini',
+                                  '🤎 Pesan dari Rumi',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
@@ -249,7 +147,7 @@ class _HomeState extends State<Home> {
                             ),
                             SizedBox(height: 10),
                             Text(
-                              'Di usia 10 bulan, si kecil sudah bisa mulai dikenalkan tekstur yang lebih kasar seperti nasi tim. Pastikan porsi protein hewani terpenuhi setiap hari.',
+                              'Hari ini ${activeBaby?.firstName} sudah bisa mulai belajar tekstur yang lebih kasar. Pastikan protein hewani tetap ada di setiap menu.',
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Color(0xFF363434),

@@ -8,7 +8,7 @@ import 'package:rumi/services/auth.dart';
 import 'package:rumi/services/database.dart';
 import 'package:rumi/shared/bottomnavbar.dart';
 import 'package:rumi/screens/home/profile/profile_detail.dart';
-import 'package:rumi/screens/onboarding/coach_mark_demo_page.dart';
+import 'package:rumi/screens/onboarding/tutorial_mark.dart';
 import 'package:rumi/screens/onboarding/intro_slides.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -106,7 +106,7 @@ class ProfilePage extends StatelessWidget {
                     press: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const CoachMarkDemoPage(),
+                        builder: (_) => const TutorialMark(),
                       ),
                     ),
                   ),

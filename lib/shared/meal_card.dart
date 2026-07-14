@@ -206,6 +206,11 @@ class _MealCardItemState extends State<_MealCardItem> {
   Widget build(BuildContext context) {
     final meal = widget.meal;
     final isAsi = meal.type == 'ASI';
+    final IconData mealIcon = isAsi
+        ? Icons.water_drop
+        : meal.type.toLowerCase() == 'snack'
+        ? Icons.cookie
+        : Icons.restaurant;
 
     return AnimatedOpacity(
       opacity: _isEaten ? 0.5 : 1.0,
@@ -285,7 +290,7 @@ class _MealCardItemState extends State<_MealCardItem> {
                         height: 64,
                         color: const Color.fromARGB(255, 122, 105, 95),
                         child: Icon(
-                          isAsi ? Icons.water_drop : Icons.lunch_dining,
+                          mealIcon,
                           color: Colors.white,
                           size: 32,
                         ),

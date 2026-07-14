@@ -146,6 +146,13 @@ class _RecommendationViewState extends State<_RecommendationView> {
     }
   }
 
+  // =====================
+  // CHANGED: AppBar collapsed to match Home (toolbarHeight: 0), title +
+  // baby dropdown + edit-schedule icon moved into the body as a header
+  // block, same pattern as HomeHero. Dropdown/hint colors switched from
+  // white-on-tan to dark-on-cream since the header now sits on the light
+  // gradient background instead of the solid tan AppBar.
+  // =====================
   @override
   Widget build(BuildContext context) {
     final babies = context.watch<List<Baby>>();
@@ -161,164 +168,10 @@ class _RecommendationViewState extends State<_RecommendationView> {
       builder: (context, snapshot) {
         return Scaffold(
           appBar: AppBar(
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: 16.0,
-                  top: 12.0,
-                  bottom: 12.0,
-                ),
-                child: GestureDetector(
-                  onTap: () async {
-                    if (_recommendation == null || _lastFetchedBaby == null)
-                      return;
-
-                    await handleEditSchedule(
-                      context: context,
-                      meals: _recommendation!.meals,
-                      dateLabel:
-                          '${_selectedDate.day} ${_monthName(_selectedDate.month)}, ${_dayName(_selectedDate.weekday)}',
-                      uid: widget.uid,
-                      babyId: _lastFetchedBaby!.id,
-                      dateStr: _selectedDateStr,
-                      onMealTimeChanged: (index, updatedMeal) {
-                        setState(() {
-                          _recommendation!.meals[index] = updatedMeal;
-                        });
-                      },
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      width: 48,
-                      height: 48,
-                      color: const Color.fromARGB(255, 122, 105, 95),
-                      child: const Icon(
-                        Icons.edit_document,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-            toolbarHeight: 100,
-            backgroundColor: const Color.fromARGB(255, 242, 218, 177),
-            elevation: 0.0,
-            flexibleSpace: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 12.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'Jadwal MPASI',
-                      style: TextStyle(
-                        color: Color(0xFF363434),
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    babies.isEmpty
-                        ? const Row(
-                            children: [
-                              Icon(
-                                Icons.circle,
-                                color: Colors.white38,
-                                size: 10,
-                              ),
-                              SizedBox(width: 6),
-                              Text(
-                                'Belum ada profil bayi yang aktif',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ],
-                          )
-                        : DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              isDense: true,
-                              value: activeBaby?.id,
-                              dropdownColor: const Color(0xFFF5EBD9),
-                              iconEnabledColor: Colors.black,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 13,
-                              ),
-                              hint: const Row(
-                                children: [
-                                  Icon(
-                                    Icons.circle,
-                                    color: Colors.white54,
-                                    size: 10,
-                                  ),
-                                  SizedBox(width: 6),
-                                  Text(
-                                    'Belum ada profil bayi yang aktif',
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              selectedItemBuilder: (context) {
-                                return babies.map((baby) {
-                                  return Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.circle,
-                                        color: Colors.greenAccent,
-                                        size: 10,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        'Profil aktif: ${baby.fullName} · ${baby.ageInMonths} bulan',
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }).toList();
-                              },
-                              items: babies.map((baby) {
-                                return DropdownMenuItem<String>(
-                                  value: baby.id,
-                                  child: Text(
-                                    '${baby.fullName} · ${baby.ageInMonths} bulan',
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (selectedId) {
-                                if (selectedId != null) {
-                                  DatabaseService(
-                                    uid: widget.uid,
-                                  ).setActiveBaby(selectedId);
-                                }
-                              },
-                            ),
-                          ),
-                  ],
-                ),
-              ),
-            ),
+            toolbarHeight: 0,
+            elevation: 0,
+            backgroundColor: const Color(0xFFF2DAB1),
           ),
-
           body: Container(
             width: double.infinity,
             height: double.infinity,
@@ -335,24 +188,176 @@ class _RecommendationViewState extends State<_RecommendationView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Jadwal MPASI',
+                                style: TextStyle(
+                                  color: Color(0xFF363434),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              babies.isEmpty
+                                  ? Row(
+                                      children: [
+                                        Icon(
+                                          Icons.circle,
+                                          color: Colors.grey.shade400,
+                                          size: 10,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          'Belum ada profil bayi yang aktif',
+                                          style: TextStyle(
+                                            color: Colors.grey.shade600,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        isDense: true,
+                                        value: activeBaby?.id,
+                                        dropdownColor: const Color(0xFFF5EBD9),
+                                        iconEnabledColor: const Color(
+                                          0xFF363434,
+                                        ),
+                                        style: const TextStyle(
+                                          color: Color(0xFF363434),
+                                          fontSize: 13,
+                                        ),
+                                        hint: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.circle,
+                                              color: Colors.grey.shade400,
+                                              size: 10,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              'Belum ada profil bayi yang aktif',
+                                              style: TextStyle(
+                                                color: Colors.grey.shade600,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        selectedItemBuilder: (context) {
+                                          return babies.map((baby) {
+                                            return Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.circle,
+                                                  color: Colors.greenAccent,
+                                                  size: 10,
+                                                ),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  'Profil aktif: ${baby.fullName} · ${baby.ageInMonths} bulan',
+                                                  style: const TextStyle(
+                                                    color: Color(0xFF363434),
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          }).toList();
+                                        },
+                                        items: babies.map((baby) {
+                                          return DropdownMenuItem<String>(
+                                            value: baby.id,
+                                            child: Text(
+                                              '${baby.fullName} · ${baby.ageInMonths} bulan',
+                                              style: const TextStyle(
+                                                color: Color(0xFF363434),
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (selectedId) {
+                                          if (selectedId != null) {
+                                            DatabaseService(
+                                              uid: widget.uid,
+                                            ).setActiveBaby(selectedId);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                            ],
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            if (_recommendation == null ||
+                                _lastFetchedBaby == null)
+                              return;
+
+                            await handleEditSchedule(
+                              context: context,
+                              meals: _recommendation!.meals,
+                              dateLabel:
+                                  '${_selectedDate.day} ${_monthName(_selectedDate.month)}, ${_dayName(_selectedDate.weekday)}',
+                              uid: widget.uid,
+                              babyId: _lastFetchedBaby!.id,
+                              dateStr: _selectedDateStr,
+                              onMealTimeChanged: (index, updatedMeal) {
+                                setState(() {
+                                  _recommendation!.meals[index] = updatedMeal;
+                                });
+                              },
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              color: const Color.fromARGB(255, 122, 105, 95),
+                              child: const Icon(
+                                Icons.edit_document,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CalendarStrip(
-                          selectedDate: _selectedDate,
-                          onDateSelected: (date) {
-                            setState(() {
-                              _selectedDate = date;
-                              _recommendation = null;
-                            });
-                            if (_lastFetchedBaby != null) {
-                              _fetchRecommendation(_lastFetchedBaby!);
-                            }
-                          },
-                          showCard: true,
-                          showArrows: true,
-                        ),
+                        if (activeBaby != null)
+                          CalendarStrip(
+                            selectedDate: _selectedDate,
+                            onDateSelected: (date) {
+                              setState(() {
+                                _selectedDate = date;
+                                _recommendation = null;
+                              });
+                              if (_lastFetchedBaby != null) {
+                                _fetchRecommendation(_lastFetchedBaby!);
+                              }
+                            },
+                            uid: widget.uid,
+                            babyId: activeBaby.id,
+                            showCard: true,
+                            showArrows: true,
+                          ),
                         const SizedBox(height: 12),
                         Text(
                           '${_selectedDate.day} ${_monthName(_selectedDate.month)}, ${_dayName(_selectedDate.weekday)}',
@@ -372,91 +377,98 @@ class _RecommendationViewState extends State<_RecommendationView> {
                         ? Loading()
                         : _error != null
                         ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.error_outline,
-                                  color: Colors.red,
-                                  size: 48,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'Gagal memuat rekomendasi',
-                                  style: TextStyle(color: Colors.grey.shade600),
-                                ),
-                                const SizedBox(height: 8),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    if (_lastFetchedBaby != null) {
-                                      _fetchRecommendation(_lastFetchedBaby!);
-                                    }
-                                  },
-                                  child: const Text('Coba Lagi'),
-                                ),
-                              ],
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.error_outline,
+                                    color: Colors.red,
+                                    size: 48,
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Gagal memuat rekomendasi',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if (_lastFetchedBaby != null) {
+                                        _fetchRecommendation(_lastFetchedBaby!);
+                                      }
+                                    },
+                                    child: const Text('Coba Lagi'),
+                                  ),
+                                ],
+                              ),
                             ),
                           )
                         : _recommendation == null
                         ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.no_meals,
-                                  size: 48,
-                                  color: Colors.grey.shade400,
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  'Belum ada rencana untuk hari ini',
-                                  style: TextStyle(color: Colors.grey.shade600),
-                                ),
-                                const SizedBox(height: 16),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color.fromARGB(
-                                      255,
-                                      144,
-                                      121,
-                                      84,
-                                    ),
-                                    foregroundColor: Colors.white,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.no_meals,
+                                    size: 48,
+                                    color: Colors.grey.shade400,
                                   ),
-                                  onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      builder: (outerContext) => Padding(
-                                        padding: EdgeInsets.only(
-                                          top: 20,
-                                          left: 20,
-                                          right: 20,
-                                          bottom:
-                                              MediaQuery.of(
-                                                context,
-                                              ).viewInsets.bottom +
-                                              20,
-                                        ),
-                                        child: Provider<List<Baby>?>.value(
-                                          value: Provider.of<List<Baby>?>(
-                                            context,
-                                            listen: false,
-                                          ),
-                                          child: const AddRecommendation(),
-                                        ),
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    'Belum ada rencana untuk hari ini',
+                                    style: TextStyle(
+                                      color: Colors.grey.shade600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(
+                                        255,
+                                        144,
+                                        121,
+                                        84,
                                       ),
-                                    );
-                                  },
-                                  child: const Text('Buat Rekomendasi'),
-                                ),
-                              ],
+                                      foregroundColor: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (outerContext) => Padding(
+                                          padding: EdgeInsets.only(
+                                            top: 20,
+                                            left: 20,
+                                            right: 20,
+                                            bottom:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).viewInsets.bottom +
+                                                20,
+                                          ),
+                                          child: Provider<List<Baby>?>.value(
+                                            value: Provider.of<List<Baby>?>(
+                                              context,
+                                              listen: false,
+                                            ),
+                                            child: const AddRecommendation(),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: const Text('Buat Rekomendasi'),
+                                  ),
+                                ],
+                              ),
                             ),
                           )
                         : SingleChildScrollView(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
                             child: Column(
-                              // CHANGED: now tracks the original mealIndex per hour slot
                               children: (() {
                                 final Map<int, int> hourToIndex = {};
                                 for (
@@ -524,6 +536,12 @@ class _TimeLineRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const activeColor = Color(0xFF363434);
+
+    final IconData mealIcon = meal?.type == 'ASI'
+        ? Icons.water_drop
+        : meal?.type.toLowerCase() == 'snack'
+        ? Icons.cookie
+        : Icons.restaurant;
 
     return SizedBox(
       height: 90,
@@ -626,9 +644,7 @@ class _TimeLineRow extends StatelessWidget {
                                     95,
                                   ),
                                   child: Icon(
-                                    meal?.type == 'ASI'
-                                        ? Icons.water_drop
-                                        : Icons.lunch_dining,
+                                    mealIcon,
                                     color: Colors.white,
                                     size: 24,
                                   ),

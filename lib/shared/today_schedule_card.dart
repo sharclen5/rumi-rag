@@ -107,13 +107,23 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Menu Hari Ini',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF363434),
-                  ),
+                const Row(
+                  children: [
+                    Icon(
+                      Icons.restaurant_menu,
+                      size: 18,
+                      color: Color.fromARGB(255, 144, 121, 84),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      'Jadwal MPASI Hari Ini',
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF363434),
+                      ),
+                    ),
+                  ],
                 ),
                 GestureDetector(
                   onTap: () => widget.onTabTapped(
@@ -278,6 +288,11 @@ class _ScheduleRow extends StatelessWidget {
     final isAsi = meal.type == 'ASI';
     final label = isAsi ? 'Air Susu Ibu' : (meal.name ?? '');
     final isDone = meal.isEaten;
+    final IconData mealIcon = isAsi
+        ? Icons.water_drop
+        : meal.type.toLowerCase() == 'snack'
+        ? Icons.cookie
+        : Icons.restaurant;
 
     return Opacity(
       opacity: isDone ? 0.5 : 1.0,
@@ -300,7 +315,7 @@ class _ScheduleRow extends StatelessWidget {
                   child: Icon(
                     meal.isEaten
                         ? Icons.check
-                        : (isAsi ? Icons.water_drop : Icons.restaurant),
+                        : mealIcon, // CHANGED: uses mealIcon
                     size: 16,
                     color: meal.isEaten || isNext
                         ? Colors.white

@@ -34,9 +34,13 @@ class _RecommendationDetailDialogState
 
   @override
   Widget build(BuildContext context) {
-    final meal = widget.meal; // CHANGED: was `meal` param, now widget.meal
+    final meal = widget.meal;
     final isAsi = meal.type == 'ASI';
-    // END CHANGE
+    final IconData mealIcon = isAsi
+        ? Icons.water_drop
+        : meal.type.toLowerCase() == 'snack'
+        ? Icons.cookie
+        : Icons.restaurant;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -66,7 +70,7 @@ class _RecommendationDetailDialogState
                       height: 48,
                       color: const Color.fromARGB(255, 122, 105, 95),
                       child: Icon(
-                        isAsi ? Icons.water_drop : Icons.lunch_dining,
+                        mealIcon,
                         color: Colors.white,
                         size: 24,
                       ),

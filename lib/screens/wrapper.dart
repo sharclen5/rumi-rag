@@ -13,7 +13,7 @@ import 'package:rumi/screens/onboarding/intro_slides.dart';
 import 'package:rumi/screens/home/baby/add_baby_forms.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:rumi/shared/tour_keys.dart';
-import 'package:rumi/screens/onboarding/coach_mark_demo_page.dart';
+import 'package:rumi/screens/onboarding/tutorial_mark.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -97,7 +97,7 @@ class _WrapperState extends State<Wrapper> {
               if (mounted) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const CoachMarkDemoPage()),
+                  MaterialPageRoute(builder: (_) => const TutorialMark()),
                 );
               }
             });
