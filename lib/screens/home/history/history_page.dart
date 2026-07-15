@@ -41,6 +41,42 @@ class _HistoryViewState extends State<_HistoryView> {
   Baby? _lastFetchedBaby;
   DateTime _selectedDate = DateTime.now();
 
+  static const _brand = Color.fromARGB(255, 144, 121, 84);
+  static const _brandDark = Color.fromARGB(255, 122, 105, 95);
+  static const _ink = Color(0xFF363434);
+  static const _cardBg = Color(0xFFFDF8F2);
+  static const _cardBorder = Color(0xFFE8D5B7);
+
+  String _dayName(int weekday) {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days[weekday - 1];
+  }
+
+  String _monthName(int month) {
+    const months = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
+    return months[month - 1];
+  }
+
+  bool get _isToday {
+    final now = DateTime.now();
+    return _selectedDate.year == now.year &&
+        _selectedDate.month == now.month &&
+        _selectedDate.day == now.day;
+  }
+
   String get _selectedDateStr =>
       '${_selectedDate.year}-${_selectedDate.month.toString().padLeft(2, '0')}-${_selectedDate.day.toString().padLeft(2, '0')}';
 
@@ -59,6 +95,17 @@ class _HistoryViewState extends State<_HistoryView> {
       setState(() => _error = e.toString());
     } finally {
       setState(() => _isLoading = false);
+    }
+  }
+
+  void _jumpToToday() {
+    if (_isToday) return;
+    setState(() {
+      _selectedDate = DateTime.now();
+      _recommendation = null;
+    });
+    if (_lastFetchedBaby != null) {
+      _fetchRecommendation(_lastFetchedBaby!);
     }
   }
 
@@ -111,111 +158,141 @@ class _HistoryViewState extends State<_HistoryView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Header row: title + dropdown on the left, "hari ini"
+                  // quick-jump action on the right — mirrors the
+                  // title/dropdown/action-icon layout used on Recommendation,
+                  // but the action here jumps back to today instead of
+                  // opening an editor, since History looks backward.
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-                    child: Column(
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Riwayat MPASI',
-                          style: TextStyle(
-                            color: Color(0xFF363434),
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        babies.isEmpty
-                            ? Row(
-                                children: [
-                                  Icon(
-                                    Icons.circle,
-                                    color: Colors.grey.shade400,
-                                    size: 10,
-                                  ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    'Belum ada profil bayi yang aktif',
-                                    style: TextStyle(
-                                      color: Colors.grey.shade600,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  isDense: true,
-                                  value: activeBaby?.id,
-                                  dropdownColor: const Color(0xFFF5EBD9),
-                                  iconEnabledColor: const Color(0xFF363434),
-                                  style: const TextStyle(
-                                    color: Color(0xFF363434),
-                                    fontSize: 13,
-                                  ),
-                                  hint: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.circle,
-                                        color: Colors.grey.shade400,
-                                        size: 10,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        'Belum ada profil bayi yang aktif',
-                                        style: TextStyle(
-                                          color: Colors.grey.shade600,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  selectedItemBuilder: (context) {
-                                    return babies.map((baby) {
-                                      return Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.circle,
-                                            color: Colors.greenAccent,
-                                            size: 10,
-                                          ),
-                                          const SizedBox(width: 6),
-                                          Text(
-                                            'Profil aktif: ${baby.fullName} · ${baby.ageInMonths} bulan',
-                                            style: const TextStyle(
-                                              color: Color(0xFF363434),
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }).toList();
-                                  },
-                                  items: babies.map((baby) {
-                                    return DropdownMenuItem<String>(
-                                      value: baby.id,
-                                      child: Text(
-                                        '${baby.fullName} · ${baby.ageInMonths} bulan',
-                                        style: const TextStyle(
-                                          color: Color(0xFF363434),
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (selectedId) {
-                                    if (selectedId != null) {
-                                      DatabaseService(
-                                        uid: widget.uid,
-                                      ).setActiveBaby(selectedId);
-                                    }
-                                  },
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Riwayat MPASI',
+                                style: TextStyle(
+                                  color: _ink,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              const SizedBox(height: 8),
+                              babies.isEmpty
+                                  ? Row(
+                                      children: [
+                                        Icon(
+                                          Icons.circle,
+                                          color: Colors.grey.shade400,
+                                          size: 10,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          'Belum ada profil bayi yang aktif',
+                                          style: TextStyle(
+                                            color: Colors.grey.shade600,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        isDense: true,
+                                        value: activeBaby?.id,
+                                        dropdownColor: const Color(0xFFF5EBD9),
+                                        iconEnabledColor: _ink,
+                                        style: const TextStyle(
+                                          color: _ink,
+                                          fontSize: 13,
+                                        ),
+                                        hint: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.circle,
+                                              color: Colors.grey.shade400,
+                                              size: 10,
+                                            ),
+                                            const SizedBox(width: 6),
+                                            Text(
+                                              'Belum ada profil bayi yang aktif',
+                                              style: TextStyle(
+                                                color: Colors.grey.shade600,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        selectedItemBuilder: (context) {
+                                          return babies.map((baby) {
+                                            return Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.circle,
+                                                  color: Colors.greenAccent,
+                                                  size: 10,
+                                                ),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  'Profil aktif: ${baby.fullName} · ${baby.ageInMonths} bulan',
+                                                  style: const TextStyle(
+                                                    color: _ink,
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          }).toList();
+                                        },
+                                        items: babies.map((baby) {
+                                          return DropdownMenuItem<String>(
+                                            value: baby.id,
+                                            child: Text(
+                                              '${baby.fullName} · ${baby.ageInMonths} bulan',
+                                              style: const TextStyle(
+                                                color: _ink,
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (selectedId) {
+                                          if (selectedId != null) {
+                                            DatabaseService(
+                                              uid: widget.uid,
+                                            ).setActiveBaby(selectedId);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                            ],
+                          ),
+                        ),
+                        if (activeBaby != null)
+                          GestureDetector(
+                            onTap: _jumpToToday,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                width: 48,
+                                height: 48,
+                                color: _isToday
+                                    ? _brandDark.withOpacity(0.4)
+                                    : _brandDark,
+                                child: const Icon(
+                                  Icons.today,
+                                  color: Colors.white,
+                                  size: 22,
+                                ),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
 
                   Expanded(
                     child: activeBaby == null
@@ -231,49 +308,107 @@ class _HistoryViewState extends State<_HistoryView> {
                               Padding(
                                 padding: const EdgeInsets.fromLTRB(
                                   16,
-                                  0,
+                                  16,
                                   16,
                                   0,
                                 ),
-                                child: CalendarStrip(
-                                  selectedDate: _selectedDate,
-                                  onDateSelected: (date) {
-                                    setState(() {
-                                      _selectedDate = date;
-                                      _recommendation = null;
-                                    });
-                                    if (_lastFetchedBaby != null) {
-                                      _fetchRecommendation(_lastFetchedBaby!);
-                                    }
-                                  },
-                                  uid: widget.uid,
-                                  babyId: activeBaby.id,
-                                  showCard: true,
-                                  showArrows: true,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    CalendarStrip(
+                                      selectedDate: _selectedDate,
+                                      onDateSelected: (date) {
+                                        setState(() {
+                                          _selectedDate = date;
+                                          _recommendation = null;
+                                        });
+                                        if (_lastFetchedBaby != null) {
+                                          _fetchRecommendation(
+                                            _lastFetchedBaby!,
+                                          );
+                                        }
+                                      },
+                                      uid: widget.uid,
+                                      babyId: activeBaby.id,
+                                      showCard: true,
+                                      showArrows: true,
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      '${_selectedDate.day} ${_monthName(_selectedDate.month)}, ${_dayName(_selectedDate.weekday)}',
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: _ink,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               const SizedBox(height: 16),
                               Expanded(
                                 child: _isLoading
-                                    ? Loading()
+                                    ? const Loading()
                                     : _error != null
                                     ? Center(
-                                        child: Text(
-                                          'Gagal memuat riwayat: $_error',
-                                          style: TextStyle(
-                                            color: Colors.red.shade400,
-                                            fontSize: 12,
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              const Icon(
+                                                Icons.error_outline,
+                                                color: Colors.red,
+                                                size: 48,
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                'Gagal memuat riwayat',
+                                                style: TextStyle(
+                                                  color: Colors.grey.shade600,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: _brand,
+                                                  foregroundColor: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  if (_lastFetchedBaby !=
+                                                      null) {
+                                                    _fetchRecommendation(
+                                                      _lastFetchedBaby!,
+                                                    );
+                                                  }
+                                                },
+                                                child: const Text('Coba Lagi'),
+                                              ),
+                                            ],
                                           ),
-                                          textAlign: TextAlign.center,
                                         ),
                                       )
                                     : _recommendation == null ||
                                           _recommendation!.meals.isEmpty
                                     ? Center(
-                                        child: Text(
-                                          'Tidak ada rencana menu untuk hari ini',
-                                          style: TextStyle(
-                                            color: Colors.grey.shade600,
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.history_toggle_off,
+                                                size: 48,
+                                                color: Colors.grey.shade400,
+                                              ),
+                                              const SizedBox(height: 12),
+                                              Text(
+                                                'Tidak ada rencana menu untuk hari ini',
+                                                style: TextStyle(
+                                                  color: Colors.grey.shade600,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       )
@@ -285,29 +420,26 @@ class _HistoryViewState extends State<_HistoryView> {
                                           100,
                                         ),
                                         children: [
-                                          Card(
-                                            color: const Color(0xFFFDF8F2),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              side: const BorderSide(
-                                                color: Color(0xFFE8D5B7),
-                                                width: 1.5,
+                                          _CompletionSummaryCard(
+                                            meals: _recommendation!.meals,
+                                            brand: _brand,
+                                            ink: _ink,
+                                            cardBg: _cardBg,
+                                            cardBorder: _cardBorder,
+                                          ),
+                                          const SizedBox(height: 12),
+                                          ..._recommendation!.meals.map(
+                                            (meal) => Padding(
+                                              padding: const EdgeInsets.only(
+                                                bottom: 10,
                                               ),
-                                            ),
-                                            elevation: 2,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(16),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: _recommendation!.meals
-                                                    .map(
-                                                      (meal) => _HistoryMealRow(
-                                                        meal: meal,
-                                                      ),
-                                                    )
-                                                    .toList(),
+                                              child: _HistoryMealCard(
+                                                meal: meal,
+                                                brand: _brand,
+                                                brandDark: _brandDark,
+                                                ink: _ink,
+                                                cardBg: _cardBg,
+                                                cardBorder: _cardBorder,
                                               ),
                                             ),
                                           ),
@@ -331,43 +463,193 @@ class _HistoryViewState extends State<_HistoryView> {
       },
     );
   }
-
-  // END CHANGE
 }
 
-class _HistoryMealRow extends StatelessWidget {
+/// Unique-to-History element: a completion summary, echoing the visual
+/// weight of Home's "Kelengkapan Gizi" / tips cards, but built around
+/// how much of the day's plan was actually followed.
+class _CompletionSummaryCard extends StatelessWidget {
+  final List<Meal> meals;
+  final Color brand;
+  final Color ink;
+  final Color cardBg;
+  final Color cardBorder;
+
+  const _CompletionSummaryCard({
+    required this.meals,
+    required this.brand,
+    required this.ink,
+    required this.cardBg,
+    required this.cardBorder,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final total = meals.length;
+    final eaten = meals.where((m) => m.isEaten).length;
+    final ratio = total == 0 ? 0.0 : eaten / total;
+    final allDone = total > 0 && eaten == total;
+
+    return Card(
+      color: cardBg,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: cardBorder, width: 1.5),
+      ),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  allDone ? '🎉 Semua menu selesai' : 'Ringkasan hari ini',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: ink,
+                  ),
+                ),
+                Text(
+                  '$eaten / $total menu',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: brand,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: LinearProgressIndicator(
+                value: ratio,
+                minHeight: 8,
+                backgroundColor: cardBorder.withOpacity(0.5),
+                valueColor: AlwaysStoppedAnimation<Color>(brand),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Meal row rebuilt as its own card, matching the icon-chip + type-badge
+/// language of Recommendation's timeline cards, but read-only and dimmed
+/// for anything not marked as eaten — appropriate for a look-back view.
+class _HistoryMealCard extends StatelessWidget {
   final Meal meal;
-  const _HistoryMealRow({required this.meal});
+  final Color brand;
+  final Color brandDark;
+  final Color ink;
+  final Color cardBg;
+  final Color cardBorder;
+
+  const _HistoryMealCard({
+    required this.meal,
+    required this.brand,
+    required this.brandDark,
+    required this.ink,
+    required this.cardBg,
+    required this.cardBorder,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isAsi = meal.type == 'ASI';
     final label = isAsi ? 'Air Susu Ibu' : (meal.name ?? '');
 
-    // marked (isEaten) meals are highlighted, unmarked are dimmed
-    final opacity = meal.isEaten ? 1.0 : 0.4;
+    final IconData mealIcon = isAsi
+        ? Icons.water_drop
+        : meal.type.toLowerCase() == 'snack'
+        ? Icons.cookie
+        : Icons.restaurant;
 
     return Opacity(
-      opacity: opacity,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          children: [
-            Icon(
-              meal.isEaten ? Icons.check_circle : Icons.radio_button_unchecked,
-              size: 16,
-              color: meal.isEaten
-                  ? const Color.fromARGB(255, 144, 121, 84)
-                  : Colors.grey.shade500,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                '${meal.time} · $label',
-                style: const TextStyle(fontSize: 13, color: Color(0xFF363434)),
+      opacity: meal.isEaten ? 1.0 : 0.55,
+      child: Card(
+        color: cardBg,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: cardBorder, width: 1.5),
+        ),
+        elevation: 2,
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  color: brandDark,
+                  child: Icon(mealIcon, color: Colors.white, size: 20),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: brand,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            meal.type,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          meal.time,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      label,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: ink,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                meal.isEaten
+                    ? Icons.check_circle
+                    : Icons.radio_button_unchecked,
+                size: 20,
+                color: meal.isEaten ? brand : Colors.grey.shade400,
+              ),
+            ],
+          ),
         ),
       ),
     );
