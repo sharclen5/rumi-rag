@@ -44,6 +44,8 @@ dependencies:
   http: ^1.6.0
   introduction_screen: ^4.0.0
   showcaseview: ^5.1.0
+  flutter_native_splash: ^2.4.7
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -58,6 +60,25 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_native_splash:
+  color: "#F5ECDB"
+  image: assets/images/logo.png
+  android: true
+  android_12:
+    color: "#F5ECDB"
+    image: assets/images/logo.png
+  ios: true
+  web: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo.png"
+
+  # Optional
+  remove_alpha_ios: true
+  min_sdk_android: 21
 
 # The following section is specific to Flutter packages.
 flutter:

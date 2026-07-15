@@ -48,7 +48,15 @@ class _HistoryViewState extends State<_HistoryView> {
   static const _cardBorder = Color(0xFFE8D5B7);
 
   String _dayName(int weekday) {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const days = [
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jum'at",
+      "Sabtu",
+      "Minggu",
+    ];
     return days[weekday - 1];
   }
 
@@ -335,7 +343,7 @@ class _HistoryViewState extends State<_HistoryView> {
                                     ),
                                     const SizedBox(height: 12),
                                     Text(
-                                      '${_selectedDate.day} ${_monthName(_selectedDate.month)}, ${_dayName(_selectedDate.weekday)}',
+                                      '${_dayName(_selectedDate.weekday)}, ${_selectedDate.day} ${_monthName(_selectedDate.month)}',
                                       style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w600,

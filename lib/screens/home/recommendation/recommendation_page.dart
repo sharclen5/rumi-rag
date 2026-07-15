@@ -46,7 +46,15 @@ class _RecommendationViewState extends State<_RecommendationView> {
   DateTime _selectedDate = DateTime.now();
 
   String _dayName(int weekday) {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const days = [
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jum'at",
+      "Sabtu",
+      "Minggu",
+    ];
     return days[weekday - 1];
   }
 
@@ -307,7 +315,7 @@ class _RecommendationViewState extends State<_RecommendationView> {
                               context: context,
                               meals: _recommendation!.meals,
                               dateLabel:
-                                  '${_selectedDate.day} ${_monthName(_selectedDate.month)}, ${_dayName(_selectedDate.weekday)}',
+                                  '${_dayName(_selectedDate.weekday)}, ${_selectedDate.day} ${_monthName(_selectedDate.month)}',
                               uid: widget.uid,
                               babyId: _lastFetchedBaby!.id,
                               dateStr: _selectedDateStr,
@@ -360,7 +368,7 @@ class _RecommendationViewState extends State<_RecommendationView> {
                           ),
                         const SizedBox(height: 12),
                         Text(
-                          '${_selectedDate.day} ${_monthName(_selectedDate.month)}, ${_dayName(_selectedDate.weekday)}',
+                          '${_dayName(_selectedDate.weekday)}, ${_selectedDate.day} ${_monthName(_selectedDate.month)}',
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,

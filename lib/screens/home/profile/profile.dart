@@ -105,9 +105,7 @@ class ProfilePage extends StatelessWidget {
                     icon: Icon(Icons.help, size: 22),
                     press: () => Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => const TutorialMark(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const TutorialMark()),
                     ),
                   ),
                   ProfileMenu(
