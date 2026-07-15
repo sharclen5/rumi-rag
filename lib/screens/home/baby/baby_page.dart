@@ -60,7 +60,7 @@ class BabyPage extends StatelessWidget {
             ),
             extendBody: true,
             bottomNavigationBar: BottomNavBar(
-              currentIndex: 3,
+              currentIndex: 4,
               onTap: (index) {
                 Navigator.pop(context);
                 onTabTapped(index);
