@@ -128,12 +128,16 @@ class NutritionCard extends StatelessWidget {
                   color: Color.fromARGB(255, 144, 121, 84),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  'Kelengkapan Gizi $babyName Hari Ini',
-                  style: const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF363434),
+                Expanded(
+                  child: Text(
+                    'Kelengkapan Gizi $babyName Hari Ini',
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF363434),
+                    ),
                   ),
                 ),
               ],

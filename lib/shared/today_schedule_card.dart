@@ -105,37 +105,19 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
           children: [
             // header row
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
-                  children: [
-                    Icon(
-                      Icons.restaurant_menu,
-                      size: 18,
-                      color: Color.fromARGB(255, 144, 121, 84),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Jadwal MPASI Hari Ini',
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF363434),
-                      ),
-                    ),
-                  ],
+                const Icon(
+                  Icons.restaurant_menu,
+                  size: 18,
+                  color: Color.fromARGB(255, 144, 121, 84),
                 ),
-                GestureDetector(
-                  onTap: () => widget.onTabTapped(
-                    1,
-                  ), // CHANGED: index callback, not Navigator.push
-                  child: const Text(
-                    'Lihat Jadwal →',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Color.fromARGB(255, 144, 121, 84),
-                    ),
+                SizedBox(width: 8),
+                const Text(
+                  'Jadwal MPASI Hari Ini',
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF363434),
                   ),
                 ),
               ],
@@ -202,6 +184,33 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
                   }).toList(),
                 );
               },
+            ),
+
+            const SizedBox(height: 8), // ADDED
+            // ADDED: "Lihat Jadwal" moved here, below the last meal row, full-width and tappable
+            GestureDetector(
+              onTap: () => widget.onTabTapped(1),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: const Color(0xFFE8D5B7),
+                    width: 1.2,
+                  ),
+                ),
+                child: const Text(
+                  'Lihat Jadwal Lengkap →',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Color.fromARGB(255, 144, 121, 84),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

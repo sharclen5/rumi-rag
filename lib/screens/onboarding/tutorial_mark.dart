@@ -15,7 +15,8 @@ import 'package:rumi/shared/tour_keys.dart';
 // submits, or via Profile's "Tutorial" replay button.
 
 class TutorialMark extends StatefulWidget {
-  const TutorialMark({super.key});
+  final VoidCallback? onFinished;
+  const TutorialMark({super.key, this.onFinished});
 
   @override
   State<TutorialMark> createState() => _TutorialMarkState();
@@ -730,7 +731,12 @@ class _TutorialMarkState extends State<TutorialMark> {
                 title: 'Profil',
                 description:
                     'Kelola detail akun, data bayi, dan pengaturan lainnya di sini',
-                onTargetClick: () => Navigator.of(context).pop(),
+                onTargetClick: () {
+                  _finishTutorial();
+                },
+                onToolTipClick: () {
+                  _finishTutorial();
+                },
                 disposeOnTap: true,
                 disableBarrierInteraction: true,
                 child: Column(
@@ -748,6 +754,12 @@ class _TutorialMarkState extends State<TutorialMark> {
         ),
       ),
     );
+  }
+
+  void _finishTutorial() {
+    Future.delayed(const Duration(milliseconds: 300), () {
+      if (mounted) Navigator.of(context).pop();
+    });
   }
 
   // static, no-op mimic of ProfileMenu

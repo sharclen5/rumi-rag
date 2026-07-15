@@ -64,15 +64,7 @@ class _HomeState extends State<Home> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // data bayi (temporary)
-                    // if (activeBaby != null)
-                    //   BabyTile(
-                    //     baby: activeBaby,
-                    //     onDelete: () => DatabaseService(
-                    //       uid: user.uid,
-                    //     ).deleteBaby(activeBaby.id),
-                    //   ),
-                    // SizedBox(height: 16),
+
                     HomeHero(
                       profile: snapshot.data,
                       activeBaby: activeBaby,

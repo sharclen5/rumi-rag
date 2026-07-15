@@ -315,17 +315,22 @@ class _CalendarStripState extends State<CalendarStrip> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: _prevMonth,
-                child: Text(
-                  '${_monthName(prevMonth.month)} ${prevMonth.year}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: activeColor.withOpacity(0.3),
+              Expanded(
+                child: GestureDetector(
+                  onTap: _prevMonth,
+                  child: Text(
+                    '${_monthName(prevMonth.month)} ${prevMonth.year}',
+                    overflow: TextOverflow.ellipsis, // ADDED
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: activeColor.withOpacity(0.3),
+                    ),
                   ),
                 ),
               ),
+              const SizedBox(width: 8),
               Text(
                 '${_monthName(_visibleMonth.month)} ${_visibleMonth.year}',
                 style: const TextStyle(
@@ -335,14 +340,21 @@ class _CalendarStripState extends State<CalendarStrip> {
                 ),
               ),
 
-              GestureDetector(
-                onTap: _nextMonth,
-                child: Text(
-                  '${_monthName(nextMonth.month)} ${nextMonth.year}',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: activeColor.withOpacity(0.3),
+              const SizedBox(width: 8),
+
+              Expanded(
+                child: GestureDetector(
+                  onTap: _nextMonth,
+                  child: Text(
+                    '${_monthName(nextMonth.month)} ${nextMonth.year}',
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: activeColor.withOpacity(0.3),
+                    ),
                   ),
                 ),
               ),
