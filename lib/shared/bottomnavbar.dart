@@ -138,20 +138,15 @@ class BottomNavBar extends StatelessWidget {
                     onAddRecommendationTap!();
                     return;
                   }
-                  showModalBottomSheet(
+                  showDialog(
                     context: context,
-                    isScrollControlled: true,
-                    builder: (outerContext) => Padding(
-                      padding: EdgeInsets.only(
-                        top: 20,
-                        left: 20,
-                        right: 20,
-                        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-                      ),
-                      child: Provider<List<Baby>?>.value(
-                        value: Provider.of<List<Baby>?>(context, listen: false),
-                        child: const AddRecommendation(),
-                      ),
+                    barrierColor: Colors.black.withOpacity(0.4),
+                    builder: (dialogContext) => Provider<List<Baby>?>.value(
+                      value: Provider.of<List<Baby>?>(
+                        context,
+                        listen: false,
+                      ), // outer context
+                      child: const AddRecommendation(),
                     ),
                   );
                 },

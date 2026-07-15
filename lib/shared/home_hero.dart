@@ -71,6 +71,8 @@ class HomeHero extends StatelessWidget {
             child: DropdownButton<String>(
               value: activeBaby?.id,
               isExpanded: true,
+              dropdownColor: const Color(0xFFFDF8F2),
+              style: const TextStyle(color: Color(0xFF363434), fontSize: 14),
               items: babies.map((baby) {
                 return DropdownMenuItem(
                   value: baby.id,
