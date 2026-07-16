@@ -223,14 +223,6 @@ class DatabaseService {
   CollectionReference get recommendationCollection =>
       userDocument.collection('recommendations');
 
-  // save recommendation to Firestore
-  Future saveRecommendation(Recommendation recommendation) async {
-    final docId = '${recommendation.babyId}_${recommendation.date}';
-    return await recommendationCollection
-        .doc(docId)
-        .set(recommendation.toJson());
-  }
-
   // get recommendation for a specific baby and date
   Future<Recommendation?> getRecommendation(String babyId, String date) async {
     final docId = '${babyId}_${date}';

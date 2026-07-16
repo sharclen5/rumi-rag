@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "557373426163",
+    "firebase_url": "https://rumi-skripsi-default-rtdb.firebaseio.com",
     "project_id": "rumi-skripsi",
     "storage_bucket": "rumi-skripsi.firebasestorage.app"
   },
@@ -10,6 +11,35 @@
         "mobilesdk_app_id": "1:557373426163:android:9f19da1c4cb37f042c6a86",
         "android_client_info": {
           "package_name": "com.skripsi.rumi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "557373426163-2duorij4gcm3l714t62bhsca4bjbifge.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPsRVhdqTduwxpi6u-vjwx1u9uwUf6MbI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "557373426163-2duorij4gcm3l714t62bhsca4bjbifge.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:557373426163:android:00f680801b70f8b12c6a86",
+        "android_client_info": {
+          "package_name": "com.skripsi.rumi.rag"
         }
       },
       "oauth_client": [

@@ -254,6 +254,7 @@ def get_weekly_recommendation(
             'date': current_date,
             'meals': parsed['meals'],
             'created_at': date.today().isoformat(),
+            'source': 'rag',
         })
 
         print(f'[gemini_service] Day {i+1}/{days} saved to Firestore: {doc_id}')
