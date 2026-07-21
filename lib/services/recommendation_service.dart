@@ -18,7 +18,7 @@ class PlanAlreadyExistsException implements Exception {
 
 class RecommendationService {
   static const String _baseUrl =
-      'https://rumi-backend.fastapicloud.dev'; //tes deploy
+      'https://rumi-rag.fastapicloud.dev'; //tes deploy
 
   Future<void> getWeeklyRecommendation({
     // return type changed

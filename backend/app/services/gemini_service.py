@@ -5,12 +5,16 @@ import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import date, timedelta
-import time
-from google.genai.errors import ServerError, ClientError
+from langchain_google_genai import ChatGoogleGenerativeAI
+from .prompts import MPASI_PROMPT
+# CHANGED: relative import untuk kerja di dalam package (uvicorn), fallback ke sibling import kalau dijalanin standalone
+try:
+    from .retriever import retriever
+except ImportError:
+    from retriever import retriever
+# END CHANGED
 
 load_dotenv()  # loads GEMINI_API_KEY from .env
-
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))  # authenticates with Gemini
 
 # initialize Firebase Admin SDK for backend Firestore writes
 if not firebase_admin._apps:
@@ -50,120 +54,75 @@ def _get_single_day(
         medical_history: str | None,
         previous_meals: list, 
         date: str,
+        context_block: str,
         ) -> str:
     
+    # hitung semua bagian conditional sebagai string biasa dulu,
+    # soalnya PromptTemplate ga bisa inline if/else
+    premature_note = '(bayi prematur)' if is_premature else ''
+    asi_status = 'Ya' if is_actively_breastfed else 'Tidak'
+    tooth_count_display = str(tooth_count) if tooth_count is not None else 'Tidak diketahui'
+    allergies_display = ', '.join(allergies) if allergies else 'Tidak ada'
+    medical_history_display = medical_history if medical_history else 'Tidak ada'
+    previous_meals_display = ', '.join(previous_meals) if previous_meals else 'Belum ada'
+    asi_instruction = (
+        'Sertakan slot ASI sesuai kebutuhan bayi.' if is_actively_breastfed
+        else 'Bayi tidak lagi menyusu ASI, jangan sertakan slot ASI.'
+    )
+    tooth_instruction = (
+        'Sesuaikan tekstur makanan dengan jumlah gigi bayi.' if tooth_count is not None else ''
+    )
     
-# build the prompt with all baby context
-    prompt = f"""
-    Kamu adalah ahli gizi bayi. Berikan rekomendasi menu MPASI untuk hari ini dalam format JSON.
+#isi template pake .format() bukan f-string manual lagi
+    prompt = MPASI_PROMPT.format(
+        age_in_months=age_in_months,
+        corrected_age_in_months=corrected_age_in_months,
+        premature_note=premature_note,
+        weight=weight,
+        height=height,
+        gender=gender,
+        asi_status=asi_status,
+        tooth_count_display=tooth_count_display,
+        allergies_display=allergies_display,
+        medical_history_display=medical_history_display,
+        previous_meals_display=previous_meals_display,
+        date=date,
+        asi_instruction=asi_instruction,
+        tooth_instruction=tooth_instruction,
+        context_block=context_block,
+    )
+    
 
-    Data bayi:
-    - Usia kronologis: {age_in_months} bulan
-    - Usia koreksi: {corrected_age_in_months} bulan {'(bayi prematur)' if is_premature else ''}
-    - Berat badan: {weight} kg
-    - Tinggi badan: {height} cm
-    - Jenis kelamin: {gender}
-    - Masih menyusu ASI: {'Ya' if is_actively_breastfed else 'Tidak'}
-    - Jumlah gigi: {tooth_count if tooth_count is not None else 'Tidak diketahui'}
-    - Alergi: {', '.join(allergies) if allergies else 'Tidak ada'}
-    - Riwayat medis: {medical_history if medical_history else 'Tidak ada'}
-    - Menu sebelumnya: {', '.join(previous_meals) if previous_meals else 'Belum ada'}
-    - Tanggal: {date}
+    # CHANGED: retry + fallback pake LangChain .with_retry() dan .with_fallbacks(),
+    # gantiin nested for-loop manual yang lama. Primary = 3.1-flash-lite (cepat/murah),
+    # fallback = 3-flash (lebih capable, dipanggil kalau primary gagal terus setelah 5x retry)
+    primary_llm = ChatGoogleGenerativeAI(
+        model="gemini-3.1-flash-lite",
+        google_api_key=os.getenv("GEMINI_API_KEY"),
+    ).with_retry(stop_after_attempt=5)
 
-    Gunakan usia koreksi sebagai acuan utama untuk menentukan jadwal dan tekstur MPASI.
-    {'Sertakan slot ASI sesuai kebutuhan bayi.' if is_actively_breastfed else 'Bayi tidak lagi menyusu ASI, jangan sertakan slot ASI.'}
-    {'Sesuaikan tekstur makanan dengan jumlah gigi bayi.' if tooth_count is not None else ''}
+    fallback_llm = ChatGoogleGenerativeAI(
+        model="gemini-3-flash",
+        google_api_key=os.getenv("GEMINI_API_KEY"),
+    ).with_retry(stop_after_attempt=5)
 
-    Tentukan jadwal makan yang sesuai berdasarkan usia koreksi bayi sesuai panduan WHO dan IDAI.
+    llm = primary_llm.with_fallbacks([fallback_llm])
+    response = llm.invoke(prompt)
+    # END CHANGED
+    if isinstance(response.content, list):
+        response_text = "".join(
+            block.get("text", "") if isinstance(block, dict) else str(block)
+            for block in response.content
+        )
+    else:
+        response_text = response.content
+    # END CHANGED
+    # END CHANGED
 
-    PENTING - Ketersediaan bahan:
-    Gunakan HANYA bahan makanan yang mudah ditemukan di pasar tradisional, warung,
-    atau supermarket umum di Indonesia, dan tidak hanya di perkotaan, 
-    tetapi juga di pedesaan. Prioritaskan bahan lokal, musiman, dan terjangkau 
-    secara ekonomi untuk rumah tangga Indonesia pada umumnya.
-    Hindari bahan impor atau sulit didapat (contoh yang HARUS dihindari: quinoa,
-    chia seed, kale, blueberry, keju impor khusus). Sebagai gantinya gunakan
-    padanan lokal (contoh: beras/beras merah, biji selasih atau tanpa substitusi,
-    bayam/kangkung, pisang/pepaya, tempe/tahu untuk protein nabati).
-    Metode masak juga harus realistis untuk dapur rumahan (kukus, rebus, tim),
-    tanpa alat khusus seperti oven atau blender mahal, kecuali blender/saringan
-    biasa yang umum dimiliki.
+    if not response_text or not response_text.strip():
+        raise RuntimeError("Gemini returned empty response")
 
-    PENTING - Nama menu:
-    Buat nama menu singkat dan sederhana, maksimal 3-4 kata, seperti nama masakan
-    sehari-hari yang biasa didengar orang tua (contoh: "Bubur Ayam Wortel",
-    "Tim Tahu Bayam", "Nasi Tim Ikan"). JANGAN gunakan nama yang panjang atau
-    terlalu deskriptif (contoh yang HARUS dihindari: "Bubur Saring Ayam Wortel
-    dengan Tambahan Minyak Zaitun untuk Tekstur Lembut").
-
-    Kembalikan HANYA JSON valid tanpa teks lain, tanpa markdown, tanpa backtick.
-    Format JSON:
-    {{
-      "meals": [
-        {{
-          "time": "08.00",
-          "type": "Sarapan",
-          "name": "nama menu",
-          "ingredients": ["bahan 1", "bahan 2"],
-          "steps": ["langkah 1", "langkah 2"],
-          "reason": "alasan pemilihan menu",
-          "foodGroup": ["karbohidrat", "protein_hewani"]
-        }},
-        {{
-          "time": "06.00",
-          "type": "ASI",
-          "name": null,
-          "ingredients": null,
-          "steps": null,
-          "reason": null,
-          "foodGroup": null
-        }}
-      ]
-    }}
-
-    Type hanya boleh: "ASI", "Sarapan", "Makan Siang", "Makan Malam", atau "Snack".
-
-    # ADDED: foodGroup tagging rules
-    foodGroup harus berupa array berisi satu atau lebih dari nilai berikut
-    (gunakan HANYA nilai ini, tulis dalam bahasa Inggris/snake_case persis seperti contoh):
-    "karbohidrat", "protein_hewani", "protein_nabati", "sayuran", "buah", "lemak_tambahan".
-    Isi foodGroup sesuai kandungan nyata pada menu (boleh lebih dari satu jika menu campuran,
-    misal tim ayam wortel = ["karbohidrat", "protein_hewani", "sayuran"]).
-    Untuk slot dengan type "ASI", foodGroup harus null.
-    # END ADDED
-    """
-
-    # CHANGED: retry with exponential backoff, fallback to secondary model on repeated failure
-    models_to_try = ["models/gemini-2.5-flash-lite", "models/gemini-2.5-flash"]
-    max_retries_per_model = 3
-    last_error = None
-    response = None
-
-    for model_name in models_to_try:
-        for attempt in range(max_retries_per_model):
-            try:
-                response = client.models.generate_content(
-                    model=model_name,
-                    contents=prompt,
-                )
-                break  # success, exit retry loop
-            except (ServerError, ClientError) as e:
-                last_error = e
-                wait_time = 2 ** attempt  # 1s, 2s, 4s
-                print(f"[gemini_service] {model_name} attempt {attempt+1} failed ({e}), retrying in {wait_time}s...")
-                time.sleep(wait_time)
-        if response is not None:
-            break  # success, exit model loop too
-
-    if response is None:
-        raise RuntimeError(f"All models exhausted retries. Last error: {last_error}")
-
-    if not response.text or not response.text.strip():
-        candidate = response.candidates[0] if response.candidates else None
-        finish_reason = getattr(candidate, "finish_reason", "UNKNOWN") if candidate else "NO_CANDIDATE"
-        raise RuntimeError(f"Gemini returned empty response (finish_reason={finish_reason})")
-
-    return _clean_json_text(response.text)
+    return _clean_json_text(response_text)
 
  # ADDED: allowed foodGroup values, kept in sync with prompt enum
 ALLOWED_FOOD_GROUPS = {
@@ -217,6 +176,25 @@ def get_weekly_recommendation(
         start_date: str,
         days: int = 7,
         ) -> list:
+    
+    # retrieval sekali aja di sini, bukan tiap hari — soalnya profil bayi
+    # (usia koreksi/alergi/gigi) ga berubah dalam satu minggu, jadi query-nya bakal sama terus
+    query_parts = [f"MPASI untuk bayi usia {corrected_age_in_months} bulan"]
+    if allergies:
+        query_parts.append(f"dengan alergi {', '.join(allergies)}")
+    if tooth_count is not None:
+        query_parts.append(f"jumlah gigi {tooth_count}")
+    retrieval_query = " ".join(query_parts)
+
+    # CHANGED: retriever.py sekarang exposes LangChain retriever object, dipanggil pake .invoke()
+    # balikin list of Document (pake .page_content, bukan ['text']), bukan list of dict lagi
+    retrieved_docs = retriever.invoke(retrieval_query)
+    context_block = "\n\n".join(
+        f"[Sumber: {doc.metadata.get('source', 'unknown')}]\n{doc.page_content}"
+        for doc in retrieved_docs
+    )
+    # END CHANGED
+    # END ADDED
 
     results = []
     previous_meals = []
@@ -239,6 +217,7 @@ def get_weekly_recommendation(
             medical_history=medical_history,
             previous_meals=previous_meals,
             date=current_date,
+            context_block=context_block,
         )
 
         parsed = json.loads(raw)

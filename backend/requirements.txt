@@ -4,3 +4,8 @@ google-genai
 python-dotenv
 pydantic
 firebase-admin
+chromadb
+langchain
+langchain-google-genai
+langchain-chroma
+langchain-core
