@@ -7,6 +7,8 @@ import 'package:rumi/shared/nutrition_card.dart';
 import 'package:rumi/shared/today_schedule_card.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:rumi/shared/tour_keys.dart';
+import 'package:material_symbols_icons/symbols.dart';
+import 'package:rumi/shared/rag_info.dart';
 
 // Dedicated, self-contained coach mark tour page. Entirely fake data, no
 // Firestore, no real navigation — fakes its own "current tab" switching via
@@ -314,7 +316,7 @@ class _TutorialMarkState extends State<TutorialMark> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Column(
@@ -340,10 +342,65 @@ class _TutorialMarkState extends State<TutorialMark> {
                 ),
               ),
               const SizedBox(width: 12),
-              Image.asset('assets/images/logo_tp.png', height: 80),
+              // ADDED: "With RAG" badge, matches real HomeHero — floats
+              // below the logo via Stack/Positioned so it doesn't add to
+              // the Row's height
+              Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.topCenter,
+                children: [
+                  Image.asset('assets/images/logo_tp.png', height: 80),
+                  Positioned(
+                    bottom: -30,
+                    child: GestureDetector(
+                      onTap: () => showRagInfo(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF363434),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Symbols.network_intel_node,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              'With RAG',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-          const SizedBox(height: 5),
+          // CHANGED: increased from 5 to 24 to make room for the badge
+          // floating below the logo (matches real HomeHero)
+          const SizedBox(height: 24),
 
           // wrapped dropdown in Showcase — static mimic of HomeHero's
           // DropdownButton, non-interactive here same as before
