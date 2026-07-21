@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rumi/models/baby.dart';
 import 'package:rumi/models/user.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import 'package:rumi/shared/rag_info.dart';
 
 class HomeHero extends StatelessWidget {
   final UserProfile? profile;
@@ -44,7 +45,7 @@ class HomeHero extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
                 child: Column(
@@ -70,58 +71,66 @@ class HomeHero extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              // CHANGED: wrapped logo in a Column to stack the RAG badge below it
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              // CHANGED: badge is now a Positioned overlay on the logo (Stack), not a Column sibling — keeps Row height unchanged
+              Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.topCenter,
                 children: [
                   Image.asset('assets/images/logo_tp.png', height: 80),
-                  const SizedBox(height: 4),
-                  // ADDED: "With RAG" badge, sits directly under the logo
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF363434),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.15),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
+
+                  // ADDED: "With RAG" badge, floats below the logo without adding to Row height
+                  Positioned(
+                    bottom: -30,
+                    child: GestureDetector(
+                      onTap: () => showRagInfo(context),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
                         ),
-                      ],
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Symbols.network_intel_node,
-                          size: 16,
-                          color: Colors.white,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF363434),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
                         ),
-                        SizedBox(width: 4),
-                        Text(
-                          'With RAG',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.5,
-                          ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Symbols.network_intel_node,
+                              size: 16,
+                              color: Colors.white,
+                            ),
+                            SizedBox(width: 4),
+                            Text(
+                              'With RAG',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                  // END CHANGE
                 ],
               ),
               // END CHANGE
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(
+            height: 24,
+          ), // CHANGED: increased from 12 to make room for the badge floating below the logo
 
           Text(
             'Semoga hari ini menyenangkan bersama si kecil.',
