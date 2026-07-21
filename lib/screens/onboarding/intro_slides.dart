@@ -22,8 +22,8 @@ class IntroSlides extends StatelessWidget {
           image: Center(
             child: Image.asset(
               'assets/images/logo.png',
-              width: 400,
-              height: 400,
+              width: 350,
+              height: 350,
               fit: BoxFit.cover,
             ),
           ),
@@ -46,7 +46,7 @@ class IntroSlides extends StatelessWidget {
             // ADDED: placeholder icon, ganti jadi Image.asset(...) kalo illustrationnya udah ada
             child: Icon(
               Icons.restaurant_menu,
-              size: 120,
+              size: 200,
               color: const Color.fromARGB(255, 144, 121, 84),
             ),
           ),

@@ -64,7 +64,6 @@ class _HomeState extends State<Home> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     HomeHero(
                       profile: snapshot.data,
                       activeBaby: activeBaby,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rumi/models/baby.dart';
 import 'package:rumi/models/user.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class HomeHero extends StatelessWidget {
   final UserProfile? profile;
@@ -69,10 +70,57 @@ class HomeHero extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              Image.asset('assets/images/logo_tp.png', height: 80),
+              // CHANGED: wrapped logo in a Column to stack the RAG badge below it
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/logo_tp.png', height: 80),
+                  const SizedBox(height: 4),
+                  // ADDED: "With RAG" badge, sits directly under the logo
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF363434),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Symbols.network_intel_node,
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          'With RAG',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // END CHANGE
+                ],
+              ),
+              // END CHANGE
             ],
           ),
-          // END CHANGE
           const SizedBox(height: 12),
 
           Text(
