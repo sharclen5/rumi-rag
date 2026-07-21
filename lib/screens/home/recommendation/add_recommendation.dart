@@ -29,7 +29,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
   Stream<QuerySnapshot>? _progressStream;
   int _totalDays = 7;
 
-  // only '1 Minggu' is actually usable right now 
+  // only '1 Minggu' is actually usable right now
   String _selectedDuration = '1 Minggu';
   final List<Map<String, dynamic>> _durationOptions = const [
     {'label': '1 Minggu', 'days': 7, 'available': true},
@@ -93,8 +93,9 @@ class _AddRecommendationState extends State<AddRecommendation> {
       final now = DateTime.now();
       final startDate = _formatDate(now);
 
-      final allergyNames =
-          baby.allergyIds.map((id) => _allergyMap[id] ?? id).toList();
+      final allergyNames = baby.allergyIds
+          .map((id) => _allergyMap[id] ?? id)
+          .toList();
 
       final days = switch (_selectedDuration) {
         '1 Minggu' => 7,
@@ -146,9 +147,9 @@ class _AddRecommendationState extends State<AddRecommendation> {
       if (mounted) Navigator.pop(context);
     } on PlanAlreadyExistsException catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(e.message)));
         Navigator.pop(context);
       }
     } catch (e) {
@@ -264,8 +265,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
                         hint: 'Opsional',
                       ),
                       maxLines: 3,
-                      onChanged: (val) =>
-                          setState(() => _currentNotes = val),
+                      onChanged: (val) => setState(() => _currentNotes = val),
                     ),
                     const SizedBox(height: 16),
 
@@ -377,24 +377,27 @@ class _AddRecommendationState extends State<AddRecommendation> {
             runSpacing: 8,
             children: [
               _infoRow(Icons.cake_outlined, ageLabel),
-              _infoRow(
-                Icons.monitor_weight_outlined,
-                '${baby.weight} kg',
-              ),
+              _infoRow(Icons.monitor_weight_outlined, '${baby.weight} kg'),
               _infoRow(Icons.height, '${baby.height} cm'),
               _infoRow(
                 Icons.child_care,
                 baby.isActivelyBreastfed ? 'Masih ASI' : 'Tidak ASI',
               ),
               if (baby.toothCount != null)
-                _infoRow(Icons.sentiment_satisfied_alt, '${baby.toothCount} gigi'),
+                _infoRow(
+                  Icons.sentiment_satisfied_alt,
+                  '${baby.toothCount} gigi',
+                ),
             ],
           ),
           if (baby.medicalHistory != null &&
               baby.medicalHistory!.isNotEmpty) ...[
             const SizedBox(height: 10),
-            _infoRow(Icons.medical_information_outlined,
-                baby.medicalHistory!, wrapText: true),
+            _infoRow(
+              Icons.medical_information_outlined,
+              baby.medicalHistory!,
+              wrapText: true,
+            ),
           ],
           if (baby.allergyIds.isNotEmpty) ...[
             const SizedBox(height: 10),
@@ -417,8 +420,11 @@ class _AddRecommendationState extends State<AddRecommendation> {
                         side: BorderSide(color: Colors.amber.shade200),
                         visualDensity: VisualDensity.compact,
                         padding: EdgeInsets.zero,
-                        avatar: const Icon(Icons.warning_amber_rounded,
-                            size: 14, color: Colors.orange),
+                        avatar: const Icon(
+                          Icons.warning_amber_rounded,
+                          size: 14,
+                          color: Colors.orange,
+                        ),
                       );
                     }).toList(),
                   ),
@@ -460,10 +466,10 @@ class _AddRecommendationState extends State<AddRecommendation> {
         return GestureDetector(
           onTap: !available
               ? () => ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Durasi ini akan hadir di update berikutnya'),
-                    ),
-                  )
+                  const SnackBar(
+                    content: Text('Durasi ini akan hadir di update berikutnya'),
+                  ),
+                )
               : () => setState(() => _selectedDuration = label),
           child: Opacity(
             opacity: available ? 1.0 : 0.5,
@@ -485,15 +491,18 @@ class _AddRecommendationState extends State<AddRecommendation> {
                     style: TextStyle(
                       fontSize: 12.5,
                       color: isSelected ? _brand : _text,
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                   ),
                   if (!available) ...[
                     const SizedBox(width: 5),
                     Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 5,
+                        vertical: 1,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade300,
                         borderRadius: BorderRadius.circular(6),
@@ -571,10 +580,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 20),
-              Loading(
-                progress: daysWritten / _totalDays,
-                message: '',
-              ),
+              Loading(progress: daysWritten / _totalDays, message: ''),
             ],
           );
         },

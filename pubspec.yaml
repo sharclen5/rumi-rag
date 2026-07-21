@@ -46,6 +46,7 @@ dependencies:
   showcaseview: ^5.1.0
   flutter_native_splash: ^2.4.7
   flutter_launcher_icons: ^0.14.4
+  material_symbols_icons: ^4.2951.0
 
 dev_dependencies:
   flutter_test:

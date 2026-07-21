@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rumi/services/auth.dart';
 import 'package:rumi/shared/loading.dart';
 import 'package:rumi/shared/constants.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class Register extends StatefulWidget {
   final VoidCallback toggleView;
@@ -43,10 +44,57 @@ class _RegisterState extends State<Register> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 1, top: 1),
-                    child: Image.asset(
-                      "assets/images/vector-3.png",
-                      width: 413,
-                      height: 457,
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Image.asset(
+                          "assets/images/vector-3.png",
+                          width: 413,
+                          height: 457,
+                        ),
+                        Positioned(
+                          top: 25,
+                          right: -75,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF363434),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.15),
+                                  blurRadius: 6,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Symbols.network_intel_node,
+                                  size: 20,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  'With RAG',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 18),
