@@ -7,12 +7,11 @@ from firebase_admin import credentials, firestore
 from datetime import date, timedelta
 from langchain_google_genai import ChatGoogleGenerativeAI
 from .prompts import MPASI_PROMPT
-# CHANGED: relative import untuk kerja di dalam package (uvicorn), fallback ke sibling import kalau dijalanin standalone
+# CHANGED: import get_retriever, bukan retriever langsung, soalnya sekarang butuh usia buat filter
 try:
-    from .retriever import retriever
+    from .retriever import get_retriever
 except ImportError:
-    from retriever import retriever
-# END CHANGED
+    from retriever import get_retriever
 
 load_dotenv()  # loads GEMINI_API_KEY from .env
 
@@ -186,15 +185,23 @@ def get_weekly_recommendation(
         query_parts.append(f"jumlah gigi {tooth_count}")
     retrieval_query = " ".join(query_parts)
 
-    # CHANGED: retriever.py sekarang exposes LangChain retriever object, dipanggil pake .invoke()
-    # balikin list of Document (pake .page_content, bukan ['text']), bukan list of dict lagi
+    # CHANGED: retriever sekarang dibuat per-request pake usia koreksi si bayi,
+    # bukan retriever statis k=5 tanpa filter usia
+    retriever = get_retriever(corrected_age_in_months)
     retrieved_docs = retriever.invoke(retrieval_query)
+
+    # ADDED (sementara buat debug): biar keliatan chunk apa aja yang ke-retrieve,
+    # jangan lupa dihapus/comment lagi kalau udah selesai ngecek
+    print(f"[DEBUG] Query: {retrieval_query}")
+    print(f"[DEBUG] Retrieved {len(retrieved_docs)} chunks:")
+    for doc in retrieved_docs:
+        print(f"  - [{doc.metadata.get('source')}] {doc.page_content[:80]}...")
+
     context_block = "\n\n".join(
         f"[Sumber: {doc.metadata.get('source', 'unknown')}]\n{doc.page_content}"
         for doc in retrieved_docs
     )
     # END CHANGED
-    # END ADDED
 
     results = []
     previous_meals = []

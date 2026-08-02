@@ -21,6 +21,7 @@ CHROMA_DB_PATH = Path(__file__).resolve().parent.parent.parent / "chroma_db"
 embeddings = GoogleGenerativeAIEmbeddings(
     model="models/gemini-embedding-001",
     google_api_key=os.getenv("GEMINI_API_KEY"),
+    task_type="RETRIEVAL_QUERY",  # ADDED: sama kayak fix di rumi-eval/retriever.py, biar konsisten dan gak gantung ke default
 )
 
 # CHANGED: tetep pake PersistentClient chromadb yang sama buat connect ke collection yang udah ada,
@@ -33,8 +34,29 @@ vectorstore = Chroma(
     embedding_function=embeddings,
 )
 
-# ADDED: expose sebagai LangChain Retriever object, biar bisa langsung disambung ke chain (LCEL) nanti di Pass 3
-retriever = vectorstore.as_retriever(search_kwargs={"k": 5})
+# CHANGED: dulu retriever di-buat sekali pas module di-load, sekarang jadi function
+# biar filter age_range bisa disesuaikan per baby, bukan k=5 generik tanpa filter
+
+def age_to_bucket(months: int) -> str:
+    # ADDED: mapping usia (bulan) ke age_range bucket yang sama kayak di metadata chunk
+    if months <= 8:
+        return "6-8bulan"
+    elif months <= 11:
+        return "9-11bulan"
+    else:
+        return "12-23bulan"
+
+def get_retriever(age_in_months: int, k: int = 5):
+    bucket = age_to_bucket(age_in_months)
+    # ADDED: filter pake $or, soalnya selain chunk yang match usia spesifik,
+    # chunk yang ditag "all" (berlaku semua usia, misal prinsip umum/WHO rec)
+    # juga tetep harus ikut kepertimbangkan
+    return vectorstore.as_retriever(
+        search_kwargs={
+            "k": k,
+            "filter": {"$or": [{"age_range": bucket}, {"age_range": "all"}]},
+        }
+    )
 
 
 # CHANGED: sanity test disesuaikan ke API baru — .invoke() balikin list of Document,

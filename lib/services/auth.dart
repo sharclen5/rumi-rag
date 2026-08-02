@@ -46,7 +46,8 @@ class AuthService {
   }
 
   // Register with email and password
-  Future<User?> registerWithEmailAndPassword(
+  Future<dynamic> registerWithEmailAndPassword(
+    // CHANGED: User? -> dynamic, biar bisa return String error
     String email,
     String firstName,
     String lastName,
@@ -58,6 +59,9 @@ class AuthService {
       firebase_auth.UserCredential result = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
       firebase_auth.User? user = result.user;
+
+      await _auth
+          .signOut(); // MOVED: logout dulu sebelum Firestore writes, biar stream ga keburu trigger navigasi
 
       // existing: parent doc for baby data
       await FirebaseFirestore.instance.collection('babies').doc(user!.uid).set({
@@ -76,11 +80,24 @@ class AuthService {
       });
 
       await _auth.signOut();
-
-      return _userFromFirebase(user);
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      // CHANGED: catch spesifik FirebaseAuthException
+      debugPrint(e.code);
+      switch (e.code) {
+        // ADDED: mapping error code Firebase ke pesan yang user-friendly
+        case 'email-already-in-use':
+          return 'Email sudah terdaftar, silakan gunakan email lain.';
+        case 'invalid-email':
+          return 'Format email tidak valid.';
+        case 'network-request-failed':
+          return 'Koneksi gagal, periksa internet kamu.';
+        default:
+          return 'Registrasi gagal: ${e.message}';
+      }
     } catch (e) {
+      // ADDED: catch-all untuk error di luar Firebase (Firestore, dll)
       debugPrint(e.toString());
-      return null;
+      return 'Terjadi kesalahan, coba lagi.';
     }
   }
 

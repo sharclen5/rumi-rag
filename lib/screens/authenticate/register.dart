@@ -5,7 +5,7 @@ import 'package:rumi/shared/constants.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 class Register extends StatefulWidget {
-  final VoidCallback toggleView;
+  final void Function({bool fromRegister}) toggleView;
 
   const Register({super.key, required this.toggleView});
 
@@ -31,6 +31,7 @@ class _RegisterState extends State<Register> {
   String gender = '';
   String password = '';
   String error = '';
+  bool _obscurePassword = true; // ADDED: state untuk show/hide password
 
   @override
   Widget build(BuildContext context) {
@@ -267,7 +268,7 @@ class _RegisterState extends State<Register> {
                           TextFormField(
                             controller: _passController,
                             textAlign: TextAlign.left,
-                            obscureText: true,
+                            obscureText: _obscurePassword,
                             style: const TextStyle(
                               color: Color(0xFF393939),
                               fontSize: 15,
@@ -284,6 +285,18 @@ class _RegisterState extends State<Register> {
                                   width: 1,
                                   color: Color(0xFF837E93),
                                 ),
+                              ),
+                              suffixIcon: IconButton(
+                                // ADDED: tombol mata di ujung kanan field
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: const Color(0xFF837E93),
+                                ),
+                                onPressed: () => setState(
+                                  () => _obscurePassword = !_obscurePassword,
+                                ), // ADDED: toggle state
                               ),
                             ),
                             validator: (val) => val == null || val.length < 6
@@ -326,26 +339,18 @@ class _RegisterState extends State<Register> {
                                           gender,
                                           password,
                                         );
-                                    if (result == null) {
+                                    if (result is String) {
+                                      // CHANGED: cek apakah result adalah error message (String)
                                       setState(() {
-                                        error = 'Please enter a valid email';
+                                        error =
+                                            result; // CHANGED: tampilin pesan error yang datang dari auth.dart
                                         loading = false;
                                       });
-                                    } else {
-                                      // registrasi sukses -> balik ke loading false, kasih pesan, terus pindah ke Sign In
+                                    } else if (result != null) {
+                                      // CHANGED: result bukan String dan bukan null = sukses (User object)
                                       setState(() => loading = false);
                                       if (mounted) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                              'Akun berhasil dibuat, silakan login',
-                                            ),
-                                          ),
-                                        );
-                                        widget
-                                            .toggleView(); // CHANGED: pindah balik ke Sign In screen
+                                        widget.toggleView(fromRegister: true);
                                       }
                                     }
                                   }

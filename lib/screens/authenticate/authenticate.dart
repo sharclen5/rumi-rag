@@ -11,14 +11,26 @@ class Authenticate extends StatefulWidget {
 
 class _AuthenticateState extends State<Authenticate> {
   bool showSignIn = true;
-  void toggleView() {
-    setState(() => showSignIn = !showSignIn);
+  bool _showSuccessPopup = false;
+
+  void toggleView({bool fromRegister = false}) {
+    debugPrint('toggleView called — fromRegister: $fromRegister'); // DEBUG
+    // CHANGED: terima flag opsional
+    setState(() {
+      showSignIn = !showSignIn;
+      _showSuccessPopup =
+          fromRegister; // ADDED: set flag kalau pindah dari register
+    });
+    debugPrint('_showSuccessPopup set to: $_showSuccessPopup'); // DEBUG
   }
 
   @override
   Widget build(BuildContext context) {
     if (showSignIn) {
-      return SignIn(toggleView: toggleView);
+      return SignIn(
+        toggleView: toggleView,
+        showSuccessPopup: _showSuccessPopup,
+      );
     } else {
       return Register(toggleView: toggleView);
     }

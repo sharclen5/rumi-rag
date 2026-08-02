@@ -6,8 +6,13 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class SignIn extends StatefulWidget {
   final VoidCallback toggleView;
+  final bool showSuccessPopup;
 
-  const SignIn({super.key, required this.toggleView});
+  const SignIn({
+    super.key,
+    required this.toggleView,
+    this.showSuccessPopup = false,
+  });
 
   @override
   State<SignIn> createState() => _SignInState();
@@ -23,8 +28,102 @@ class _SignInState extends State<SignIn> {
   String email = '';
   String password = '';
   String error = '';
+  bool _obscurePassword = true; // ADDED: state untuk show/hide password
 
   @override
+  void initState() {
+    super.initState();
+    // ADDED: kalau masuk dari register, tunjukin popup sukses setelah frame pertama render
+    if (widget.showSuccessPopup) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showSuccessDialog();
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant SignIn oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    debugPrint(
+      'didUpdateWidget — showSuccessPopup: ${widget.showSuccessPopup}, old: ${oldWidget.showSuccessPopup}',
+    );
+    // ADDED: initState ga re-run saat widget di-rebuild, jadi pakai didUpdateWidget
+    // fires tiap kali parent kirim props baru, termasuk saat toggleView dari register
+    if (widget.showSuccessPopup && !oldWidget.showSuccessPopup) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showSuccessDialog();
+      });
+    }
+  }
+
+  void _showSuccessDialog() {
+    const brand = Color.fromARGB(255, 144, 121, 84);
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.4),
+      builder: (context) {
+        Future.delayed(const Duration(seconds: 3), () {
+          if (context.mounted) Navigator.of(context).pop();
+        });
+
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFFFDF8F2),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: brand,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.check_rounded,
+                      color: Colors.white,
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const Text(
+                    'Registrasi Berhasil',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Poppins',
+                      color: Color(0xFF363434),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Akun kamu berhasil dibuat.\nSilakan login untuk melanjutkan.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13.5,
+                      height: 1.5,
+                      fontFamily: 'Poppins',
+                      color: Color(0xFF363434),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget build(BuildContext context) {
     return loading
         ? Loading()
@@ -53,9 +152,7 @@ class _SignInState extends State<SignIn> {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(
-                                0xFF363434,
-                              ),
+                              color: const Color(0xFF363434),
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
@@ -141,7 +238,7 @@ class _SignInState extends State<SignIn> {
                           TextFormField(
                             controller: _passController,
                             textAlign: TextAlign.left,
-                            obscureText: true,
+                            obscureText: _obscurePassword,
                             style: const TextStyle(
                               color: Color(0xFF393939),
                               fontSize: 15,
@@ -158,6 +255,18 @@ class _SignInState extends State<SignIn> {
                                   width: 1,
                                   color: Color(0xFF837E93),
                                 ),
+                              ),
+                              suffixIcon: IconButton(
+                                // ADDED: tombol mata di ujung kanan field
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: const Color(0xFF837E93),
+                                ),
+                                onPressed: () => setState(
+                                  () => _obscurePassword = !_obscurePassword,
+                                ), // ADDED: toggle state
                               ),
                             ),
                             validator: (val) => val == null || val.length < 6
