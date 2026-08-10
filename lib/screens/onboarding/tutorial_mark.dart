@@ -9,6 +9,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:rumi/shared/tour_keys.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:rumi/shared/rag_info.dart';
+import 'package:rumi/shared/rag_badge.dart';
 
 // Dedicated, self-contained coach mark tour page. Entirely fake data, no
 // Firestore, no real navigation — fakes its own "current tab" switching via
@@ -300,10 +301,7 @@ class _TutorialMarkState extends State<TutorialMark> {
 
   // ADDED: static stand-in for HomeHero. HomeHero itself takes a real
   // UserProfile?/Baby?/List<Baby>, which this fake-data-only page doesn't
-  // construct — this mirrors its exact visual output instead (greeting,
-  // name, subtitle, dropdown) so the coach mark still points at the right
-  // spot. Swap this out for the real HomeHero if/when fake model instances
-  // become easy to build here.
+  // construct
   Widget _buildFakeHomeHero() {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -312,122 +310,96 @@ class _TutorialMarkState extends State<TutorialMark> {
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: const Color(0xFFE8D5B7)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      // pake Stack supaya posisi badge sama persis kayak HomeHero asli
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          Padding(
+            // kasih ruang di atas supaya badge nggak numpuk sama konten
+            padding: const EdgeInsets.only(top: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      _getGreeting(),
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Color(0xFF6A655F),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _getGreeting(),
+                            style: const TextStyle(
+                              fontSize: 15,
+                              color: Color(0xFF6A655F),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Bapak/Ibu',
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF363434),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      'Bapak/Ibu',
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF363434),
-                      ),
-                    ),
+                    const SizedBox(width: 12),
+                    Image.asset('assets/images/logo_tp.png', height: 80),
                   ],
                 ),
-              ),
-              const SizedBox(width: 12),
-              // ADDED: "With RAG" badge, matches real HomeHero — floats
-              // below the logo via Stack/Positioned so it doesn't add to
-              // the Row's height
-              Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.topCenter,
-                children: [
-                  Image.asset('assets/images/logo_tp.png', height: 80),
-                  Positioned(
-                    bottom: -30,
-                    child: GestureDetector(
-                      onTap: () => showRagInfo(context),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF363434),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Symbols.network_intel_node,
-                              size: 16,
-                              color: Colors.white,
-                            ),
-                            SizedBox(width: 4),
-                            Text(
-                              'With RAG',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ],
+
+                const SizedBox(height: 12),
+
+                Text(
+                  'Semoga hari ini menyenangkan bersama si kecil.',
+                  style: TextStyle(color: Colors.grey.shade600),
+                ),
+
+                const SizedBox(height: 5),
+
+                // tetap Showcase supaya step tutorial dropdown tetap jalan
+                Showcase(
+                  key: TourKeys.babyDropdown,
+                  title: 'Pilih Profil Bayi',
+                  description: 'Ganti profil bayi aktif di sini kapan saja',
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.circle,
+                        color: Colors.greenAccent,
+                        size: 10,
+                      ),
+                      const SizedBox(width: 6),
+                      const Expanded(
+                        child: Text(
+                          _fakeBabyLabel,
+                          style: TextStyle(
+                            color: Color(0xFF363434),
+                            fontSize: 14,
+                          ),
                         ),
                       ),
-                    ),
+                      const Icon(
+                        Icons.arrow_drop_down,
+                        color: Color(0xFF363434),
+                        size: 20,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
-          ),
-          // CHANGED: increased from 5 to 24 to make room for the badge
-          // floating below the logo (matches real HomeHero)
-          const SizedBox(height: 24),
-
-          // wrapped dropdown in Showcase — static mimic of HomeHero's
-          // DropdownButton, non-interactive here same as before
-          Showcase(
-            key: TourKeys.babyDropdown,
-            title: 'Pilih Profil Bayi',
-            description: 'Ganti profil bayi aktif di sini kapan saja',
-            child: Row(
-              children: [
-                const Icon(Icons.circle, color: Colors.greenAccent, size: 10),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    '$_fakeBabyLabel',
-                    style: const TextStyle(
-                      color: Color(0xFF363434),
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                const Icon(
-                  Icons.arrow_drop_down,
-                  color: Color(0xFF363434),
-                  size: 20,
                 ),
               ],
             ),
+          ),
+
+          // badge sekarang mengikuti posisi HomeHero asli
+          // nggak perlu GestureDetector karena dummy ini memang nggak tappable
+          Positioned(
+            top: -2,
+            left: -2,
+            child: RagBadge(size: RagBadgeSize.small),
           ),
         ],
       ),

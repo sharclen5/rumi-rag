@@ -125,6 +125,9 @@ class _SignInState extends State<SignIn> {
   }
 
   Widget build(BuildContext context) {
+    // ADDED: sama kayak register.dart
+    final systemNavInset = MediaQuery.of(context).padding.bottom;
+
     return loading
         ? Loading()
         : Scaffold(
@@ -327,7 +330,8 @@ class _SignInState extends State<SignIn> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 15),
+                          // CHANGED: 15 -> dihitung dari systemNavInset, sama alasannya kaya register.dart
+                          SizedBox(height: 24 + systemNavInset),
                         ],
                       ),
                     ),

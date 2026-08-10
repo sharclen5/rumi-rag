@@ -10,72 +10,83 @@ class IntroSlides extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IntroductionScreen(
-      globalBackgroundColor: const Color(0xFFF5ECDB),
+    return Column(
+      children: [
+        Expanded(
+          child: IntroductionScreen(
+            globalBackgroundColor: const Color(0xFFF5ECDB),
 
-      pages: [
-        // slide 1: welcome
-        PageViewModel(
-          title: "Selamat Datang di Rumi",
-          body:
-              "Teman pintar untuk membantu perjalanan MPASI si kecil, dari rekomendasi menu sampai pemantauan gizi harian.",
-          image: Center(
-            child: Image.asset(
-              'assets/images/logo.png',
-              width: 350,
-              height: 350,
-              fit: BoxFit.cover,
+            pages: [
+              // slide 1: welcome
+              PageViewModel(
+                title: "Selamat Datang di Rumi",
+                body:
+                    "Teman pintar untuk membantu perjalanan MPASI si kecil, dari rekomendasi menu sampai pemantauan gizi harian.",
+                image: Center(
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 350,
+                    height: 350,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                decoration: const PageDecoration(
+                  titleTextStyle: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  bodyTextStyle: TextStyle(fontSize: 16),
+                  imagePadding: EdgeInsets.only(top: 40),
+                ),
+              ),
+
+              // slide 2: brief explanation of what the app does
+              PageViewModel(
+                title: "Rekomendasi Menu, Lebih Terarah",
+                body:
+                    "Rumi bantu susun menu MPASI harian yang seimbang berdasarkan 5 kelompok makanan (karbohidrat, protein, sayur, buah, dan lemak tambahan), disesuaikan dengan kondisi si kecil.",
+                image: Center(
+                  // ADDED: placeholder icon, ganti jadi Image.asset(...) kalo illustrationnya udah ada
+                  child: Icon(
+                    Icons.restaurant_menu,
+                    size: 200,
+                    color: const Color.fromARGB(255, 144, 121, 84),
+                  ),
+                ),
+                decoration: const PageDecoration(
+                  titleTextStyle: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  bodyTextStyle: TextStyle(fontSize: 16),
+                  imagePadding: EdgeInsets.only(top: 40),
+                ),
+              ),
+            ],
+            showSkipButton: true,
+            showBackButton: true,
+            back: const Icon(Icons.arrow_back),
+            skip: const Text("Lewati"),
+            next: const Icon(Icons.arrow_forward),
+            done: const Text(
+              "Mulai",
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-          ),
-          decoration: const PageDecoration(
-            titleTextStyle: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
+            onDone: onDone,
+            onSkip: onDone, // ADDED: skip juga langsung anggap intro selesai
+            dotsDecorator: DotsDecorator(
+              activeColor: const Color.fromARGB(255, 144, 121, 84),
+              size: const Size(10.0, 10.0),
+              activeSize: const Size(22.0, 10.0),
+              activeShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25.0),
+              ),
             ),
-            bodyTextStyle: TextStyle(fontSize: 16),
-            imagePadding: EdgeInsets.only(top: 40),
           ),
         ),
-
-        // slide 2: brief explanation of what the app does
-        PageViewModel(
-          title: "Rekomendasi Menu, Lebih Terarah",
-          body:
-              "Rumi bantu susun menu MPASI harian yang seimbang berdasarkan 5 kelompok makanan (karbohidrat, protein, sayur, buah, dan lemak tambahan), disesuaikan dengan kondisi si kecil.",
-          image: Center(
-            // ADDED: placeholder icon, ganti jadi Image.asset(...) kalo illustrationnya udah ada
-            child: Icon(
-              Icons.restaurant_menu,
-              size: 200,
-              color: const Color.fromARGB(255, 144, 121, 84),
-            ),
-          ),
-          decoration: const PageDecoration(
-            titleTextStyle: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-            bodyTextStyle: TextStyle(fontSize: 16),
-            imagePadding: EdgeInsets.only(top: 40),
-          ),
-        ),
+        // ADDED: extra space below the intro controls
+        const SizedBox(height: 18),
       ],
-      showSkipButton: true,
-      showBackButton: true,
-      back: const Icon(Icons.arrow_back),
-      skip: const Text("Lewati"),
-      next: const Icon(Icons.arrow_forward),
-      done: const Text("Mulai", style: TextStyle(fontWeight: FontWeight.bold)),
-      onDone: onDone,
-      onSkip: onDone, // ADDED: skip juga langsung anggap intro selesai
-      dotsDecorator: DotsDecorator(
-        activeColor: const Color.fromARGB(255, 144, 121, 84),
-        size: const Size(10.0, 10.0),
-        activeSize: const Size(22.0, 10.0),
-        activeShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25.0),
-        ),
-      ),
     );
   }
 }

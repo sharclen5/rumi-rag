@@ -43,6 +43,14 @@ class _HomeState extends State<Home> {
                   orElse: () => null,
                 );
 
+          // ADDED: baca inset navbar sistem, sama kayak pattern di bottomnavbar.dart & register/sign_in
+          final systemNavInset = MediaQuery.of(context).padding.bottom;
+          // ADDED: hitung total tinggi BottomNavBar beneran (bukan tebakan lagi)
+          // 64 = tinggi Container bar itu sendiri (liat bottomnavbar.dart)
+          // 24 + systemNavInset = padding bottom si bar (juga dari bottomnavbar.dart)
+          // +16 = jarak nafas tambahan, biar konten ga terlalu mepet sama bar
+          final bottomClearance = 64 + 24 + systemNavInset + 16;
+
           return Scaffold(
             appBar: AppBar(
               toolbarHeight: 0,
@@ -60,7 +68,8 @@ class _HomeState extends State<Home> {
                 ),
               ),
               child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(16, 20, 16, 100),
+                // CHANGED: 100 -> bottomClearance, biar dihitung dari tinggi bar yang sebenernya, bukan tebakan
+                padding: EdgeInsets.fromLTRB(16, 20, 16, bottomClearance),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
