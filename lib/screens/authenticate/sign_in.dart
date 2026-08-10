@@ -147,15 +147,10 @@ class _SignInState extends State<SignIn> {
                       child: Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          Positioned(
-                            left:
-                                65, // CHANGED: gambar digeser ke kanan 65px DALAM box, biar posisi absolutnya di layar tetep sama (padding udah dikurangin 65 juga)
-                            top: 0,
-                            child: Image.asset(
-                              "assets/images/vector-1.png",
-                              width: 413,
-                              height: 457,
-                            ),
+                          Image.asset(
+                            "assets/images/vector-1.png",
+                            width: 413,
+                            height: 457,
                           ),
                           Positioned(
                             top: 0,
