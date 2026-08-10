@@ -7,6 +7,9 @@ class AuthService {
   final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
   // "_" sebelum auth menandakan variabel ini sifatnya private, cuma bisa diakses dalam class ini saja.
 
+  // ADDED: flag buat ngasih tau Wrapper "woi, lagi proses register, jangan buru-buru pindah screen dulu"
+  static bool isRegistering = false;
+
   // create user obj based on Firebase User
   User? _userFromFirebase(firebase_auth.User? user) {
     return user != null ? User(uid: user.uid) : null;
@@ -55,13 +58,12 @@ class AuthService {
     String gender,
     String password,
   ) async {
+    isRegistering =
+        true; // ADDED: nyalain flag SEBELUM createUser dipanggil, biar Wrapper langsung tau dari awal
     try {
       firebase_auth.UserCredential result = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
       firebase_auth.User? user = result.user;
-
-      await _auth
-          .signOut(); // MOVED: logout dulu sebelum Firestore writes, biar stream ga keburu trigger navigasi
 
       // existing: parent doc for baby data
       await FirebaseFirestore.instance.collection('babies').doc(user!.uid).set({
@@ -80,6 +82,9 @@ class AuthService {
       });
 
       await _auth.signOut();
+      // DITAMBAH: ini yang ilang dari awal — tanpa return, function auto return null,
+      // jadi di register.dart, result != null ga pernah kena, popup ga pernah muncul
+      return _userFromFirebase(user);
     } on firebase_auth.FirebaseAuthException catch (e) {
       // CHANGED: catch spesifik FirebaseAuthException
       debugPrint(e.code);
@@ -98,6 +103,10 @@ class AuthService {
       // ADDED: catch-all untuk error di luar Firebase (Firestore, dll)
       debugPrint(e.toString());
       return 'Terjadi kesalahan, coba lagi.';
+    } finally {
+      isRegistering = false; // ADDED: matiin flag di sini, di dalam "finally"
+      // "finally" ini jalan APAPUN yang terjadi -- sukses, error kena catch, error ga kena catch, apapun --
+      // jadi flag ini dijamin balik ke false, ga bakal nyangkut true selamanya kalau misal ada error tak terduga
     }
   }
 

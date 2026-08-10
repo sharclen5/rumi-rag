@@ -349,6 +349,9 @@ class _RegisterState extends State<Register> {
                                     } else if (result != null) {
                                       // CHANGED: result bukan String dan bukan null = sukses (User object)
                                       setState(() => loading = false);
+                                      debugPrint(
+                                        'mounted check: $mounted',
+                                      ); // ADDED: buat ngecek race condition
                                       if (mounted) {
                                         widget.toggleView(fromRegister: true);
                                       }

@@ -14,6 +14,7 @@ import 'package:rumi/screens/home/baby/add_baby_forms.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:rumi/shared/tour_keys.dart';
 import 'package:rumi/screens/onboarding/tutorial_mark.dart';
+import 'package:rumi/services/auth.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -71,6 +72,14 @@ class _WrapperState extends State<Wrapper> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<User?>(context);
+
+    // ADDED: kalau lagi proses register, tetep tampilin Authenticate,
+    // walaupun Firebase udah bilang user-nya "logged in" sementara di background.
+    // ini yang nyegah Wrapper buru-buru pindah ke Loading/AddBabyForms
+    // padahal Firestore writes & signOut() masih jalan di auth.dart
+    if (AuthService.isRegistering) {
+      return Authenticate();
+    }
 
     if (user == null) {
       _currentIndex = 0; // reset ke home kalo logout
