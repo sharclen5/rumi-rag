@@ -155,6 +155,11 @@ class _ProfileDetailState extends State<ProfileDetail> {
   Widget build(BuildContext context) {
     if (_isLoading) return Loading();
     final user = Provider.of<User?>(context, listen: false);
+
+    // ADDED: sama kayak home.dart & profile.dart, hitung clearance asli dari BottomNavBar
+    final systemNavInset = MediaQuery.of(context).padding.bottom;
+    final bottomClearance = 64 + 24 + systemNavInset + 16;
+
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 113, 222, 255),
       appBar: AppBar(
@@ -178,8 +183,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
         ),
 
         child: SingleChildScrollView(
-          // padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          padding: EdgeInsets.fromLTRB(20, 20, 20, 100),
+          padding: EdgeInsets.fromLTRB(20, 20, 20, bottomClearance),
           child: Column(
             children: [
               ProfileDetailPic(
@@ -278,7 +282,6 @@ class _ProfileDetailState extends State<ProfileDetail> {
                   ),
                 ],
               ),
-              const SizedBox(height: 34.0),
             ],
           ),
         ),

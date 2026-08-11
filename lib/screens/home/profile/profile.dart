@@ -24,6 +24,11 @@ class ProfilePage extends StatelessWidget {
       builder: (context, snapshot) {
         final userProfile = snapshot.data;
 
+        // ADDED: sama kayak home.dart, hitung clearance asli dari BottomNavBar
+        // biar konten profile ga ketutup, ga pake angka tebakan lagi
+        final systemNavInset = MediaQuery.of(context).padding.bottom;
+        final bottomClearance = 64 + 24 + systemNavInset + 16;
+
         return Scaffold(
           backgroundColor: const Color.fromARGB(255, 113, 222, 255),
           appBar: AppBar(
@@ -49,7 +54,7 @@ class ProfilePage extends StatelessWidget {
             ),
 
             child: SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(16, 20, 16, 100),
+              padding: EdgeInsets.fromLTRB(16, 20, 16, bottomClearance),
               child: Column(
                 children: [
                   const SizedBox(height: 20),

@@ -15,6 +15,9 @@ class IntroSlides extends StatelessWidget {
         Expanded(
           child: IntroductionScreen(
             globalBackgroundColor: const Color(0xFFF5ECDB),
+            // ADDED: aktifin SafeArea cuma di bagian bawah, biar tombol Lewati/Mulai/dots
+            // ga ketutup navbar HP — urutannya [left, top, right, bottom] sesuai dokumentasi package
+            safeAreaList: const [false, false, false, true],
 
             pages: [
               // slide 1: welcome
@@ -84,8 +87,6 @@ class IntroSlides extends StatelessWidget {
             ),
           ),
         ),
-        // ADDED: extra space below the intro controls
-        const SizedBox(height: 18),
       ],
     );
   }
