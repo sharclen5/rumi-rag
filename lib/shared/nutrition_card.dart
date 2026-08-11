@@ -31,7 +31,7 @@ class NutritionCard extends StatelessWidget {
     final now = DateTime.now();
     final dateStr =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-    return '${babyId}_$dateStr';
+    return '${babyId}_${dateStr}_rag';
   }
 
   Map<String, List<MapEntry<String, bool>>> _mealsByGroup(
