@@ -45,7 +45,9 @@ class _DailyTipState extends State<DailyTip> {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-      final today = DateTime.now().toIso8601String().split('T')[0]; // format YYYY-MM-DD
+      final today = DateTime.now().toIso8601String().split(
+        'T',
+      )[0]; // format YYYY-MM-DD
       final cachedDate = prefs.getString(_todayKey);
       final cachedTip = prefs.getString(_tipKey);
 
@@ -66,7 +68,9 @@ class _DailyTipState extends State<DailyTip> {
         height: widget.baby.height,
         isActivelyBreastfed: widget.baby.isActivelyBreastfed,
         toothCount: widget.baby.toothCount,
-        allergies: widget.baby.allergyIds, // sementara masih ID, belum di-resolve ke nama
+        allergies: widget
+            .baby
+            .allergyIds, // sementara masih ID, belum di-resolve ke nama
         medicalHistory: widget.baby.medicalHistory,
       );
 
@@ -78,6 +82,8 @@ class _DailyTipState extends State<DailyTip> {
         _isLoading = false;
       });
     } catch (e) {
+      // TEMPORARY: biar keliatan error aslinya di console, hapus lagi kalo udah ketemu masalahnya
+      print('[DailyTip] Error: $e');
       setState(() {
         _hasError = true;
         _isLoading = false;
