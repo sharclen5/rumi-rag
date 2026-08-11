@@ -23,6 +23,7 @@ class WeeklyRecommendationRequest(BaseModel):
 # model khusus buat daily tip, lebih ringkes dari BabyContext
 # soalnya ga butuh gender/is_premature (usia koreksi udah cukup)
 class DailyTipContext(BaseModel):
+    baby_name: str 
     age_in_months: int              # pake yang udah corrected dari Flutter
     weight: float
     height: float
