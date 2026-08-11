@@ -118,7 +118,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
       _totalDays = days;
       final expectedDocsIds = List.generate(
         days,
-        (i) => '${baby.id}_${_formatDate(now.add(Duration(days: i)))}',
+        (i) => '${baby.id}_${_formatDate(now.add(Duration(days: i)))}_rag',
       );
       _progressStream = FirebaseFirestore.instance
           .collection('users')
