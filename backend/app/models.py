@@ -31,6 +31,7 @@ class DailyTipContext(BaseModel):
     tooth_count: Optional[int] = None
     allergies: Optional[List[str]] = []
     medical_history: Optional[str] = None
+    parent_gender: str
 
 class DailyTipRequest(BaseModel):
     baby: DailyTipContext

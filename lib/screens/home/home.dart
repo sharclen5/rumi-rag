@@ -127,6 +127,7 @@ class _HomeState extends State<Home> {
                           'dailyTip_${activeBaby.id}',
                         ), // beda prefix dari TodayScheduleCard punya, biar ga collide keynya
                         baby: activeBaby,
+                        parentGender: snapshot.data!.gender,
                       ),
                   ],
                 ),

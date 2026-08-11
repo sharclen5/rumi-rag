@@ -15,6 +15,7 @@ def daily_tip(request: DailyTipRequest):
         tooth_count=request.baby.tooth_count,
         allergies=request.baby.allergies,
         medical_history=request.baby.medical_history,
+        parent_gender=request.baby.parent_gender,
     )
 
     return {"tip": tip}

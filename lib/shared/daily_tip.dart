@@ -5,7 +5,8 @@ import 'package:rumi/services/daily_tip_service.dart';
 
 class DailyTip extends StatefulWidget {
   final Baby baby;
-  const DailyTip({super.key, required this.baby});
+  final String parentGender;
+  const DailyTip({super.key, required this.baby, required this.parentGender});
 
   @override
   State<DailyTip> createState() => _DailyTipState();
@@ -72,6 +73,7 @@ class _DailyTipState extends State<DailyTip> {
             .baby
             .allergyIds, // sementara masih ID, belum di-resolve ke nama
         medicalHistory: widget.baby.medicalHistory,
+        parentGender: widget.parentGender,
       );
 
       await prefs.setString(_tipKey, newTip);

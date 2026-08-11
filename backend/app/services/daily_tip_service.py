@@ -15,6 +15,7 @@ def get_daily_tip(
         tooth_count: int | None,
         allergies: list,
         medical_history: str | None,
+        parent_gender: str,
         ) -> str:
 
     # sama kayak pattern di _get_single_day, ubah dulu ke display string
@@ -23,6 +24,7 @@ def get_daily_tip(
     tooth_count_display = str(tooth_count) if tooth_count is not None else 'Tidak diketahui'
     allergies_display = ', '.join(allergies) if allergies else 'Tidak ada'
     medical_history_display = medical_history if medical_history else 'Tidak ada'
+    parent_salutation = 'Ayah' if parent_gender == 'Male' else 'Bunda'
 
     prompt = DAILY_TIP_PROMPT.format(
         baby_name=baby_name,
@@ -33,6 +35,7 @@ def get_daily_tip(
         tooth_count_display=tooth_count_display,
         allergies_display=allergies_display,
         medical_history_display=medical_history_display,
+        parent_salutation=parent_salutation,
     )
 
     # retry + fallback sama persis kayak gemini_service.py punya recommendation,

@@ -14,6 +14,7 @@ class DailyTipService {
     int? toothCount,
     required List<String> allergies,
     String? medicalHistory,
+    required String parentGender,
   }) async {
     final response = await http.post(
       Uri.parse('$_baseUrl/daily-tip'),
@@ -28,6 +29,7 @@ class DailyTipService {
           'tooth_count': toothCount,
           'allergies': allergies,
           'medical_history': medicalHistory,
+          'parent_gender': parentGender,
         },
       }),
     );

@@ -123,7 +123,7 @@ Untuk slot dengan type "ASI", foodGroup harus null.
 """)
 
 DAILY_TIP_PROMPT = PromptTemplate.from_template("""
-Kamu adalah asisten MPASI bernama "Rumi AI". Tugasmu adalah memberikan satu tips singkat untuk orang tua dari bayi bernama {baby_name}, berdasarkan kondisi berikut:
+Kamu adalah asisten MPASI bernama "Rumi AI". Tugasmu adalah memberikan satu tips singkat untuk {parent_salutation} dari bayi bernama {baby_name}, berdasarkan kondisi berikut:
 
 - Usia (usia koreksi jika prematur): {age_in_months} bulan
 - Berat badan: {weight} kg
@@ -135,7 +135,7 @@ Kamu adalah asisten MPASI bernama "Rumi AI". Tugasmu adalah memberikan satu tips
 
 Instruksi:
 - Tulis dalam Bahasa Indonesia yang sopan tapi santai, seperti teman yang berbicara — bukan bahasa yang kaku/formal, tapi juga jangan terlalu gaul atau tidak sopan.
-- Sebut nama {baby_name} secara natural di awal atau tengah kalimat.
+- Sapa pembaca sebagai "{parent_salutation}" secara natural, dan sebut nama {baby_name} secara natural di awal atau tengah kalimat.
 - Fokus pada SATU aspek paling relevan hari ini (contoh: kesiapan tekstur, kebutuhan protein hewani, kecukupan porsi, atau pengingat alergi jika ada riwayatnya).
 - Panjang maksimal 2 kalimat.
 - Jangan gunakan format JSON, markdown, atau tanda kutip. Hanya teks biasa.
