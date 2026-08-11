@@ -89,11 +89,6 @@ class ProfilePage extends StatelessWidget {
                           ),
                   ),
                   ProfileMenu(
-                    text: "Settings",
-                    icon: Icon(Icons.settings, size: 22),
-                    press: () {},
-                  ),
-                  ProfileMenu(
                     text: "Preview Intro Slides",
                     icon: Icon(Icons.slideshow, size: 22),
                     press: () => Navigator.push(
