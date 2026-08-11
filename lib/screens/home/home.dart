@@ -7,6 +7,7 @@ import 'package:rumi/shared/bottomnavbar.dart';
 import 'package:rumi/shared/calendar_strip.dart';
 import 'package:rumi/shared/nutrition_card.dart';
 import 'package:rumi/shared/today_schedule_card.dart';
+import 'package:rumi/shared/daily_tip.dart';
 import 'package:rumi/shared/home_hero.dart';
 
 // $env:CHROME_EXECUTABLE="C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
@@ -119,57 +120,14 @@ class _HomeState extends State<Home> {
                       ),
                     const SizedBox(height: 24),
 
-                    // Tips Card
-                    Card(
-                      color: Color(0xFFFDF8F2),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                        side: BorderSide(color: Color(0xFFE8D5B7), width: 1.5),
+                    // Tips Card — sekarang di-generate Gemini per hari, per baby, di-cache lokal
+                    if (activeBaby != null)
+                      DailyTip(
+                        key: ValueKey(
+                          'dailyTip_${activeBaby.id}',
+                        ), // beda prefix dari TodayScheduleCard punya, biar ga collide keynya
+                        baby: activeBaby,
                       ),
-                      elevation: 2,
-                      child: Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(width: 6),
-                                Text(
-                                  '🤎 Pesan dari Rumi',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF363434),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'Hari ini ${activeBaby?.firstName} sudah bisa mulai belajar tekstur yang lebih kasar. Pastikan protein hewani tetap ada di setiap menu.',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF363434),
-                                fontStyle: FontStyle.italic,
-                                height: 1.5,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                '— Rumi AI',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.grey.shade500,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
