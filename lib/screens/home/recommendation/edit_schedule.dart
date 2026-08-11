@@ -244,7 +244,7 @@ Future<void> handleEditSchedule({
   try {
     await DatabaseService(
       uid: uid,
-    ).updateMealTime(babyId, dateStr, selectedMealIndex, newTimeStr);
+    ).updateMealTime(babyId, dateStr, selectedMealIndex, newTimeStr, 'rag');
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(

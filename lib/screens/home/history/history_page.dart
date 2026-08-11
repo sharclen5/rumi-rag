@@ -97,7 +97,7 @@ class _HistoryViewState extends State<_HistoryView> {
     try {
       final result = await DatabaseService(
         uid: widget.uid,
-      ).getRecommendation(baby.id, _selectedDateStr);
+      ).getRecommendation(baby.id, _selectedDateStr, 'rag');
       setState(() => _recommendation = result);
     } catch (e) {
       setState(() => _error = e.toString());

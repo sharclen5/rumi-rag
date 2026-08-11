@@ -44,6 +44,42 @@ Metode masak juga harus realistis untuk dapur rumahan (kukus, rebus, tim),
 tanpa alat khusus seperti oven atau blender mahal, kecuali blender/saringan
 biasa yang umum dimiliki.
 
+PENTING - Format bahan (ingredients):
+Setiap item di "ingredients" HARUS menyertakan takaran, dengan format:
+"[jumlah] gr ([takaran rumah tangga]) [nama bahan]", contoh:
+"100 gr (10 sdm) nasi putih", "30 gr (3 sdm) daging ayam cincang",
+"10 gr (1 sdm) wortel". Untuk bahan cair gunakan "ml" sebagai
+pengganti "gr" (contoh: "200 ml kaldu ayam", "10 ml (1 sdm) santan kental").
+Gunakan takaran rumah tangga umum seperti sdt (sendok teh), sdm (sendok makan),
+butir, potong, siung, batang, lembar, sesuai jenis bahan — samakan gaya
+dengan resep MPASI Kemenkes RI. Sesuaikan jumlah total bahan dengan porsi
+untuk SATU kali makan sesuai usia bayi (bukan resep untuk banyak porsi).
+
+PENTING - Format langkah (steps):
+Setiap langkah di "steps" harus jelas dan actionable, mencakup: bahan apa yang
+dimasukkan/diproses, metode memasak (rebus, kukus, tim, tumis), dan penanda
+kematangan/tekstur (contoh: "hingga lunak", "hingga mengental", "hingga matang").
+Contoh: "Rebus wortel dan daging ayam cincang dalam kaldu hingga empuk",
+"Masukkan nasi, aduk hingga menjadi bubur kental", "Saring/haluskan sesuai
+tekstur usia bayi". Hindari langkah yang terlalu singkat/generik seperti
+"Masak semua bahan" tanpa keterangan cara dan bahan apa saja.
+
+PENTING - Format alasan (reason):
+Isi "reason" harus menjelaskan 2 hal sekaligus dalam 1-2 kalimat:
+(1) manfaat gizi dari bahan utama menu ini untuk usia bayi tersebut
+(contoh: sumber zat besi, protein untuk tumbuh kembang, zinc, vitamin A),
+dan (2) alasan kecocokan menu ini dengan kondisi bayi ini secara spesifik,
+dengan mempertimbangkan SEMUA data bayi yang tersedia (usia koreksi, berat
+badan, tinggi badan, jenis kelamin, status prematur, status ASI, jumlah gigi,
+alergi, riwayat medis) jika relevan dengan menu tersebut — misalnya tekstur
+sesuai jumlah gigi/usia koreksi, aman dari alergi yang disebutkan, porsi
+sesuai berat/tinggi badan, atau penyesuaian akibat riwayat medis. Tidak
+semua data harus disebutkan di setiap menu, cukup yang benar-benar relevan.
+Jika relevan, kaitkan juga dengan rekomendasi gizi dari WHO, IDAI, atau
+Kemenkes RI (contoh: "sesuai anjuran WHO untuk konsumsi protein hewani
+harian"). Hindari alasan generik seperti "bergizi dan sehat untuk bayi"
+tanpa penjelasan spesifik.
+
 PENTING - Nama menu:
 Buat nama menu singkat dan sederhana, maksimal 3-4 kata, seperti nama masakan
 sehari-hari yang biasa didengar orang tua (contoh: "Bubur Ayam Wortel",
@@ -59,9 +95,9 @@ Format JSON:
       "time": "08.00",
       "type": "Sarapan",
       "name": "nama menu",
-      "ingredients": ["bahan 1", "bahan 2"],
-      "steps": ["langkah 1", "langkah 2"],
-      "reason": "alasan pemilihan menu",
+      "ingredients": ["100 gr (10 sdm) nasi putih", "30 gr (3 sdm) daging ayam cincang"],
+      "steps": ["Rebus daging ayam cincang dalam kaldu hingga empuk", "Masukkan nasi, aduk hingga menjadi bubur kental"],
+      "reason": "Daging ayam sumber protein dan zat besi untuk tumbuh kembang bayi usia 8 bulan; tekstur bubur kental sesuai jumlah gigi bayi",
       "foodGroup": ["karbohidrat", "protein_hewani"]
     }},
     {{

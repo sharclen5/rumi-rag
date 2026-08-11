@@ -34,7 +34,7 @@ class _MealCardState extends State<MealCard> {
     try {
       final result = await DatabaseService(
         uid: widget.uid,
-      ).getRecommendation(widget.babyId, dateStr);
+      ).getRecommendation(widget.babyId, dateStr, 'rag');
       setState(() => _recommendation = result);
     } catch (_) {
       setState(() => _recommendation = null);
@@ -183,7 +183,7 @@ class _MealCardItemState extends State<_MealCardItem> {
     try {
       await DatabaseService(
         uid: widget.uid,
-      ).toggleMealEaten(widget.babyId, widget.date, widget.mealIndex);
+      ).toggleMealEaten(widget.babyId, widget.date, widget.mealIndex, 'rag');
 
       if (newValue && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

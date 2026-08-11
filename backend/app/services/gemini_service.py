@@ -121,6 +121,10 @@ def _get_single_day(
     if not response_text or not response_text.strip():
         raise RuntimeError("Gemini returned empty response")
 
+    # ADDED: debug print buat liat mentahan output Gemini di FastAPI Cloud logs,
+    # sebelum di-clean/parse — hapus lagi kalo udah selesai ngecek
+    print(f"[DEBUG RAW OUTPUT] {response_text[:2000]}")
+
     return _clean_json_text(response_text)
 
  # ADDED: allowed foodGroup values, kept in sync with prompt enum
@@ -234,7 +238,9 @@ def get_weekly_recommendation(
         # END ADDED
 
         # write to Firestore immediately after each day is generated
-        doc_id = f'{baby_id}_{current_date}'
+        # CHANGED: doc_id sekarang include source, biar rag & baseline gak saling timpa
+        # kalo di-generate di hari & baby yang sama
+        doc_id = f'{baby_id}_{current_date}_rag'
         db.collection('users').document(uid).collection('recommendations').document(doc_id).set({
             'baby_id': baby_id,
             'date': current_date,

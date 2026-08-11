@@ -224,8 +224,12 @@ class DatabaseService {
       userDocument.collection('recommendations');
 
   // get recommendation for a specific baby and date
-  Future<Recommendation?> getRecommendation(String babyId, String date) async {
-    final docId = '${babyId}_${date}';
+  Future<Recommendation?> getRecommendation(
+    String babyId,
+    String date,
+    String source,
+  ) async {
+    final docId = '${babyId}_${date}_$source';
     final doc = await recommendationCollection.doc(docId).get();
     if (!doc.exists) return null;
     return Recommendation.fromFirestore(doc.data() as Map<String, dynamic>);
@@ -236,8 +240,9 @@ class DatabaseService {
     String babyId,
     String date,
     int mealIndex,
+    String source,
   ) async {
-    final docId = '${babyId}_$date';
+    final docId = '${babyId}_${date}_$source';
     final docRef = recommendationCollection.doc(docId);
     final snapshot = await docRef.get();
     if (!snapshot.exists) return;
@@ -260,8 +265,9 @@ class DatabaseService {
     String date,
     int mealIndex,
     String newTime,
+    String source,
   ) async {
-    final docId = '${babyId}_$date';
+    final docId = '${babyId}_${date}_$source';
     final docRef = recommendationCollection.doc(docId);
     final snapshot = await docRef.get();
     if (!snapshot.exists) return;
@@ -279,9 +285,14 @@ class DatabaseService {
   }
 
   // ADDED: stream of all recommendations for a baby, most recent first
-  Stream<List<Recommendation>> getRecommendationHistory(String babyId) {
+  Stream<List<Recommendation>> getRecommendationHistory(
+    String babyId,
+    String source,
+  ) {
+    // CHANGED: filter juga by source, biar history rag app cuma nampilin data rag, begitu juga baseline
     return recommendationCollection
         .where('baby_id', isEqualTo: babyId)
+        .where('source', isEqualTo: source)
         .orderBy('date', descending: true)
         .snapshots()
         .map(

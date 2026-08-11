@@ -48,7 +48,7 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
     try {
       final result = await DatabaseService(
         uid: widget.uid,
-      ).getRecommendation(widget.babyId, _dateStr);
+      ).getRecommendation(widget.babyId, _dateStr, 'rag');
       setState(() => _recommendation = result);
     } catch (_) {
       setState(() => _recommendation = null);
@@ -71,7 +71,7 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
     try {
       await DatabaseService(
         uid: widget.uid,
-      ).toggleMealEaten(widget.babyId, _dateStr, mealIndex);
+      ).toggleMealEaten(widget.babyId, _dateStr, mealIndex, 'rag');
     } catch (e) {
       if (mounted) {
         setState(() => current.meals[mealIndex] = previousMeal);
