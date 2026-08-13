@@ -7,8 +7,6 @@ import 'package:rumi/shared/nutrition_card.dart';
 import 'package:rumi/shared/today_schedule_card.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:rumi/shared/tour_keys.dart';
-import 'package:material_symbols_icons/symbols.dart';
-import 'package:rumi/shared/rag_info.dart';
 import 'package:rumi/shared/rag_badge.dart';
 
 // Dedicated, self-contained coach mark tour page. Entirely fake data, no

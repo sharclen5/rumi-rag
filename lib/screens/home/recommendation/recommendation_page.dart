@@ -98,12 +98,40 @@ class _RecommendationViewState extends State<_RecommendationView> {
     }
   }
 
+  // ADDED: parse "08.00" jadi DateTime beneran, digabung sama tanggal yang lagi dipilih
+  DateTime _mealDateTime(String date, String time) {
+    final dateParts = date.split('-').map(int.parse).toList();
+    final timeParts = time.split('.').map(int.parse).toList();
+    return DateTime(
+      dateParts[0], // year
+      dateParts[1], // month
+      dateParts[2], // day
+      timeParts[0], // hour
+      timeParts.length > 1 ? timeParts[1] : 0, // minute
+    );
+  }
+
   // CHANGED: uses mealIndex + toggleMealEaten (matches DatabaseService),
   // and updates local state immutably via copyWith since Meal is final.
   Future<void> _handleToggleEaten(int mealIndex, bool newValue) async {
     if (_lastFetchedBaby == null || _recommendation == null) return;
 
     final previousMeal = _recommendation!.meals[mealIndex];
+
+    // ADDED: cek tanggal + jam meal ini, berlaku sama buat semua jenis meal (termasuk ASI)
+    // dan berlaku dua arah (mark maupun unmark), soalnya meal masa depan gak akan pernah
+    // bisa ke-mark duluan, jadi gak perlu logic khusus buat unmark
+    final mealDateTime = _mealDateTime(_selectedDateStr, previousMeal.time);
+    if (mealDateTime.isAfter(DateTime.now())) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Belum bisa menandai menu yang belum waktunya'),
+          ),
+        );
+      }
+      return;
+    }
 
     // optimistic local update
     setState(() {
@@ -113,9 +141,12 @@ class _RecommendationViewState extends State<_RecommendationView> {
     });
 
     try {
-      await DatabaseService(
-        uid: widget.uid,
-      ).toggleMealEaten(_lastFetchedBaby!.id, _selectedDateStr, mealIndex, 'rag');
+      await DatabaseService(uid: widget.uid).toggleMealEaten(
+        _lastFetchedBaby!.id,
+        _selectedDateStr,
+        mealIndex,
+        'rag',
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -488,11 +519,13 @@ class _RecommendationViewState extends State<_RecommendationView> {
                                       : null;
                                   final timeLabel =
                                       '${hour.toString().padLeft(2, '0')}.00';
+
                                   return _TimeLineRow(
                                     timeLabel: timeLabel,
                                     hasSlot: meal != null,
                                     meal: meal,
                                     mealIndex: mealIndex,
+                                    date: _selectedDateStr,
                                     onToggleEaten: _handleToggleEaten,
                                   );
                                 });
@@ -521,6 +554,7 @@ class _TimeLineRow extends StatelessWidget {
   final bool hasSlot;
   final Meal? meal;
   final int? mealIndex; // ADDED
+  final String date;
   final Future<void> Function(int mealIndex, bool newValue)
   onToggleEaten; // CHANGED
 
@@ -529,6 +563,7 @@ class _TimeLineRow extends StatelessWidget {
     required this.hasSlot,
     this.meal,
     this.mealIndex,
+    required this.date,
     required this.onToggleEaten,
   });
 
@@ -556,6 +591,7 @@ class _TimeLineRow extends StatelessWidget {
                         builder: (_) => RecommendationDetailDialog(
                           meal: meal!,
                           isEaten: meal!.isEaten,
+                          date: date,
                           onToggleEaten: (newValue) =>
                               onToggleEaten(mealIndex!, newValue), // CHANGED
                         ),

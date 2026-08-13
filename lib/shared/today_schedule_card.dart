@@ -172,6 +172,7 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
                                 builder: (_) => RecommendationDetailDialog(
                                   meal: meal,
                                   isEaten: meal.isEaten,
+                                  date: _dateStr,
                                   onToggleEaten: (newValue) =>
                                       _handleToggleEaten(
                                         absoluteIndex,

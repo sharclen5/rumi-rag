@@ -7,12 +7,14 @@ import 'package:rumi/models/meal.dart';
 class RecommendationDetailDialog extends StatefulWidget {
   final Meal meal;
   final bool isEaten; // ADDED
+  final String date; // ADDED
   final ValueChanged<bool> onToggleEaten; // ADDED
 
   const RecommendationDetailDialog({
     super.key,
     required this.meal,
     required this.isEaten, // ADDED
+    required this.date, // ADDED
     required this.onToggleEaten, // ADDED
   });
 
@@ -25,11 +27,97 @@ class _RecommendationDetailDialogState
     extends State<RecommendationDetailDialog> {
   late bool _isEaten = widget.isEaten;
 
+  // ADDED: helper yang sama kayak di file-file laen, gabungin tanggal + jam
+  // meal jadi DateTime beneran
+  DateTime _mealDateTime(String date, String time) {
+    final dateParts = date.split('-').map(int.parse).toList();
+    final timeParts = time.split('.').map(int.parse).toList();
+    return DateTime(
+      dateParts[0],
+      dateParts[1],
+      dateParts[2],
+      timeParts[0],
+      timeParts.length > 1 ? timeParts[1] : 0,
+    );
+  }
+
+  // ADDED: getter, dihitung ulang tiap dipanggil pake widget.date + widget.meal.time
+  bool get _isFuture =>
+      _mealDateTime(widget.date, widget.meal.time).isAfter(DateTime.now());
+
   void _handleToggle() {
+    // ADDED: kalau meal-nya masih di masa depan, jangan lanjut toggle,
+    if (_isFuture) {
+      _showFutureMealPopup();
+      return;
+    }
+
     setState(() => _isEaten = !_isEaten);
     widget.onToggleEaten(
       _isEaten,
     ); // triggers parent's backend write + snackbar
+  }
+
+  // ADDED: pop-up peringatan, desainnya niru dialog "Registrasi Berhasil"
+  // di halaman login, cuma ganti ikon & teks jadi versi warning
+  void _showFutureMealPopup() {
+    const brand = Color.fromARGB(255, 144, 121, 84);
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFFFDF8F2),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: brand,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons
+                        .schedule_rounded, // beda sama ikon check di popup registrasi
+                    color: Colors.white,
+                    size: 26,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                const Text(
+                  'Belum Waktunya',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
+                    color: Color(0xFF363434),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Menu ini belum bisa ditandai karena\njadwalnya belum tiba.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13.5,
+                    height: 1.5,
+                    fontFamily: 'Poppins',
+                    color: Color(0xFF363434),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -69,11 +157,7 @@ class _RecommendationDetailDialogState
                       width: 48,
                       height: 48,
                       color: const Color.fromARGB(255, 122, 105, 95),
-                      child: Icon(
-                        mealIcon,
-                        color: Colors.white,
-                        size: 24,
-                      ),
+                      child: Icon(mealIcon, color: Colors.white, size: 24),
                     ),
                   ),
                   const SizedBox(width: 12),

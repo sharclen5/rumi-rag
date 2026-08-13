@@ -222,6 +222,7 @@ class _MealCardItemState extends State<_MealCardItem> {
             builder: (_) => RecommendationDetailDialog(
               meal: meal,
               isEaten: _isEaten,
+              date: widget.date,
               onToggleEaten: (_) => _handleToggle(), // CHANGED
             ),
           );
@@ -289,11 +290,7 @@ class _MealCardItemState extends State<_MealCardItem> {
                         width: 64,
                         height: 64,
                         color: const Color.fromARGB(255, 122, 105, 95),
-                        child: Icon(
-                          mealIcon,
-                          color: Colors.white,
-                          size: 32,
-                        ),
+                        child: Icon(mealIcon, color: Colors.white, size: 32),
                       ),
                     ),
                   ],
