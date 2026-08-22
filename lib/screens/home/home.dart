@@ -56,7 +56,7 @@ class _HomeState extends State<Home> {
             appBar: AppBar(
               toolbarHeight: 0,
               elevation: 0,
-              backgroundColor: const Color(0xFFF2DAB1),
+              backgroundColor: const Color(0xFF363434),
             ),
 
             body: Container(
@@ -64,7 +64,11 @@ class _HomeState extends State<Home> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Color(0xFFF5EBD9), Color(0xFFFFFFFF)],
+                  colors: [
+                    Color.fromARGB(255, 63, 60, 60),
+                    Color.fromARGB(255, 50, 50, 50),
+                  ],
+                  // colors: [Color(0xFF363434), Color(0xFF1A1A1A)],
                   stops: [0.0, 1.0],
                 ),
               ),

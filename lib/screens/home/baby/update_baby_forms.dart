@@ -20,8 +20,8 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
   final List<String> genders = ['Male', 'Female'];
 
   static const _brand = Color.fromARGB(255, 144, 121, 84);
-  static const _border = Color(0xFFE8D5B7);
-  static const _text = Color(0xFF363434);
+  static const _border = Color(0xFF4A4646);
+  static const _text = Color(0xFFF2DAB1);
 
   late bool _isPremature;
   late int? _gestationalAgeWeeks;
@@ -96,9 +96,9 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
     return InputDecoration(
       labelText: label,
       hintText: hint,
-      labelStyle: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+      labelStyle: TextStyle(color: Colors.grey.shade400, fontSize: 13),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: const Color(0xFF363434),
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -130,7 +130,7 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
           maxHeight: MediaQuery.of(context).size.height * 0.85,
         ),
         decoration: BoxDecoration(
-          color: const Color(0xFFFDF8F2),
+          color: const Color(0xFF2A2828),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: _border, width: 1.5),
         ),
@@ -187,6 +187,7 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
                         children: <Widget>[
                           TextFormField(
                             controller: _firstNameController,
+                            style: const TextStyle(color: Color(0xFFF2DAB1)),
                             decoration: _fieldDecoration('Nama Depan'),
                             validator: (val) =>
                                 val!.isEmpty ? 'Masukkan nama depan' : null,
@@ -195,6 +196,7 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
 
                           TextFormField(
                             controller: _middleNameController,
+                            style: const TextStyle(color: Color(0xFFF2DAB1)),
                             decoration: _fieldDecoration(
                               'Nama Tengah (Opsional)',
                             ),
@@ -203,6 +205,7 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
 
                           TextFormField(
                             controller: _lastNameController,
+                            style: const TextStyle(color: Color(0xFFF2DAB1)),
                             decoration: _fieldDecoration('Nama Belakang'),
                             validator: (val) =>
                                 val!.isEmpty ? 'Masukkan nama belakang' : null,
@@ -212,7 +215,7 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
                           DropdownButtonFormField(
                             value: _currentGender,
                             decoration: _fieldDecoration('Jenis Kelamin'),
-                            dropdownColor: const Color(0xFFFDF8F2),
+                            dropdownColor: const Color(0xFF2A2828),
                             style: const TextStyle(color: _text, fontSize: 14),
                             items: genders.map((gender) {
                               return DropdownMenuItem(
@@ -245,6 +248,9 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
                                       ? ''
                                       : '${_currentDOB!.day}/${_currentDOB!.month}/${_currentDOB!.year}',
                                 ),
+                                style: const TextStyle(
+                                  color: Color(0xFFF2DAB1),
+                                ),
                                 decoration: _fieldDecoration('Tanggal Lahir')
                                     .copyWith(
                                       suffixIcon: const Icon(
@@ -269,6 +275,9 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
                                   children: [
                                     TextFormField(
                                       controller: _weightController,
+                                      style: const TextStyle(
+                                        color: Color(0xFFF2DAB1),
+                                      ),
                                       decoration: _fieldDecoration(
                                         'Berat (kg)',
                                       ),
@@ -301,6 +310,9 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
                                   children: [
                                     TextFormField(
                                       controller: _heightController,
+                                      style: const TextStyle(
+                                        color: Color(0xFFF2DAB1),
+                                      ),
                                       decoration: _fieldDecoration(
                                         'Tinggi (cm)',
                                       ),
@@ -387,6 +399,7 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
 
                           TextFormField(
                             controller: _toothCountController,
+                            style: const TextStyle(color: Color(0xFFF2DAB1)),
                             decoration: _fieldDecoration(
                               'Jumlah Gigi (Opsional)',
                             ),
@@ -398,6 +411,7 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
 
                           TextFormField(
                             controller: _medicalHistoryController,
+                            style: const TextStyle(color: Color(0xFFF2DAB1)),
                             decoration: _fieldDecoration(
                               'Riwayat Penyakit (Opsional)',
                             ),
@@ -483,7 +497,7 @@ class _UpdateBabyFormsState extends State<UpdateBabyForms> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: value ? _brand.withOpacity(0.08) : Colors.white,
+        color: value ? _brand.withOpacity(0.08) : const Color(0xFF363434),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: _border, width: 1.2),
       ),

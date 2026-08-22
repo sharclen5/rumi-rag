@@ -21,7 +21,7 @@ class BabyDetail extends StatelessWidget {
             width: 110,
             child: Text(
               label,
-              style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+              style: TextStyle(fontSize: 13, color: Colors.grey.shade400),
             ),
           ),
           Expanded(
@@ -29,7 +29,7 @@ class BabyDetail extends StatelessWidget {
               value,
               style: const TextStyle(
                 fontSize: 13,
-                color: Color(0xFF363434),
+                color: Color(0xFFF2DAB1),
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -67,9 +67,9 @@ class BabyDetail extends StatelessWidget {
           maxHeight: MediaQuery.of(context).size.height * 0.75,
         ),
         decoration: BoxDecoration(
-          color: const Color(0xFFFDF8F2),
+          color: const Color(0xFF2A2828),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+          border: Border.all(color: const Color(0xFF4A4646), width: 1.5),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -104,14 +104,14 @@ class BabyDetail extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF363434),
+                            color: Color(0xFFF2DAB1),
                           ),
                         ),
                         Text(
                           '${baby.ageInMonths} bulan',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade500,
+                            color: Colors.grey.shade400,
                           ),
                         ),
                       ],
@@ -123,13 +123,13 @@ class BabyDetail extends StatelessWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8D5B7),
+                        color: const Color(0xFF4A4646),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
                         Icons.close,
                         size: 18,
-                        color: Color(0xFF363434),
+                        color: Color(0xFFF2DAB1),
                       ),
                     ),
                   ),
@@ -137,7 +137,7 @@ class BabyDetail extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            Divider(color: const Color(0xFFE8D5B7), height: 1),
+            Divider(color: const Color(0xFF4A4646), height: 1),
 
             // scrollable info body
             Flexible(
@@ -210,8 +210,11 @@ class BabyDetail extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton.icon(
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: _brand,
-                        side: const BorderSide(color: _brand, width: 1.2),
+                        foregroundColor: const Color(0xFFD4A96A),
+                        side: const BorderSide(
+                          color: Color(0xFFD4A96A),
+                          width: 1.2,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

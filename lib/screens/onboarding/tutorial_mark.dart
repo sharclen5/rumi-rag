@@ -9,12 +9,6 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:rumi/shared/tour_keys.dart';
 import 'package:rumi/shared/rag_badge.dart';
 
-// Dedicated, self-contained coach mark tour page. Entirely fake data, no
-// Firestore, no real navigation — fakes its own "current tab" switching via
-// _currentSection instead of hooking into Wrapper/BottomNavBar's real state.
-// Launched via Navigator.push, either right after onboarding's AddBabyForms
-// submits, or via Profile's "Tutorial" replay button.
-
 class TutorialMark extends StatefulWidget {
   final VoidCallback? onFinished;
   const TutorialMark({super.key, this.onFinished});
@@ -24,16 +18,19 @@ class TutorialMark extends StatefulWidget {
 }
 
 class _TutorialMarkState extends State<TutorialMark> {
-  // fake "current tab" — 0 Home, 1 Rekomendasi, 3 Riwayat, 4 Profile.
-  // (index 2, "Buat Rencana", is a modal trigger in the real app, never a
-  // real section — same as Wrapper's real _currentIndex never becoming 2)
   int _currentSection = 0;
 
-  // ---- fake data ----
   static const String _fakeUid = 'demo_uid';
   static const String _fakeBabyId = 'demo_baby';
   static const String _fakeBabyName = 'Mulyono';
   static const String _fakeBabyLabel = 'Contoh Bayi · 8 bulan';
+
+  // CHANGED: warna palette dark — dipakai konsisten di semua section mimic
+  static const _ink = Color(0xFFF2DAB1);
+  static const _cardBg = Color(0xFF2A2828);
+  static const _cardBorder = Color(0xFF4A4646);
+  static const _brand = Color.fromARGB(255, 144, 121, 84);
+  static const _brandDark = Color.fromARGB(255, 122, 105, 95);
 
   static const Set<String> _fakeCoveredGroups = {
     'karbohidrat',
@@ -91,13 +88,33 @@ class _TutorialMarkState extends State<TutorialMark> {
     return days[weekday - 1];
   }
 
-  // matches HomeHero.getGreeting()
   String _getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 11) return 'Selamat Pagi';
     if (hour < 15) return 'Selamat Siang';
     if (hour < 18) return 'Selamat Sore';
     return 'Selamat Malam,';
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ShowcaseView.get().startShowCase([
+        TourKeys.demoHomeNavIcon,
+        TourKeys.babyDropdown,
+        TourKeys.calendarStrip,
+        TourKeys.todayScheduleCard,
+        TourKeys.nutritionCard,
+        TourKeys.aiTipsCard,
+        TourKeys.demoRekomendasiNavIcon,
+      ]);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -119,29 +136,6 @@ class _TutorialMarkState extends State<TutorialMark> {
     );
   }
 
-  @override
-  void initState() {
-    // CHANGED: registration now lives in Wrapper, not here
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ShowcaseView.get().startShowCase([
-        TourKeys.demoHomeNavIcon,
-        TourKeys.babyDropdown,
-        TourKeys.calendarStrip,
-        TourKeys.todayScheduleCard,
-        TourKeys.nutritionCard,
-        TourKeys.aiTipsCard,
-        TourKeys.demoRekomendasiNavIcon,
-      ]);
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  // maps _currentSection (0,1,3,4) to the IndexedStack's 0..3 children
   Widget _buildCurrentSection() {
     switch (_currentSection) {
       case 1:
@@ -156,23 +150,24 @@ class _TutorialMarkState extends State<TutorialMark> {
   }
 
   // ---- Home mimic ----
-  // CHANGED: AppBar collapsed to toolbarHeight 0 (matches real Home), the
-  // old inline welcome/dropdown header is gone from the AppBar — it now
-  // lives in a HomeHero-style card at the top of the body. Spacing between
-  // sections (20 / 24 / 12 / 24) matches the real page too.
   Widget _buildHomeSection() {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
         elevation: 0,
-        backgroundColor: const Color(0xFFF2DAB1),
+        backgroundColor: const Color(
+          0xFF363434,
+        ), // CHANGED: was Color(0xFFF2DAB1)
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFFF5EBD9), Color(0xFFFFFFFF)],
+            colors: [
+              Color(0xFF363434),
+              Color(0xFF1A1A1A),
+            ], // CHANGED: was cream to white
             stops: [0.0, 1.0],
           ),
         ),
@@ -228,20 +223,19 @@ class _TutorialMarkState extends State<TutorialMark> {
               ),
               const SizedBox(height: 24),
 
-              // CHANGED: matches Home's new tips card copy/icon-less header
               Showcase(
                 key: TourKeys.aiTipsCard,
                 title: 'Tips dari Rumi AI',
                 description:
                     'Dapatkan tips harian yang disesuaikan dengan usia si kecil',
                 child: Card(
-                  color: const Color(0xFFFDF8F2),
+                  color: _cardBg, // CHANGED: was Color(0xFFFDF8F2)
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                     side: const BorderSide(
-                      color: Color(0xFFE8D5B7),
+                      color: _cardBorder,
                       width: 1.5,
-                    ),
+                    ), // CHANGED: was Color(0xFFE8D5B7)
                   ),
                   elevation: 2,
                   child: Padding(
@@ -249,15 +243,15 @@ class _TutorialMarkState extends State<TutorialMark> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: const [
+                        const Row(
+                          children: [
                             SizedBox(width: 6),
                             Text(
                               '🤎 Pesan dari Rumi',
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF363434),
+                                color: _ink, // CHANGED: was Color(0xFF363434)
                               ),
                             ),
                           ],
@@ -269,7 +263,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                           'setiap menu.',
                           style: const TextStyle(
                             fontSize: 13,
-                            color: Color(0xFF363434),
+                            color: _ink, // CHANGED: was Color(0xFF363434)
                             fontStyle: FontStyle.italic,
                             height: 1.5,
                           ),
@@ -281,7 +275,9 @@ class _TutorialMarkState extends State<TutorialMark> {
                             '— Rumi AI',
                             style: TextStyle(
                               fontSize: 11,
-                              color: Colors.grey.shade500,
+                              color: Colors
+                                  .grey
+                                  .shade400, // CHANGED: was grey.shade500
                             ),
                           ),
                         ),
@@ -297,23 +293,20 @@ class _TutorialMarkState extends State<TutorialMark> {
     );
   }
 
-  // ADDED: static stand-in for HomeHero. HomeHero itself takes a real
-  // UserProfile?/Baby?/List<Baby>, which this fake-data-only page doesn't
-  // construct
   Widget _buildFakeHomeHero() {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFFDF8F2),
+        color: _cardBg, // CHANGED: was Color(0xFFFDF8F2)
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE8D5B7)),
+        border: Border.all(
+          color: _cardBorder,
+        ), // CHANGED: was Color(0xFFE8D5B7)
       ),
-      // pake Stack supaya posisi badge sama persis kayak HomeHero asli
       child: Stack(
         clipBehavior: Clip.none,
         children: [
           Padding(
-            // kasih ruang di atas supaya badge nggak numpuk sama konten
             padding: const EdgeInsets.only(top: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -327,9 +320,11 @@ class _TutorialMarkState extends State<TutorialMark> {
                         children: [
                           Text(
                             _getGreeting(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 15,
-                              color: Color(0xFF6A655F),
+                              color: Colors
+                                  .grey
+                                  .shade400, // CHANGED: was Color(0xFF6A655F)
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -338,7 +333,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                             style: TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF363434),
+                              color: _ink, // CHANGED: was Color(0xFF363434)
                             ),
                           ),
                         ],
@@ -353,38 +348,35 @@ class _TutorialMarkState extends State<TutorialMark> {
 
                 Text(
                   'Semoga hari ini menyenangkan bersama si kecil.',
-                  style: TextStyle(color: Colors.grey.shade600),
+                  style: TextStyle(
+                    color: Colors.grey.shade400,
+                  ), // CHANGED: was grey.shade600
                 ),
 
                 const SizedBox(height: 5),
 
-                // tetap Showcase supaya step tutorial dropdown tetap jalan
                 Showcase(
                   key: TourKeys.babyDropdown,
                   title: 'Pilih Profil Bayi',
                   description: 'Ganti profil bayi aktif di sini kapan saja',
                   child: Row(
-                    children: [
-                      const Icon(
-                        Icons.circle,
-                        color: Colors.greenAccent,
-                        size: 10,
-                      ),
-                      const SizedBox(width: 6),
-                      const Expanded(
+                    children: const [
+                      Icon(Icons.circle, color: Colors.greenAccent, size: 10),
+                      SizedBox(width: 6),
+                      Expanded(
                         child: Text(
                           _fakeBabyLabel,
                           style: TextStyle(
-                            color: Color(0xFF363434),
+                            color: _ink,
                             fontSize: 14,
-                          ),
+                          ), // CHANGED: was Color(0xFF363434)
                         ),
                       ),
-                      const Icon(
+                      Icon(
                         Icons.arrow_drop_down,
-                        color: Color(0xFF363434),
+                        color: _ink,
                         size: 20,
-                      ),
+                      ), // CHANGED: was Color(0xFF363434)
                     ],
                   ),
                 ),
@@ -392,8 +384,6 @@ class _TutorialMarkState extends State<TutorialMark> {
             ),
           ),
 
-          // badge sekarang mengikuti posisi HomeHero asli
-          // nggak perlu GestureDetector karena dummy ini memang nggak tappable
           Positioned(
             top: -2,
             left: -2,
@@ -404,16 +394,15 @@ class _TutorialMarkState extends State<TutorialMark> {
     );
   }
 
-  // ---- Rekomendasi ("Jadwal MPASI") mimic ----
-  // CHANGED: AppBar collapsed to toolbarHeight 0; title + baby dropdown +
-  // edit-schedule icon moved into the body as a header block, same pattern
-  // as Home/Riwayat now use. Empty-state icon/copy/button unchanged.
+  // ---- Rekomendasi mimic ----
   Widget _buildRekomendasiSection() {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
         elevation: 0,
-        backgroundColor: const Color(0xFFF2DAB1),
+        backgroundColor: const Color(
+          0xFF363434,
+        ), // CHANGED: was Color(0xFFF2DAB1)
       ),
       body: Container(
         width: double.infinity,
@@ -422,7 +411,10 @@ class _TutorialMarkState extends State<TutorialMark> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFFF5EBD9), Color(0xFFFFFFFF)],
+            colors: [
+              Color(0xFF363434),
+              Color(0xFF1A1A1A),
+            ], // CHANGED: was cream to white
             stops: [0.0, 1.0],
           ),
         ),
@@ -442,33 +434,33 @@ class _TutorialMarkState extends State<TutorialMark> {
                           const Text(
                             'Jadwal MPASI',
                             style: TextStyle(
-                              color: Color(0xFF363434),
+                              color: _ink, // CHANGED: was Color(0xFF363434)
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Row(
-                            children: [
-                              const Icon(
+                            children: const [
+                              Icon(
                                 Icons.circle,
                                 color: Colors.greenAccent,
                                 size: 10,
                               ),
-                              const SizedBox(width: 6),
+                              SizedBox(width: 6),
                               Text(
                                 'Profil aktif: $_fakeBabyLabel',
-                                style: const TextStyle(
-                                  color: Color(0xFF363434),
+                                style: TextStyle(
+                                  color: _ink,
                                   fontSize: 13,
-                                ),
+                                ), // CHANGED
                               ),
-                              const SizedBox(width: 4),
-                              const Icon(
+                              SizedBox(width: 4),
+                              Icon(
                                 Icons.arrow_drop_down,
-                                color: Color(0xFF363434),
+                                color: _ink,
                                 size: 18,
-                              ),
+                              ), // CHANGED
                             ],
                           ),
                         ],
@@ -479,7 +471,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                       child: Container(
                         width: 48,
                         height: 48,
-                        color: const Color.fromARGB(255, 122, 105, 95),
+                        color: _brandDark,
                         child: const Icon(
                           Icons.edit_document,
                           color: Colors.white,
@@ -513,7 +505,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF363434),
+                            color: _ink, // CHANGED
                           ),
                         );
                       },
@@ -526,7 +518,6 @@ class _TutorialMarkState extends State<TutorialMark> {
               Expanded(
                 child: Showcase(
                   key: TourKeys.rekomendasiEmptyState,
-                  title: 'Belum Ada Rencana',
                   description:
                       'Rencana menu untuk tanggal ini akan muncul di sini setelah dibuat',
                   child: Center(
@@ -536,25 +527,22 @@ class _TutorialMarkState extends State<TutorialMark> {
                         Icon(
                           Icons.no_meals,
                           size: 48,
-                          color: Colors.grey.shade400,
-                        ),
+                          color: Colors.grey.shade600,
+                        ), // CHANGED: was grey.shade400
                         const SizedBox(height: 12),
                         Text(
                           'Belum ada rencana untuk hari ini',
-                          style: TextStyle(color: Colors.grey.shade600),
+                          style: TextStyle(
+                            color: Colors.grey.shade500,
+                          ), // CHANGED: was grey.shade600
                         ),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(
-                              255,
-                              144,
-                              121,
-                              84,
-                            ),
+                            backgroundColor: _brand,
                             foregroundColor: Colors.white,
                           ),
-                          onPressed: () {}, // no-op in the demo
+                          onPressed: () {},
                           child: const Text('Buat Rekomendasi'),
                         ),
                       ],
@@ -569,12 +557,15 @@ class _TutorialMarkState extends State<TutorialMark> {
     );
   }
 
+  // ---- Riwayat mimic ----
   Widget _buildRiwayatSection() {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 0,
         elevation: 0,
-        backgroundColor: const Color(0xFFF2DAB1),
+        backgroundColor: const Color(
+          0xFF363434,
+        ), // CHANGED: was Color(0xFFF2DAB1)
       ),
       body: Container(
         width: double.infinity,
@@ -583,7 +574,10 @@ class _TutorialMarkState extends State<TutorialMark> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFFF5EBD9), Color(0xFFFFFFFF)],
+            colors: [
+              Color(0xFF363434),
+              Color(0xFF1A1A1A),
+            ], // CHANGED: was cream to white
             stops: [0.0, 1.0],
           ),
         ),
@@ -591,7 +585,6 @@ class _TutorialMarkState extends State<TutorialMark> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // header: title + dropdown on the left, today-jump icon on the right
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
                 child: Row(
@@ -604,47 +597,44 @@ class _TutorialMarkState extends State<TutorialMark> {
                           const Text(
                             'Riwayat MPASI',
                             style: TextStyle(
-                              color: Color(0xFF363434),
+                              color: _ink, // CHANGED
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Row(
-                            children: [
-                              const Icon(
+                            children: const [
+                              Icon(
                                 Icons.circle,
                                 color: Colors.greenAccent,
                                 size: 10,
                               ),
-                              const SizedBox(width: 6),
+                              SizedBox(width: 6),
                               Text(
                                 'Profil aktif: $_fakeBabyLabel',
-                                style: const TextStyle(
-                                  color: Color(0xFF363434),
+                                style: TextStyle(
+                                  color: _ink,
                                   fontSize: 13,
-                                ),
+                                ), // CHANGED
                               ),
-                              const SizedBox(width: 4),
-                              const Icon(
+                              SizedBox(width: 4),
+                              Icon(
                                 Icons.arrow_drop_down,
-                                color: Color(0xFF363434),
+                                color: _ink,
                                 size: 18,
-                              ),
+                              ), // CHANGED
                             ],
                           ),
                         ],
                       ),
                     ),
-                    // ADDED: static "hari ini" jump icon, mirrors HistoryPage's
-                    // dimmed-when-already-today container (always full opacity
-                    // here since the demo's date never changes)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Container(
                         width: 48,
                         height: 48,
-                        color: const Color.fromARGB(255, 122, 105, 95),
+                        color: _brandDark,
                         child: const Icon(
                           Icons.today,
                           color: Colors.white,
@@ -659,7 +649,6 @@ class _TutorialMarkState extends State<TutorialMark> {
               Expanded(
                 child: Showcase(
                   key: TourKeys.riwayatPage,
-                  title: 'Riwayat MPASI',
                   description:
                       'Lihat kembali menu-menu yang sudah pernah diberikan ke si kecil',
                   child: Column(
@@ -679,8 +668,6 @@ class _TutorialMarkState extends State<TutorialMark> {
                               showArrows: true,
                             ),
                             const SizedBox(height: 12),
-                            // CHANGED: weekday-first label to match HistoryPage's
-                            // "${_dayName(weekday)}, ${day} ${_monthName(month)}"
                             Builder(
                               builder: (context) {
                                 final now = DateTime.now();
@@ -689,7 +676,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF363434),
+                                    color: _ink, // CHANGED
                                   ),
                                 );
                               },
@@ -724,22 +711,17 @@ class _TutorialMarkState extends State<TutorialMark> {
     );
   }
 
-  // ADDED: static mimic of _CompletionSummaryCard from the real Riwayat page
   Widget _fakeCompletionSummaryCard() {
-    const brand = Color.fromARGB(255, 144, 121, 84);
-    const ink = Color(0xFF363434);
-    const cardBorder = Color(0xFFE8D5B7);
-
     final total = _fakeRecommendation.meals.length;
     final eaten = _fakeRecommendation.meals.where((m) => m.isEaten).length;
     final ratio = total == 0 ? 0.0 : eaten / total;
     final allDone = total > 0 && eaten == total;
 
     return Card(
-      color: const Color(0xFFFDF8F2),
+      color: _cardBg, // CHANGED: was Color(0xFFFDF8F2)
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: cardBorder, width: 1.5),
+        side: const BorderSide(color: _cardBorder, width: 1.5), // CHANGED
       ),
       elevation: 2,
       child: Padding(
@@ -755,7 +737,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: ink,
+                    color: _ink, // CHANGED
                   ),
                 ),
                 Text(
@@ -763,7 +745,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: brand,
+                    color: _brand,
                   ),
                 ),
               ],
@@ -774,8 +756,8 @@ class _TutorialMarkState extends State<TutorialMark> {
               child: LinearProgressIndicator(
                 value: ratio,
                 minHeight: 8,
-                backgroundColor: cardBorder.withOpacity(0.5),
-                valueColor: const AlwaysStoppedAnimation<Color>(brand),
+                backgroundColor: _cardBorder.withOpacity(0.5), // CHANGED
+                valueColor: const AlwaysStoppedAnimation<Color>(_brand),
               ),
             ),
           ],
@@ -784,15 +766,7 @@ class _TutorialMarkState extends State<TutorialMark> {
     );
   }
 
-  // CHANGED: replaces the old _fakeHistoryMealRow — now mirrors
-  // _HistoryMealCard's icon-chip + type-badge + check-icon card style
-  // instead of a plain checklist row
   Widget _fakeHistoryMealCard(Meal meal) {
-    const brand = Color.fromARGB(255, 144, 121, 84);
-    const brandDark = Color.fromARGB(255, 122, 105, 95);
-    const ink = Color(0xFF363434);
-    const cardBorder = Color(0xFFE8D5B7);
-
     final isAsi = meal.type == 'ASI';
     final label = isAsi ? 'Air Susu Ibu' : (meal.name ?? '');
     final IconData mealIcon = isAsi
@@ -804,10 +778,10 @@ class _TutorialMarkState extends State<TutorialMark> {
     return Opacity(
       opacity: meal.isEaten ? 1.0 : 0.55,
       child: Card(
-        color: const Color(0xFFFDF8F2),
+        color: _cardBg, // CHANGED: was Color(0xFFFDF8F2)
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: const BorderSide(color: cardBorder, width: 1.5),
+          side: const BorderSide(color: _cardBorder, width: 1.5), // CHANGED
         ),
         elevation: 2,
         margin: EdgeInsets.zero,
@@ -820,7 +794,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                 child: Container(
                   width: 44,
                   height: 44,
-                  color: brandDark,
+                  color: _brandDark,
                   child: Icon(mealIcon, color: Colors.white, size: 20),
                 ),
               ),
@@ -837,7 +811,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: brand,
+                            color: _brand,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
@@ -853,8 +827,8 @@ class _TutorialMarkState extends State<TutorialMark> {
                           meal.time,
                           style: TextStyle(
                             fontSize: 11,
-                            color: Colors.grey.shade500,
-                          ),
+                            color: Colors.grey.shade400,
+                          ), // CHANGED: was grey.shade500
                         ),
                       ],
                     ),
@@ -864,7 +838,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: ink,
+                        color: _ink, // CHANGED
                       ),
                     ),
                   ],
@@ -876,7 +850,7 @@ class _TutorialMarkState extends State<TutorialMark> {
                     ? Icons.check_circle
                     : Icons.radio_button_unchecked,
                 size: 20,
-                color: meal.isEaten ? brand : Colors.grey.shade400,
+                color: meal.isEaten ? _brand : Colors.grey.shade400,
               ),
             ],
           ),
@@ -888,14 +862,18 @@ class _TutorialMarkState extends State<TutorialMark> {
   // ---- Profile mimic ----
   Widget _buildProfileSection() {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 113, 222, 255),
+      backgroundColor: const Color(
+        0xFF1A1A1A,
+      ), // CHANGED: was Color.fromARGB(255, 113, 222, 255)
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
-        backgroundColor: const Color.fromARGB(255, 242, 218, 177),
+        backgroundColor: const Color(
+          0xFF363434,
+        ), // CHANGED: was Color.fromARGB(255, 242, 218, 177)
         title: const Text(
           'My Account',
-          style: TextStyle(color: Color(0xFF363434)),
+          style: TextStyle(color: _ink), // CHANGED: was Color(0xFF363434)
         ),
       ),
       body: Container(
@@ -904,7 +882,10 @@ class _TutorialMarkState extends State<TutorialMark> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFFF5EBD9), Color(0xFFFFFFFF)],
+            colors: [
+              Color(0xFF363434),
+              Color(0xFF1A1A1A),
+            ], // CHANGED: was cream to white
             stops: [0.0, 1.0],
           ),
         ),
@@ -913,25 +894,24 @@ class _TutorialMarkState extends State<TutorialMark> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              // fake avatar, mirrors ProfilePic's empty-state look
               const CircleAvatar(
                 radius: 57.5,
-                backgroundColor: Color(0xFFE8C99A),
-                child: Icon(Icons.person, color: Color(0xFF8B6F47), size: 40),
+                backgroundColor: Color(
+                  0xFF363434,
+                ), // CHANGED: was Color(0xFFE8C99A)
+                child: Icon(
+                  Icons.person,
+                  color: _ink,
+                  size: 40,
+                ), // CHANGED: was Color(0xFF8B6F47)
               ),
               const SizedBox(height: 20),
-              // wrapped in Showcase — the actual last tour step
               Showcase(
                 key: TourKeys.profilePage,
-                title: 'Profil',
                 description:
                     'Kelola detail akun, data bayi, dan pengaturan lainnya di sini',
-                onTargetClick: () {
-                  _finishTutorial();
-                },
-                onToolTipClick: () {
-                  _finishTutorial();
-                },
+                onTargetClick: () => _finishTutorial(),
+                onToolTipClick: () => _finishTutorial(),
                 disposeOnTap: true,
                 disableBarrierInteraction: true,
                 child: Column(
@@ -957,7 +937,6 @@ class _TutorialMarkState extends State<TutorialMark> {
     });
   }
 
-  // static, no-op mimic of ProfileMenu
   Widget _fakeProfileMenu(String text, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -966,20 +945,28 @@ class _TutorialMarkState extends State<TutorialMark> {
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
-          color: const Color(0xFFFDF8F2),
+          border: Border.all(
+            color: _cardBorder,
+            width: 1.5,
+          ), // CHANGED: was Color(0xFFE8D5B7)
+          color: _cardBg, // CHANGED: was Color(0xFFFDF8F2)
         ),
         child: Row(
           children: [
-            Icon(icon, size: 22, color: const Color(0xFF363434)),
+            Icon(icon, size: 22, color: _ink), // CHANGED: was Color(0xFF363434)
             const SizedBox(width: 20),
             Expanded(
               child: Text(
                 text,
-                style: const TextStyle(color: Color(0xFF757575)),
+                style: const TextStyle(
+                  color: _ink,
+                ), // CHANGED: was Color(0xFF757575)
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, color: Color(0xFF757575)),
+            const Icon(
+              Icons.arrow_forward_ios,
+              color: _ink,
+            ), // CHANGED: was Color(0xFF757575)
           ],
         ),
       ),

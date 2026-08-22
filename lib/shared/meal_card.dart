@@ -94,10 +94,10 @@ class _MealCardState extends State<MealCard> {
       height: 180,
       child: Card(
         margin: EdgeInsets.symmetric(horizontal: 4),
-        color: Color(0xFFFDF8F2),
+        color: Color(0xFF2A2828),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Color(0xFFE8D5B7), width: 1.5),
+          side: BorderSide(color: Color(0xFF4A4646), width: 1.5),
         ),
         elevation: 2,
         child: Padding(
@@ -124,7 +124,7 @@ class _MealCardState extends State<MealCard> {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF363434),
+                        color: Color(0xFFF2DAB1),
                       ),
                     ),
                     SizedBox(height: 4),
@@ -229,10 +229,10 @@ class _MealCardItemState extends State<_MealCardItem> {
         },
         child: Card(
           margin: EdgeInsets.symmetric(horizontal: 4),
-          color: Color(0xFFFDF8F2),
+          color: Color(0xFF2A2828),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Color(0xFFE8D5B7), width: 1.5),
+            side: BorderSide(color: Color(0xFF4A4646), width: 1.5),
           ),
           elevation: 2,
           child: Padding(
@@ -269,7 +269,7 @@ class _MealCardItemState extends State<_MealCardItem> {
                             'Pukul ${meal.time}',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Colors.grey.shade500,
+                              color: Colors.grey.shade400,
                             ),
                           ),
                           SizedBox(height: 2),
@@ -278,7 +278,7 @@ class _MealCardItemState extends State<_MealCardItem> {
                             style: TextStyle(
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF363434),
+                              color: Color(0xFFF2DAB1),
                             ),
                           ),
                         ],
@@ -296,7 +296,7 @@ class _MealCardItemState extends State<_MealCardItem> {
                   ],
                 ),
                 SizedBox(height: 10),
-                Divider(color: Color(0xFFE8D5B7)),
+                Divider(color: Color(0xFF4A4646)),
                 Spacer(),
                 // ADDED: toggle affordance + existing "Lihat detail" in one row
                 Row(
@@ -323,7 +323,7 @@ class _MealCardItemState extends State<_MealCardItem> {
                               fontSize: 12,
                               color: _isEaten
                                   ? Color.fromARGB(255, 144, 121, 84)
-                                  : Colors.grey.shade500,
+                                  : Colors.grey.shade400,
                             ),
                           ),
                         ],

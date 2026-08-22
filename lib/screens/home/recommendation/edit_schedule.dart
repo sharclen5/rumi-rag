@@ -24,9 +24,9 @@ class EditScheduleDialog extends StatelessWidget {
           maxHeight: MediaQuery.of(context).size.height * 0.7,
         ),
         decoration: BoxDecoration(
-          color: const Color(0xFFFDF8F2),
+          color: const Color(0xFF2A2828),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+          border: Border.all(color: const Color(0xFF4A4646), width: 1.5),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -44,7 +44,7 @@ class EditScheduleDialog extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF363434),
+                            color: Color(0xFFF2DAB1),
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -52,7 +52,7 @@ class EditScheduleDialog extends StatelessWidget {
                           dateLabel,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade500,
+                            color: Colors.grey.shade400,
                           ),
                         ),
                       ],
@@ -64,20 +64,20 @@ class EditScheduleDialog extends StatelessWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8D5B7),
+                        color: const Color(0xFF4A4646),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
                         Icons.close,
                         size: 18,
-                        color: Color(0xFF363434),
+                        color: Color(0xFFF2DAB1),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-            const Divider(height: 1, color: Color(0xFFE8D5B7)),
+            const Divider(height: 1, color: Color(0xFF4A4646)),
 
             Flexible(
               child: SingleChildScrollView(
@@ -165,7 +165,7 @@ class EditScheduleDialog extends StatelessWidget {
                                       style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
-                                        color: Color(0xFF363434),
+                                        color: Color(0xFFF2DAB1),
                                       ),
                                     ),
                                     const SizedBox(height: 2),
@@ -173,7 +173,7 @@ class EditScheduleDialog extends StatelessWidget {
                                       meal.type,
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Colors.grey.shade500,
+                                        color: Colors.grey.shade400,
                                       ),
                                     ),
                                   ],

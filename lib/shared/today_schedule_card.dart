@@ -109,7 +109,7 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
                 const Icon(
                   Icons.restaurant_menu,
                   size: 18,
-                  color: Color.fromARGB(255, 144, 121, 84),
+                  color: Color.fromARGB(255, 210, 170, 100),
                 ),
                 SizedBox(width: 8),
                 const Text(
@@ -117,7 +117,7 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF363434),
+                    color: Color(0xFFF2DAB1),
                   ),
                 ),
               ],
@@ -196,10 +196,10 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: const Color(0xFF2A2828),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: const Color(0xFFE8D5B7),
+                    color: const Color(0xFF4A4646),
                     width: 1.2,
                   ),
                 ),
@@ -208,7 +208,7 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Color.fromARGB(255, 144, 121, 84),
+                    color: Color(0xFFD4A96A),
                   ),
                 ),
               ),
@@ -221,10 +221,10 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
 
   Widget _emptyCard() {
     return Card(
-      color: const Color(0xFFFDF8F2),
+      color: const Color(0xFF2A2828),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFFE8D5B7), width: 1.5),
+        side: const BorderSide(color: Color(0xFF4A4646), width: 1.5),
       ),
       elevation: 2,
       child: Padding(
@@ -255,7 +255,7 @@ class _TodayScheduleCardState extends State<TodayScheduleCard> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF363434),
+                      color: Color(0xFFF2DAB1),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -320,7 +320,7 @@ class _ScheduleRow extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: meal.isEaten
                         ? _accentColor
-                        : (isNext ? _accentColor : Colors.grey.shade200),
+                        : (isNext ? _accentColor : Colors.grey.shade700),
                   ),
                   child: Icon(
                     meal.isEaten
@@ -352,7 +352,7 @@ class _ScheduleRow extends StatelessWidget {
                       vertical: 12,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color(0xFF2A2828),
                       borderRadius: BorderRadius.circular(12),
                       border:
                           isNext // ADDED
@@ -370,7 +370,7 @@ class _ScheduleRow extends StatelessWidget {
                                 style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
-                                  color: Color(0xFF363434),
+                                  color: Color(0xFFF2DAB1),
                                 ),
                               ),
                               const SizedBox(height: 2),

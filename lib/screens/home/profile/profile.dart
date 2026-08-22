@@ -30,15 +30,14 @@ class ProfilePage extends StatelessWidget {
         final bottomClearance = 64 + 24 + systemNavInset + 16;
 
         return Scaffold(
-          backgroundColor: const Color.fromARGB(255, 113, 222, 255),
           appBar: AppBar(
             centerTitle: false,
             elevation: 0,
-            backgroundColor: Color.fromARGB(255, 242, 218, 177),
+            backgroundColor: const Color.fromARGB(255, 32, 31, 31),
             foregroundColor: Colors.white,
             title: const Text(
               "My Account",
-              style: TextStyle(color: Color(0xFF363434)),
+              style: TextStyle(color: Color(0xFFF2DAB1)),
             ),
           ),
 
@@ -48,7 +47,7 @@ class ProfilePage extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFFF5EBD9), Color(0xFFFFFFFF)],
+                colors: [Color(0xFF363434), Color(0xFF1A1A1A)],
                 stops: [0.0, 1.0],
               ),
             ),
@@ -155,8 +154,12 @@ class ProfilePic extends StatelessWidget {
           photoUrl != null
               ? CircleAvatar(backgroundImage: _resolveImage())
               : CircleAvatar(
-                  backgroundColor: Color(0xFFE8C99A),
-                  child: Icon(Icons.person, color: Color(0xFF8B6F47), size: 40),
+                  backgroundColor: const Color(0xFF363434),
+                  child: Icon(
+                    Icons.person,
+                    color: const Color(0xFFF2DAB1),
+                    size: 40,
+                  ),
                 ),
         ],
       ),
@@ -182,13 +185,13 @@ class ProfileMenu extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: TextButton(
         style: TextButton.styleFrom(
-          foregroundColor: const Color(0xFF363434),
+          foregroundColor: const Color(0xFFF2DAB1),
           padding: const EdgeInsets.all(20),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Color(0xFFE8D5B7), width: 1.5),
+            side: const BorderSide(color: Color(0xFF4A4646), width: 1.5),
           ),
-          backgroundColor: Color(0xFFFDF8F2),
+          backgroundColor: const Color(0xFF2A2828),
         ),
         onPressed: press,
         child: Row(
@@ -197,7 +200,7 @@ class ProfileMenu extends StatelessWidget {
               SvgPicture.asset(
                 icon,
                 colorFilter: const ColorFilter.mode(
-                  Color(0xFF363434),
+                  Color(0xFFF2DAB1),
                   BlendMode.srcIn,
                 ),
                 width: 22,
@@ -208,10 +211,10 @@ class ProfileMenu extends StatelessWidget {
             Expanded(
               child: Text(
                 text,
-                style: const TextStyle(color: Color(0xFF757575)),
+                style: const TextStyle(color: Color(0xFFF2DAB1)),
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, color: Color(0xFF757575)),
+            const Icon(Icons.arrow_forward_ios, color: Color(0xFFF2DAB1)),
           ],
         ),
       ),

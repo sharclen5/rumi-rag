@@ -29,7 +29,7 @@ class _CalendarStripState extends State<CalendarStrip> {
   bool _expanded = false; // toggles strip vs full month grid
   late DateTime _visibleMonth; // month currently shown when expanded
 
-  static const activeColor = Color(0xFF363434);
+  static const activeColor = Color(0xFFF2DAB1);
   static const _dayLabels = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
   late final List<DateTime> _days;
 
@@ -75,7 +75,7 @@ class _CalendarStripState extends State<CalendarStrip> {
     final start = DateTime(_visibleMonth.year, _visibleMonth.month, 1);
     final end = DateTime(_visibleMonth.year, _visibleMonth.month + 1, 0);
     final startId = '${widget.babyId}_${_fmt(start)}';
-    final endId = '${widget.babyId}_${_fmt(end)}';
+    final endId = '${widget.babyId}_${_fmt(end)}_rag';
     return FirebaseFirestore.instance
         .collection('users')
         .doc(widget.uid)
@@ -85,7 +85,16 @@ class _CalendarStripState extends State<CalendarStrip> {
         .snapshots()
         .map(
           (snap) => snap.docs
-              .map((d) => int.tryParse(d.id.split('_').last.split('-').last))
+              .map(
+                (d) => int.tryParse(
+                  d.id
+                      .replaceAll('_rag', '')
+                      .split('_')
+                      .last
+                      .split('-')
+                      .last, // CHANGED: buang suffix _rag sebelum parse tanggal
+                ),
+              )
               .whereType<int>()
               .toSet(),
         );
@@ -200,7 +209,9 @@ class _CalendarStripState extends State<CalendarStrip> {
                         fontWeight: isSelected
                             ? FontWeight.bold
                             : FontWeight.normal,
-                        color: isSelected ? Colors.white : Colors.grey.shade700,
+                        color: isSelected
+                            ? Color(0xFF363434)
+                            : Colors.grey.shade300,
                       ),
                     ),
                   ),
@@ -251,10 +262,10 @@ class _CalendarStripState extends State<CalendarStrip> {
         onTap: _toggleExpanded,
         behavior: HitTestBehavior.opaque,
         child: Card(
-          color: Color(0xFFFDF8F2),
+          color: Color(0xFF2A2828),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Color(0xFFE8D5B7), width: 1.5),
+            side: BorderSide(color: Color(0xFF4A4646), width: 1.5),
           ),
           elevation: 2,
           child: Padding(
@@ -380,7 +391,7 @@ class _CalendarStripState extends State<CalendarStrip> {
       0,
     ).day;
     final leadingBlanks = firstOfMonth.weekday - 1;
-    const accent = Color.fromARGB(255, 144, 121, 84);
+    const accent = Color(0xFFD4A96A);
 
     return Column(
       children: [
@@ -459,8 +470,8 @@ class _CalendarStripState extends State<CalendarStrip> {
                                 ? FontWeight.bold
                                 : FontWeight.normal,
                             color: isSelected
-                                ? Colors.white
-                                : (isSunday ? accent : const Color(0xFF363434)),
+                                ? Color(0xFF363434)
+                                : (isSunday ? accent : const Color(0xFFF2DAB1)),
                           ),
                         ),
                       ),
@@ -470,9 +481,7 @@ class _CalendarStripState extends State<CalendarStrip> {
                         height: 4,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: hasPlan && !isSelected
-                              ? accent
-                              : Colors.transparent,
+                          color: hasPlan ? accent : Colors.transparent,
                         ),
                       ),
                     ],

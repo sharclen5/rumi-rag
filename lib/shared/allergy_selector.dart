@@ -82,7 +82,7 @@ class _AllergySelectorState extends State<AllergySelector> {
       children: [
         Text(
           'Alergi (Opsional)',
-          style: TextStyle(fontSize: 14.0, color: Colors.grey[700]),
+          style: TextStyle(fontSize: 14.0, color: Colors.grey[400]),
         ),
         const SizedBox(height: 8.0),
 
@@ -114,7 +114,7 @@ class _AllergySelectorState extends State<AllergySelector> {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFF363434),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: _border, width: 1.2),
             ),
@@ -166,8 +166,8 @@ class _AllergyPickerDialog extends StatefulWidget {
 
 class _AllergyPickerDialogState extends State<_AllergyPickerDialog> {
   static const _brand = Color.fromARGB(255, 144, 121, 84);
-  static const _border = Color(0xFFE8D5B7);
-  static const _text = Color(0xFF363434);
+  static const _border = Color(0xFF4A4646);
+  static const _text = Color(0xFFF2DAB1);
 
   late Set<String> _tempSelected;
 
@@ -198,7 +198,7 @@ class _AllergyPickerDialogState extends State<_AllergyPickerDialog> {
           maxHeight: MediaQuery.of(context).size.height * 0.7,
         ),
         decoration: BoxDecoration(
-          color: const Color(0xFFFDF8F2),
+          color: const Color(0xFF2A2828),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: _border, width: 1.5),
         ),
@@ -261,9 +261,19 @@ class _AllergyPickerDialogState extends State<_AllergyPickerDialog> {
                         children: widget.allergies.entries.map((entry) {
                           final isSelected = _tempSelected.contains(entry.key);
                           return FilterChip(
-                            label: Text(entry.value),
+                            label: Text(
+                              entry.value,
+                              style: TextStyle(
+                                color: isSelected
+                                    ? _brand
+                                    : Colors
+                                          .grey
+                                          .shade300, // CHANGED: tambah style eksplisit, default teks chip gelap di bg gelap
+                              ),
+                            ),
                             selected: isSelected,
                             selectedColor: _brand.withOpacity(0.15),
+                            backgroundColor: const Color(0xFF363434),
                             checkmarkColor: _brand,
                             side: BorderSide(
                               color: isSelected ? _brand : _border,

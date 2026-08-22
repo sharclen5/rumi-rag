@@ -43,9 +43,9 @@ class _HistoryViewState extends State<_HistoryView> {
 
   static const _brand = Color.fromARGB(255, 144, 121, 84);
   static const _brandDark = Color.fromARGB(255, 122, 105, 95);
-  static const _ink = Color(0xFF363434);
-  static const _cardBg = Color(0xFFFDF8F2);
-  static const _cardBorder = Color(0xFFE8D5B7);
+  static const _ink = Color(0xFFF2DAB1);
+  static const _cardBg = Color(0xFF2A2828);
+  static const _cardBorder = Color(0xFF4A4646);
 
   String _dayName(int weekday) {
     const days = [
@@ -149,7 +149,7 @@ class _HistoryViewState extends State<_HistoryView> {
           appBar: AppBar(
             toolbarHeight: 0,
             elevation: 0,
-            backgroundColor: const Color(0xFFF2DAB1),
+            backgroundColor: const Color(0xFF363434),
           ),
           body: Container(
             width: double.infinity,
@@ -158,7 +158,7 @@ class _HistoryViewState extends State<_HistoryView> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFFF5EBD9), Color(0xFFFFFFFF)],
+                colors: [Color(0xFF363434), Color(0xFF1A1A1A)],
                 stops: [0.0, 1.0],
               ),
             ),
@@ -211,7 +211,7 @@ class _HistoryViewState extends State<_HistoryView> {
                                       child: DropdownButton<String>(
                                         isDense: true,
                                         value: activeBaby?.id,
-                                        dropdownColor: const Color(0xFFF5EBD9),
+                                        dropdownColor: const Color(0xFF2A2828),
                                         iconEnabledColor: _ink,
                                         style: const TextStyle(
                                           color: _ink,

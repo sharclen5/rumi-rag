@@ -17,9 +17,9 @@ class _AddRecommendationState extends State<AddRecommendation> {
   final _formKey = GlobalKey<FormState>();
 
   static const _brand = Color.fromARGB(255, 144, 121, 84);
-  static const _border = Color(0xFFE8D5B7);
-  static const _text = Color(0xFF363434);
-  static const _bg = Color(0xFFFDF8F2);
+  static const _border = Color(0xFF4A4646);
+  static const _text = Color(0xFFF2DAB1);
+  static const _bg = Color(0xFF2A2828);
 
   Baby? _selectedBaby;
   String _currentNotes = '';
@@ -62,7 +62,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
       hintText: hint,
       labelStyle: TextStyle(color: Colors.grey.shade600, fontSize: 13),
       filled: true,
-      fillColor: Colors.white,
+      fillColor: const Color(0xFF363434),
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -236,7 +236,12 @@ class _AddRecommendationState extends State<AddRecommendation> {
                 children: [
                   DropdownButtonFormField<Baby>(
                     value: _selectedBaby,
-                    hint: const Text('Pilih Bayi'),
+                    hint: Text(
+                      'Pilih Bayi',
+                      style: TextStyle(
+                        color: Color(0xFFF2DAB1),
+                      ), // CHANGED: tambah style eksplisit, hint gak inherit dari style dropdown
+                    ),
                     decoration: _fieldDecoration('Bayi'),
                     dropdownColor: _bg,
                     style: const TextStyle(color: _text, fontSize: 14),
@@ -343,7 +348,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF363434),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: _border, width: 1.2),
       ),
@@ -476,7 +481,9 @@ class _AddRecommendationState extends State<AddRecommendation> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
               decoration: BoxDecoration(
-                color: isSelected ? _brand.withOpacity(0.12) : Colors.white,
+                color: isSelected
+                    ? _brand.withOpacity(0.12)
+                    : const Color(0xFF363434),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: isSelected ? _brand : _border,

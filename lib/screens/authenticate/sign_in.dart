@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rumi/services/auth.dart';
 import 'package:rumi/shared/loading.dart';
-import 'package:rumi/shared/constants.dart';
 import 'package:rumi/shared/rag_badge.dart';
 
 class SignIn extends StatefulWidget {
@@ -25,15 +24,48 @@ class _SignInState extends State<SignIn> {
   final TextEditingController _passController = TextEditingController();
   bool loading = false;
 
+  // CHANGED: warna dark palette
+  static const _bg = Color(0xFF1A1A1A);
+  static const _fieldBg = Color(0xFF2A2828);
+  static const _fieldBorder = Color(0xFF4A4646);
+  static const _fieldText = Color(0xFFF2DAB1);
+  static const _brand = Color.fromARGB(255, 144, 121, 84);
+
   String email = '';
   String password = '';
   String error = '';
-  bool _obscurePassword = true; // ADDED: state untuk show/hide password
+  bool _obscurePassword = true;
+
+  // CHANGED: custom field decoration, sama kayak register.dart
+  InputDecoration _fieldDecoration(String label, {Widget? suffixIcon}) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(color: Colors.grey.shade500, fontFamily: 'Poppins'),
+      filled: true,
+      fillColor: _fieldBg,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(width: 1, color: _fieldBorder),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(width: 1.6, color: _brand),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(width: 1, color: Colors.red.shade300),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(width: 1.6, color: Colors.red.shade300),
+      ),
+      suffixIcon: suffixIcon,
+    );
+  }
 
   @override
   void initState() {
     super.initState();
-    // ADDED: kalau masuk dari register, tunjukin popup sukses setelah frame pertama render
     if (widget.showSuccessPopup) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showSuccessDialog();
@@ -47,8 +79,6 @@ class _SignInState extends State<SignIn> {
     debugPrint(
       'didUpdateWidget — showSuccessPopup: ${widget.showSuccessPopup}, old: ${oldWidget.showSuccessPopup}',
     );
-    // ADDED: initState ga re-run saat widget di-rebuild, jadi pakai didUpdateWidget
-    // fires tiap kali parent kirim props baru, termasuk saat toggleView dari register
     if (widget.showSuccessPopup && !oldWidget.showSuccessPopup) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showSuccessDialog();
@@ -57,8 +87,6 @@ class _SignInState extends State<SignIn> {
   }
 
   void _showSuccessDialog() {
-    const brand = Color.fromARGB(255, 144, 121, 84);
-
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -72,9 +100,12 @@ class _SignInState extends State<SignIn> {
           backgroundColor: Colors.transparent,
           child: Container(
             decoration: BoxDecoration(
-              color: const Color(0xFFFDF8F2),
+              color: const Color(0xFF2A2828), // CHANGED: was Color(0xFFFDF8F2)
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+              border: Border.all(
+                color: const Color(0xFF4A4646),
+                width: 1.5,
+              ), // CHANGED: was Color(0xFFE8D5B7)
             ),
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -85,7 +116,7 @@ class _SignInState extends State<SignIn> {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: brand,
+                      color: _brand,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
@@ -101,7 +132,7 @@ class _SignInState extends State<SignIn> {
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Poppins',
-                      color: Color(0xFF363434),
+                      color: _fieldText, // CHANGED: was Color(0xFF363434)
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -112,7 +143,7 @@ class _SignInState extends State<SignIn> {
                       fontSize: 13.5,
                       height: 1.5,
                       fontFamily: 'Poppins',
-                      color: Color(0xFF363434),
+                      color: _fieldText, // CHANGED: was Color(0xFF363434)
                     ),
                   ),
                 ],
@@ -124,14 +155,14 @@ class _SignInState extends State<SignIn> {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
-    // ADDED: sama kayak register.dart
     final systemNavInset = MediaQuery.of(context).padding.bottom;
 
     return loading
         ? Loading()
         : Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: _bg, // CHANGED: was Colors.white
             body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,10 +170,7 @@ class _SignInState extends State<SignIn> {
                   Padding(
                     padding: const EdgeInsets.only(left: 10, top: 30),
                     child: SizedBox(
-                      // ADDED: kasih ukuran box eksplisit yang cukup gede buat nampung badge yang overflow,
-                      // biar hit-test area-nya juga ikut segede itu, ga cuma segede gambar doang
-                      width:
-                          478, // 413 (lebar gambar) + 65 (overflow badge ke kiri)
+                      width: 478,
                       height: 457,
                       child: Stack(
                         clipBehavior: Clip.none,
@@ -154,8 +182,7 @@ class _SignInState extends State<SignIn> {
                           ),
                           Positioned(
                             top: 0,
-                            left:
-                                0, // CHANGED: -65 -> 0, sekarang badge full di dalem box, jadi full tappable
+                            left: 0,
                             child: RagBadge(size: RagBadgeSize.large),
                           ),
                         ],
@@ -172,7 +199,8 @@ class _SignInState extends State<SignIn> {
                           const Text(
                             'Log In',
                             style: TextStyle(
-                              color: Color(0xFF363434),
+                              color:
+                                  _fieldText, // CHANGED: was Color(0xFF363434)
                               fontSize: 27,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w500,
@@ -184,23 +212,13 @@ class _SignInState extends State<SignIn> {
                             controller: _emailController,
                             textAlign: TextAlign.left,
                             style: const TextStyle(
-                              color: Color(0xFF393939),
+                              color:
+                                  _fieldText, // CHANGED: was Color(0xFF393939)
                               fontSize: 15,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
-                            decoration: textInputDecoration.copyWith(
-                              labelText: 'Email',
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: Color(0xFF837E93),
-                                ),
-                              ),
-                            ),
+                            decoration: _fieldDecoration('Email'),
                             validator: (val) => val == null || val.isEmpty
                                 ? 'Enter an email'
                                 : null,
@@ -214,33 +232,25 @@ class _SignInState extends State<SignIn> {
                             textAlign: TextAlign.left,
                             obscureText: _obscurePassword,
                             style: const TextStyle(
-                              color: Color(0xFF393939),
+                              color: _fieldText, // CHANGED
                               fontSize: 15,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
-                            decoration: textInputDecoration.copyWith(
-                              labelText: 'Password',
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: Color(0xFF837E93),
-                                ),
-                              ),
+                            decoration: _fieldDecoration(
+                              'Password',
                               suffixIcon: IconButton(
-                                // ADDED: tombol mata di ujung kanan field
                                 icon: Icon(
                                   _obscurePassword
                                       ? Icons.visibility_off
                                       : Icons.visibility,
-                                  color: const Color(0xFF837E93),
+                                  color: Colors
+                                      .grey
+                                      .shade500, // CHANGED: was Color(0xFF837E93)
                                 ),
                                 onPressed: () => setState(
                                   () => _obscurePassword = !_obscurePassword,
-                                ), // ADDED: toggle state
+                                ),
                               ),
                             ),
                             validator: (val) => val == null || val.length < 6
@@ -259,12 +269,15 @@ class _SignInState extends State<SignIn> {
                               height: 56,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF363434),
+                                  backgroundColor:
+                                      _fieldText, // CHANGED: was Color(0xFF363434)
                                 ),
                                 child: const Text(
                                   'Sign In',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: Color(
+                                      0xFF363434,
+                                    ), // CHANGED: was Colors.white — teks gelap di atas bg cream
                                     fontSize: 15,
                                     fontFamily: 'Poppins',
                                     fontWeight: FontWeight.w500,
@@ -301,10 +314,12 @@ class _SignInState extends State<SignIn> {
                           ),
                           Row(
                             children: [
-                              const Text(
+                              Text(
                                 'Don\'t have an account?',
                                 style: TextStyle(
-                                  color: Color(0xFF837E93),
+                                  color: Colors
+                                      .grey
+                                      .shade500, // CHANGED: was Color(0xFF837E93)
                                   fontSize: 13,
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w500,
@@ -316,7 +331,8 @@ class _SignInState extends State<SignIn> {
                                 child: const Text(
                                   'Sign Up',
                                   style: TextStyle(
-                                    color: const Color(0xFF363434),
+                                    color:
+                                        _fieldText, // CHANGED: was Color(0xFF363434)
                                     fontSize: 13,
                                     fontFamily: 'Poppins',
                                     fontWeight: FontWeight.w500,
@@ -325,7 +341,6 @@ class _SignInState extends State<SignIn> {
                               ),
                             ],
                           ),
-                          // CHANGED: 15 -> dihitung dari systemNavInset, sama alasannya kaya register.dart
                           SizedBox(height: 24 + systemNavInset),
                         ],
                       ),

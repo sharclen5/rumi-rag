@@ -209,8 +209,9 @@ class _RecommendationViewState extends State<_RecommendationView> {
           appBar: AppBar(
             toolbarHeight: 0,
             elevation: 0,
-            backgroundColor: const Color(0xFFF2DAB1),
+            backgroundColor: const Color(0xFF363434),
           ),
+
           body: Container(
             width: double.infinity,
             height: double.infinity,
@@ -218,7 +219,7 @@ class _RecommendationViewState extends State<_RecommendationView> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFFF5EBD9), Color(0xFFFFFFFF)],
+                colors: [Color(0xFF363434), Color(0xFF1A1A1A)],
                 stops: [0.0, 1.0],
               ),
             ),
@@ -238,7 +239,7 @@ class _RecommendationViewState extends State<_RecommendationView> {
                               const Text(
                                 'Jadwal MPASI',
                                 style: TextStyle(
-                                  color: Color(0xFF363434),
+                                  color: Color(0xFFF2DAB1),
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -266,12 +267,12 @@ class _RecommendationViewState extends State<_RecommendationView> {
                                       child: DropdownButton<String>(
                                         isDense: true,
                                         value: activeBaby?.id,
-                                        dropdownColor: const Color(0xFFF5EBD9),
+                                        dropdownColor: const Color(0xFF2A2828),
                                         iconEnabledColor: const Color(
-                                          0xFF363434,
+                                          0xFFF2DAB1,
                                         ),
                                         style: const TextStyle(
-                                          color: Color(0xFF363434),
+                                          color: Color(0xFFF2DAB1),
                                           fontSize: 13,
                                         ),
                                         hint: Row(
@@ -304,7 +305,7 @@ class _RecommendationViewState extends State<_RecommendationView> {
                                                 Text(
                                                   'Profil aktif: ${baby.fullName} · ${baby.ageInMonths} bulan',
                                                   style: const TextStyle(
-                                                    color: Color(0xFF363434),
+                                                    color: Color(0xFFF2DAB1),
                                                     fontSize: 13,
                                                   ),
                                                 ),
@@ -318,7 +319,7 @@ class _RecommendationViewState extends State<_RecommendationView> {
                                             child: Text(
                                               '${baby.fullName} · ${baby.ageInMonths} bulan',
                                               style: const TextStyle(
-                                                color: Color(0xFF363434),
+                                                color: Color(0xFFF2DAB1),
                                                 fontSize: 13,
                                               ),
                                             ),
@@ -403,7 +404,7 @@ class _RecommendationViewState extends State<_RecommendationView> {
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF363434),
+                            color: Color(0xFFF2DAB1),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -569,7 +570,7 @@ class _TimeLineRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const activeColor = Color(0xFF363434);
+    const activeColor = Color(0xFFF2DAB1);
 
     final IconData mealIcon = meal?.type == 'ASI'
         ? Icons.water_drop
@@ -600,11 +601,11 @@ class _TimeLineRow extends StatelessWidget {
                     child: Opacity(
                       opacity: meal!.isEaten ? 0.5 : 1.0,
                       child: Card(
-                        color: const Color(0xFFFDF8F2),
+                        color: const Color(0xFF2A2828),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                           side: const BorderSide(
-                            color: Color(0xFFE8D5B7),
+                            color: Color(0xFF4A4646),
                             width: 1.5,
                           ),
                         ),
@@ -656,6 +657,7 @@ class _TimeLineRow extends StatelessWidget {
                                         style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
+                                          color: Color(0xFFF2DAB1),
                                         ),
                                       )
                                     else
@@ -664,6 +666,7 @@ class _TimeLineRow extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
+                                          color: Color(0xFFF2DAB1),
                                         ),
                                       ),
                                   ],

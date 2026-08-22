@@ -33,9 +33,9 @@ class BabyTile extends StatelessWidget {
             ),
             margin: const EdgeInsets.symmetric(horizontal: 5.0),
             decoration: BoxDecoration(
-              color: const Color(0xFFFDF8F2),
+              color: const Color(0xFF2A2828),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+              border: Border.all(color: const Color(0xFF4A4646), width: 1.5),
             ),
             child: Row(
               children: [
@@ -61,7 +61,7 @@ class BabyTile extends StatelessWidget {
                       Text(
                         baby.fullName,
                         style: const TextStyle(
-                          color: Color(0xFF363434),
+                          color: Color(0xFFF2DAB1),
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -70,7 +70,7 @@ class BabyTile extends StatelessWidget {
                       Text(
                         '${baby.ageInMonths} bulan · ${baby.weight} kg',
                         style: TextStyle(
-                          color: Colors.grey.shade500,
+                          color: Colors.grey.shade400,
                           fontSize: 12,
                         ),
                       ),

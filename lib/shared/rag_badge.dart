@@ -24,7 +24,7 @@ class RagBadge extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: const Color(0xFF363434),
+          color: const Color(0xFFF2DAB1),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
@@ -40,13 +40,13 @@ class RagBadge extends StatelessWidget {
             Icon(
               Symbols.network_intel_node,
               size: iconSize,
-              color: Colors.white,
+              color: Color((0xFF2A2828))
             ),
             const SizedBox(width: 4),
             Text(
               'With RAG',
               style: TextStyle(
-                color: Colors.white,
+                color: Color((0xFF2A2828)),
                 fontSize: fontSize,
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w600,

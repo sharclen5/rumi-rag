@@ -96,10 +96,10 @@ class _DailyTipState extends State<DailyTip> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFFFDF8F2),
+      color: const Color(0xFF2A2828),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFFE8D5B7), width: 1.5),
+        side: const BorderSide(color: Color(0xFF4A4646), width: 1.5),
       ),
       elevation: 2,
       child: Padding(
@@ -115,7 +115,7 @@ class _DailyTipState extends State<DailyTip> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF363434),
+                    color: Color(0xFFF2DAB1),
                   ),
                 ),
               ],
@@ -150,7 +150,7 @@ class _DailyTipState extends State<DailyTip> {
             'Tips harian belum tersedia saat ini.',
             style: TextStyle(
               fontSize: 13,
-              color: Color(0xFF363434),
+              color: Color(0xFFF2DAB1),
               fontStyle: FontStyle.italic,
               height: 1.5,
             ),
@@ -162,7 +162,7 @@ class _DailyTipState extends State<DailyTip> {
               'Coba lagi',
               style: TextStyle(
                 fontSize: 12,
-                color: Color(0xFF8B5E34),
+                color: Color(0xFFD4A96A),
                 fontWeight: FontWeight.bold,
                 decoration: TextDecoration.underline,
               ),
@@ -179,7 +179,7 @@ class _DailyTipState extends State<DailyTip> {
           _tip ?? '',
           style: const TextStyle(
             fontSize: 13,
-            color: Color(0xFF363434),
+            color: Color(0xFFF2DAB1),
             fontStyle: FontStyle.italic,
             height: 1.5,
           ),

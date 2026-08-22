@@ -105,8 +105,9 @@ class NutritionCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFFDF8F2),
+        color: const Color(0xFF2A2828),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFF4A4646), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: _brand.withOpacity(0.14),
@@ -125,7 +126,7 @@ class NutritionCard extends StatelessWidget {
                 const Icon(
                   Icons.auto_awesome,
                   size: 18,
-                  color: Color.fromARGB(255, 144, 121, 84),
+                  color: Color.fromARGB(255, 210, 170, 100),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -136,7 +137,7 @@ class NutritionCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF363434),
+                      color: Color(0xFFF2DAB1),
                     ),
                   ),
                 ),
@@ -173,7 +174,7 @@ class NutritionCard extends StatelessWidget {
               const SizedBox(height: 6),
               Text(
                 '$starCount dari ${_coreGroups.length} kelompok gizi terpenuhi hari ini',
-                style: const TextStyle(fontSize: 13, color: Color(0xFF363434)),
+                style: const TextStyle(fontSize: 13, color: Color(0xFFF2DAB1)),
               ),
               const SizedBox(height: 14),
               Wrap(
@@ -259,9 +260,9 @@ class NutritionCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: const Color(0xFFFDF8F2),
+            color: const Color(0xFF2A2828),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+            border: Border.all(color: const Color(0xFF4A4646), width: 1.5),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -275,7 +276,7 @@ class NutritionCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF363434),
+                        color: Color(0xFFF2DAB1),
                       ),
                     ),
                   ),
@@ -285,20 +286,20 @@ class NutritionCard extends StatelessWidget {
                       width: 28,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8D5B7),
+                        color: const Color(0xFF4A4646),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
                         Icons.close,
                         size: 16,
-                        color: Color(0xFF363434),
+                        color: Color(0xFFF2DAB1),
                       ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
-              Divider(color: const Color(0xFFE8D5B7), height: 1),
+              Divider(color: const Color(0xFF4A4646), height: 1),
               const SizedBox(height: 12),
               if (meals.isNotEmpty)
                 ...meals.map((meal) {
@@ -322,7 +323,7 @@ class NutritionCard extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 14,
                               color: isEaten
-                                  ? const Color(0xFF363434)
+                                  ? const Color(0xFFF2DAB1)
                                   : Colors.grey.shade500,
                             ),
                           ),

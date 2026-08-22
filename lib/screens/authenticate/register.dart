@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rumi/services/auth.dart';
 import 'package:rumi/shared/loading.dart';
-import 'package:rumi/shared/constants.dart';
 import 'package:rumi/shared/rag_badge.dart';
 
 class Register extends StatefulWidget {
@@ -23,7 +22,13 @@ class _RegisterState extends State<Register> {
   final TextEditingController _passController = TextEditingController();
   bool loading = false;
 
-  // text field state
+  // CHANGED: warna dark palette
+  static const _bg = Color(0xFF1A1A1A);
+  static const _fieldBg = Color(0xFF2A2828);
+  static const _fieldBorder = Color(0xFF4A4646);
+  static const _fieldText = Color(0xFFF2DAB1);
+  static const _brand = Color.fromARGB(255, 144, 121, 84);
+
   String email = '';
   String firstName = '';
   String lastName = '';
@@ -31,16 +36,42 @@ class _RegisterState extends State<Register> {
   String gender = '';
   String password = '';
   String error = '';
-  bool _obscurePassword = true; // ADDED: state untuk show/hide password
+  bool _obscurePassword = true;
+
+  // CHANGED: custom field decoration biar ga perlu import constants.dart lagi
+  InputDecoration _fieldDecoration(String label, {Widget? suffixIcon}) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(color: Colors.grey.shade500, fontFamily: 'Poppins'),
+      filled: true,
+      fillColor: _fieldBg,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(width: 1, color: _fieldBorder),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(width: 1.6, color: _brand),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(width: 1, color: Colors.red.shade300),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(width: 1.6, color: Colors.red.shade300),
+      ),
+      suffixIcon: suffixIcon,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    // ADDED: baca inset navbar sistem, sama kayak pattern yang udah dipake di bottomnavbar.dart
     final systemNavInset = MediaQuery.of(context).padding.bottom;
     return loading
         ? Loading()
         : Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: _bg, // CHANGED: was Colors.white
             body: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,9 +79,7 @@ class _RegisterState extends State<Register> {
                   Padding(
                     padding: const EdgeInsets.only(left: 1, top: 1),
                     child: SizedBox(
-                      // ADDED: sama kaya sign_in, kasih box lebih gede biar hit-test badge-nya kena
-                      width:
-                          500, // 413 + ruang buat badge yang overflow ke kanan
+                      width: 500,
                       height: 457,
                       child: Stack(
                         clipBehavior: Clip.none,
@@ -59,11 +88,10 @@ class _RegisterState extends State<Register> {
                             "assets/images/vector-3.png",
                             width: 413,
                             height: 457,
-                          ), // TETEP SAMA, ga perlu Positioned, karena overflow-nya ke kanan (arah positif), jadi ga perlu digeser
+                          ),
                           Positioned(
                             top: 25,
-                            right:
-                                12, // CHANGED: -75 -> 12, angka ini dihitung ulang biar posisi ABSOLUT badge tetep sama walau box-nya sekarang lebih lebar (500 vs 413 sebelumnya)
+                            right: 12,
                             child: RagBadge(size: RagBadgeSize.large),
                           ),
                         ],
@@ -81,7 +109,8 @@ class _RegisterState extends State<Register> {
                           const Text(
                             'Register',
                             style: TextStyle(
-                              color: Color(0xFF363434),
+                              color:
+                                  _fieldText, // CHANGED: was Color(0xFF363434)
                               fontSize: 27,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w500,
@@ -93,23 +122,13 @@ class _RegisterState extends State<Register> {
                             controller: _emailController,
                             textAlign: TextAlign.left,
                             style: const TextStyle(
-                              color: Color(0xFF393939),
+                              color:
+                                  _fieldText, // CHANGED: was Color(0xFF393939)
                               fontSize: 15,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
-                            decoration: textInputDecoration.copyWith(
-                              labelText: 'Email',
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: Color(0xFF837E93),
-                                ),
-                              ),
-                            ),
+                            decoration: _fieldDecoration('Email'),
                             validator: (val) => val == null || val.isEmpty
                                 ? 'Enter an email'
                                 : null,
@@ -121,23 +140,12 @@ class _RegisterState extends State<Register> {
                             controller: _firstNameController,
                             textAlign: TextAlign.left,
                             style: const TextStyle(
-                              color: Color(0xFF393939),
+                              color: _fieldText, // CHANGED
                               fontSize: 15,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
-                            decoration: textInputDecoration.copyWith(
-                              labelText: 'First Name',
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: Color(0xFF837E93),
-                                ),
-                              ),
-                            ),
+                            decoration: _fieldDecoration('First Name'),
                             validator: (val) => val == null || val.isEmpty
                                 ? 'Enter your first name'
                                 : null,
@@ -149,23 +157,12 @@ class _RegisterState extends State<Register> {
                             controller: _lastNameController,
                             textAlign: TextAlign.left,
                             style: const TextStyle(
-                              color: Color(0xFF393939),
+                              color: _fieldText, // CHANGED
                               fontSize: 15,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
-                            decoration: textInputDecoration.copyWith(
-                              labelText: 'Last Name',
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: Color(0xFF837E93),
-                                ),
-                              ),
-                            ),
+                            decoration: _fieldDecoration('Last Name'),
                             validator: (val) => val == null || val.isEmpty
                                 ? 'Enter your last name'
                                 : null,
@@ -174,27 +171,24 @@ class _RegisterState extends State<Register> {
                           const SizedBox(height: 30),
                           // gender
                           DropdownButtonFormField<String>(
-                            value: gender.isEmpty
-                                ? null
-                                : gender, // null shows the hint
-                            hint: const Text(
+                            value: gender.isEmpty ? null : gender,
+                            hint: Text(
                               'Select Gender',
-                            ), // shown when nothing is selected
+                              style: TextStyle(
+                                color: Colors.grey.shade500,
+                              ), // CHANGED: hint jadi terang di bg gelap
+                            ),
+                            dropdownColor:
+                                _fieldBg, // CHANGED: dropdown bg gelap
+                            style: const TextStyle(
+                              color: _fieldText, // CHANGED
+                              fontSize: 15,
+                              fontFamily: 'Poppins',
+                            ),
                             validator: (val) => val == null || val.isEmpty
                                 ? 'Select your gender'
                                 : null,
-                            decoration: textInputDecoration.copyWith(
-                              labelText: 'Select Gender',
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: Color(0xFF837E93),
-                                ),
-                              ),
-                            ),
+                            decoration: _fieldDecoration('Select Gender'),
                             items: const [
                               DropdownMenuItem(
                                 value: 'Male',
@@ -213,23 +207,12 @@ class _RegisterState extends State<Register> {
                             controller: _phoneController,
                             textAlign: TextAlign.left,
                             style: const TextStyle(
-                              color: Color(0xFF393939),
+                              color: _fieldText, // CHANGED
                               fontSize: 15,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
-                            decoration: textInputDecoration.copyWith(
-                              labelText: 'Phone Number',
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: Color(0xFF837E93),
-                                ),
-                              ),
-                            ),
+                            decoration: _fieldDecoration('Phone Number'),
                             validator: (val) => val == null || val.isEmpty
                                 ? 'Enter your phone number'
                                 : null,
@@ -242,33 +225,25 @@ class _RegisterState extends State<Register> {
                             textAlign: TextAlign.left,
                             obscureText: _obscurePassword,
                             style: const TextStyle(
-                              color: Color(0xFF393939),
+                              color: _fieldText, // CHANGED
                               fontSize: 15,
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
-                            decoration: textInputDecoration.copyWith(
-                              labelText: 'Password',
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                borderSide: BorderSide(
-                                  width: 1,
-                                  color: Color(0xFF837E93),
-                                ),
-                              ),
+                            decoration: _fieldDecoration(
+                              'Password',
                               suffixIcon: IconButton(
-                                // ADDED: tombol mata di ujung kanan field
                                 icon: Icon(
                                   _obscurePassword
                                       ? Icons.visibility_off
                                       : Icons.visibility,
-                                  color: const Color(0xFF837E93),
+                                  color: Colors
+                                      .grey
+                                      .shade500, // CHANGED: was Color(0xFF837E93)
                                 ),
                                 onPressed: () => setState(
                                   () => _obscurePassword = !_obscurePassword,
-                                ), // ADDED: toggle state
+                                ),
                               ),
                             ),
                             validator: (val) => val == null || val.length < 6
@@ -287,12 +262,15 @@ class _RegisterState extends State<Register> {
                               height: 56,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF363434),
+                                  backgroundColor:
+                                      _fieldText, // CHANGED: was Color(0xFF363434)
                                 ),
                                 child: const Text(
                                   'Register',
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: Color(
+                                      0xFF363434,
+                                    ), // CHANGED: was Colors.white — teks gelap di atas bg cream
                                     fontSize: 15,
                                     fontFamily: 'Poppins',
                                     fontWeight: FontWeight.w500,
@@ -312,18 +290,13 @@ class _RegisterState extends State<Register> {
                                           password,
                                         );
                                     if (result is String) {
-                                      // CHANGED: cek apakah result adalah error message (String)
                                       setState(() {
-                                        error =
-                                            result; // CHANGED: tampilin pesan error yang datang dari auth.dart
+                                        error = result;
                                         loading = false;
                                       });
                                     } else if (result != null) {
-                                      // CHANGED: result bukan String dan bukan null = sukses (User object)
                                       setState(() => loading = false);
-                                      debugPrint(
-                                        'mounted check: $mounted',
-                                      ); // ADDED: buat ngecek race condition
+                                      debugPrint('mounted check: $mounted');
                                       if (mounted) {
                                         widget.toggleView(fromRegister: true);
                                       }
@@ -343,10 +316,12 @@ class _RegisterState extends State<Register> {
                           ),
                           Row(
                             children: [
-                              const Text(
+                              Text(
                                 'Already have an account?',
                                 style: TextStyle(
-                                  color: Color(0xFF837E93),
+                                  color: Colors
+                                      .grey
+                                      .shade500, // CHANGED: was Color(0xFF837E93)
                                   fontSize: 13,
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.w500,
@@ -358,7 +333,8 @@ class _RegisterState extends State<Register> {
                                 child: const Text(
                                   'Sign In',
                                   style: TextStyle(
-                                    color: Color(0xFF393939),
+                                    color:
+                                        _fieldText, // CHANGED: was Color(0xFF393939)
                                     fontSize: 13,
                                     fontFamily: 'Poppins',
                                     fontWeight: FontWeight.w500,
@@ -367,8 +343,6 @@ class _RegisterState extends State<Register> {
                               ),
                             ],
                           ),
-                          // CHANGED: 50 -> dihitung dari systemNavInset, biar teks ga ketutup navbar HP
-                          // 24 tetep dipertahanin sebagai jarak "nafas" minimal, sama kaya di bottomnavbar.dart
                           SizedBox(height: 24 + systemNavInset),
                         ],
                       ),

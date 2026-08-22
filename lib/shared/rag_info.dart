@@ -16,7 +16,7 @@ void showRagInfo(BuildContext context) {
           maxHeight: MediaQuery.of(context).size.height * 0.75,
         ),
         decoration: BoxDecoration(
-          color: const Color(0xFFFDF8F2),
+          color: const Color(0xFF2A2828),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
         ),
@@ -51,7 +51,7 @@ void showRagInfo(BuildContext context) {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF363434),
+                          color: Color(0xFFF2DAB1),
                         ),
                       ),
                     ),
@@ -62,13 +62,13 @@ void showRagInfo(BuildContext context) {
                       width: 28,
                       height: 28,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8D5B7),
+                        color: const Color(0xFF4A4646),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
                         Icons.close,
                         size: 16,
-                        color: Color(0xFF363434),
+                        color: Color(0xFFF2DAB1),
                       ),
                     ),
                   ),
@@ -76,7 +76,7 @@ void showRagInfo(BuildContext context) {
               ),
             ),
             const SizedBox(height: 12),
-            Divider(color: const Color(0xFFE8D5B7), height: 1),
+            Divider(color: const Color(0xFF4A4646), height: 1),
 
             // scrollable body, in case text runs long on small screens
             Flexible(
@@ -90,7 +90,7 @@ void showRagInfo(BuildContext context) {
                       style: TextStyle(
                         fontSize: 13.5,
                         height: 1.5,
-                        color: Color(0xFF363434),
+                        color: Color(0xFFF2DAB1),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -99,7 +99,7 @@ void showRagInfo(BuildContext context) {
                       style: TextStyle(
                         fontSize: 13.5,
                         height: 1.5,
-                        color: Color(0xFF363434),
+                        color: Color(0xFFF2DAB1),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -108,7 +108,7 @@ void showRagInfo(BuildContext context) {
                       style: TextStyle(
                         fontSize: 13.5,
                         height: 1.5,
-                        color: Color(0xFF363434),
+                        color: Color(0xFFF2DAB1),
                       ),
                     ),
                   ],

@@ -30,7 +30,7 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color.fromARGB(255, 242, 218, 177),
+      color: const Color(0xFF363434),
       child: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 48.0),
@@ -52,7 +52,7 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
                 Text(
                   widget.message!,
                   style: const TextStyle(
-                    color: Color(0xFF363434),
+                    color: Color(0xFFF2DAB1),
                     fontSize: 14,
                   ),
                 ),
@@ -72,8 +72,8 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
           child: LinearProgressIndicator(
             value: value,
             minHeight: 10,
-            backgroundColor: const Color(0xFFE8D5B7),
-            color: const Color(0xFF363434),
+            backgroundColor: const Color(0xFF4A4646),
+            color: const Color(0xFFF2DAB1),
           ),
         ),
         const SizedBox(height: 8),
@@ -86,14 +86,14 @@ class _LoadingState extends State<Loading> with SingleTickerProviderStateMixin {
               height: 16,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: Color(0xFF363434),
+                color: Color(0xFFF2DAB1),
               ),
             ),
             const SizedBox(width: 8),
             Text(
               '${(value * 100).round()}%',
               style: TextStyle(
-                color: Color(0xFF363434),
+                color: Color(0xFFF2DAB1),
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
               ),

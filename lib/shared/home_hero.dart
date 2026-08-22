@@ -36,9 +36,9 @@ class HomeHero extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFFFDF8F2),
+        color: const Color(0xFF2A2828),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFE8D5B7)),
+        border: Border.all(color: const Color(0xFF4A4646)),
       ),
       // bungkus isi Container pake Stack, biar badge bisa nempel fixed
       // di pojok kiri atas card, lepas dari flow Row/Column teks & logo
@@ -60,9 +60,9 @@ class HomeHero extends StatelessWidget {
                         children: [
                           Text(
                             getGreeting(),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 15,
-                              color: Color(0xFF6A655F),
+                              color: Colors.grey.shade400,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -71,7 +71,7 @@ class HomeHero extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF363434),
+                              color: Color(0xFFF2DAB1),
                             ),
                           ),
                         ],
@@ -85,7 +85,7 @@ class HomeHero extends StatelessWidget {
 
                 Text(
                   'Semoga hari ini menyenangkan bersama si kecil.',
-                  style: TextStyle(color: Colors.grey.shade600),
+                  style: TextStyle(color: Color(0xFFF2DAB1)),
                 ),
 
                 const SizedBox(height: 5),
@@ -94,9 +94,9 @@ class HomeHero extends StatelessWidget {
                   child: DropdownButton<String>(
                     value: activeBaby?.id,
                     isExpanded: true,
-                    dropdownColor: const Color(0xFFFDF8F2),
+                    dropdownColor: const Color(0xFF2A2828),
                     style: const TextStyle(
-                      color: Color(0xFF363434),
+                      color: Color(0xFFF2DAB1),
                       fontSize: 14,
                     ),
                     items: babies.map((baby) {

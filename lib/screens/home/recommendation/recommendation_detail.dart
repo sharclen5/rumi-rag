@@ -68,9 +68,12 @@ class _RecommendationDetailDialogState
         backgroundColor: Colors.transparent,
         child: Container(
           decoration: BoxDecoration(
-            color: const Color(0xFFFDF8F2),
+            color: const Color(0xFF2A2828), // CHANGED: was Color(0xFFFDF8F2)
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+            border: Border.all(
+              color: const Color(0xFF4A4646),
+              width: 1.5,
+            ), // CHANGED: was Color(0xFFE8D5B7)
           ),
           child: Padding(
             padding: const EdgeInsets.all(20),
@@ -98,7 +101,7 @@ class _RecommendationDetailDialogState
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Poppins',
-                    color: Color(0xFF363434),
+                    color: Color(0xFFF2DAB1), // CHANGED: was Color(0xFF363434)
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -109,7 +112,7 @@ class _RecommendationDetailDialogState
                     fontSize: 13.5,
                     height: 1.5,
                     fontFamily: 'Poppins',
-                    color: Color(0xFF363434),
+                    color: Color(0xFFF2DAB1), // CHANGED: was Color(0xFF363434)
                   ),
                 ),
               ],
@@ -137,9 +140,12 @@ class _RecommendationDetailDialogState
           maxHeight: MediaQuery.of(context).size.height * 0.75,
         ),
         decoration: BoxDecoration(
-          color: const Color(0xFFFDF8F2),
+          color: const Color(0xFF2A2828), // CHANGED: was Color(0xFFFDF8F2)
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+          border: Border.all(
+            color: const Color(0xFF4A4646),
+            width: 1.5,
+          ), // CHANGED: was Color(0xFFE8D5B7)
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -189,14 +195,18 @@ class _RecommendationDetailDialogState
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF363434),
+                            color: Color(
+                              0xFFF2DAB1,
+                            ), // CHANGED: was Color(0xFF363434)
                           ),
                         ),
                         Text(
                           'Pukul ${meal.time}',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.grey.shade500,
+                            color: Colors
+                                .grey
+                                .shade400, // CHANGED: was grey.shade500, lebih terang di bg gelap
                           ),
                         ),
                       ],
@@ -209,13 +219,17 @@ class _RecommendationDetailDialogState
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8D5B7),
+                        color: const Color(
+                          0xFF4A4646,
+                        ), // CHANGED: was Color(0xFFE8D5B7)
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
                         Icons.close,
                         size: 18,
-                        color: Color(0xFF363434),
+                        color: Color(
+                          0xFFF2DAB1,
+                        ), // CHANGED: was Color(0xFF363434)
                       ),
                     ),
                   ),
@@ -235,11 +249,15 @@ class _RecommendationDetailDialogState
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: _isEaten
-                      ? const Color.fromARGB(255, 144, 121, 84).withOpacity(0.1)
-                      : Colors.white,
+                      ? const Color.fromARGB(255, 144, 121, 84).withOpacity(
+                          0.2,
+                        ) // CHANGED: was 0.1, dinaikkan biar keliatan di bg gelap
+                      : const Color(0xFF2A2828), // CHANGED: was Colors.white
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: const Color(0xFFE8D5B7),
+                    color: const Color(
+                      0xFF4A4646,
+                    ), // CHANGED: was Color(0xFFE8D5B7)
                     width: 1.5,
                   ),
                 ),
@@ -263,7 +281,9 @@ class _RecommendationDetailDialogState
                         fontWeight: FontWeight.w600,
                         color: _isEaten
                             ? const Color.fromARGB(255, 144, 121, 84)
-                            : Colors.grey.shade600,
+                            : Colors
+                                  .grey
+                                  .shade400, // CHANGED: was grey.shade600, lebih terang di bg gelap
                       ),
                     ),
                   ],
@@ -272,8 +292,10 @@ class _RecommendationDetailDialogState
             ),
 
             // END CHANGE
-            Divider(color: const Color(0xFFE8D5B7), height: 1),
-
+            Divider(
+              color: const Color(0xFF4A4646),
+              height: 1,
+            ), // CHANGED: was Color(0xFFE8D5B7)
             // scrollable body
             Flexible(
               child: SingleChildScrollView(
@@ -313,7 +335,12 @@ class _RecommendationDetailDialogState
                                     Expanded(
                                       child: Text(
                                         ingredient,
-                                        style: const TextStyle(fontSize: 14),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Color(
+                                            0xFFF2DAB1,
+                                          ), // CHANGED: default text jadi cream
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -366,7 +393,12 @@ class _RecommendationDetailDialogState
                                     Expanded(
                                       child: Text(
                                         entry.value,
-                                        style: const TextStyle(fontSize: 14),
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Color(
+                                            0xFFF2DAB1,
+                                          ), // CHANGED: default text jadi cream
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -386,7 +418,13 @@ class _RecommendationDetailDialogState
                       _DetailCard(
                         child: Text(
                           meal.reason!,
-                          style: const TextStyle(fontSize: 14, height: 1.5),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            height: 1.5,
+                            color: Color(
+                              0xFFF2DAB1,
+                            ), // CHANGED: default text jadi cream
+                          ),
                         ),
                       ),
                     ],
@@ -412,7 +450,7 @@ class _SectionHeader extends StatelessWidget {
       style: const TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.bold,
-        color: Color(0xFF363434),
+        color: Color(0xFFF2DAB1), // CHANGED: was Color(0xFF363434)
       ),
     );
   }
@@ -428,9 +466,12 @@ class _DetailCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFF2A2828), // CHANGED: was Colors.white
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE8D5B7), width: 1.5),
+        border: Border.all(
+          color: const Color(0xFF4A4646),
+          width: 1.5,
+        ), // CHANGED: was Color(0xFFE8D5B7)
       ),
       child: child,
     );

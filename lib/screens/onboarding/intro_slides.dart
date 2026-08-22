@@ -14,9 +14,7 @@ class IntroSlides extends StatelessWidget {
       children: [
         Expanded(
           child: IntroductionScreen(
-            globalBackgroundColor: const Color(0xFFF5ECDB),
-            // ADDED: aktifin SafeArea cuma di bagian bawah, biar tombol Lewati/Mulai/dots
-            // ga ketutup navbar HP — urutannya [left, top, right, bottom] sesuai dokumentasi package
+            globalBackgroundColor: Color(0xFF363435),
             safeAreaList: const [false, false, false, true],
 
             pages: [
@@ -37,8 +35,14 @@ class IntroSlides extends StatelessWidget {
                   titleTextStyle: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
+                    color: Color(
+                      0xFFF2DAB1,
+                    ), // CHANGED: tambah color eksplisit biar keliatan di bg gelap
                   ),
-                  bodyTextStyle: TextStyle(fontSize: 16),
+                  bodyTextStyle: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFFF2DAB1), // CHANGED: sama
+                  ),
                   imagePadding: EdgeInsets.only(top: 40),
                 ),
               ),
@@ -49,7 +53,6 @@ class IntroSlides extends StatelessWidget {
                 body:
                     "Rumi bantu susun menu MPASI harian yang seimbang berdasarkan 5 kelompok makanan (karbohidrat, protein, sayur, buah, dan lemak tambahan), disesuaikan dengan kondisi si kecil.",
                 image: Center(
-                  // ADDED: placeholder icon, ganti jadi Image.asset(...) kalo illustrationnya udah ada
                   child: Icon(
                     Icons.restaurant_menu,
                     size: 200,
@@ -60,25 +63,44 @@ class IntroSlides extends StatelessWidget {
                   titleTextStyle: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
+                    color: Color(0xFFF2DAB1), // CHANGED
                   ),
-                  bodyTextStyle: TextStyle(fontSize: 16),
+                  bodyTextStyle: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFFF2DAB1), // CHANGED
+                  ),
                   imagePadding: EdgeInsets.only(top: 40),
                 ),
               ),
             ],
             showSkipButton: true,
             showBackButton: true,
-            back: const Icon(Icons.arrow_back),
-            skip: const Text("Lewati"),
-            next: const Icon(Icons.arrow_forward),
+            back: const Icon(
+              Icons.arrow_back,
+              color: Color(0xFFF2DAB1),
+            ), // CHANGED: tambah color eksplisit
+            skip: const Text(
+              "Lewati",
+              style: TextStyle(color: Color(0xFFF2DAB1)), // CHANGED
+            ),
+            next: const Icon(
+              Icons.arrow_forward,
+              color: Color(0xFFF2DAB1),
+            ), // CHANGED
             done: const Text(
               "Mulai",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color(0xFFF2DAB1), // CHANGED
+              ),
             ),
             onDone: onDone,
-            onSkip: onDone, // ADDED: skip juga langsung anggap intro selesai
+            onSkip: onDone,
             dotsDecorator: DotsDecorator(
               activeColor: const Color.fromARGB(255, 144, 121, 84),
+              color: const Color(
+                0xFF4A4646,
+              ), // CHANGED: inactive dot jadi gelap, was default putih/abu
               size: const Size(10.0, 10.0),
               activeSize: const Size(22.0, 10.0),
               activeShape: RoundedRectangleBorder(

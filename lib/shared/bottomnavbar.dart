@@ -57,7 +57,9 @@ class BottomNavBar extends StatelessWidget {
       child: Container(
         height: 64,
         decoration: BoxDecoration(
-          color: Color(0xFF363434),
+          color: Color(
+            0xFFF2DAB1,
+          ), // CHANGED: charcoal -> sand (dibalik dari baseline)
           borderRadius: BorderRadius.circular(40),
           boxShadow: [
             BoxShadow(
@@ -227,7 +229,9 @@ class _NavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSelected = currentIndex == index;
-    const activeColor = Color.fromARGB(255, 242, 218, 177);
+    const activeColor = Color(
+      0xFF363434,
+    ); // CHANGED: cream -> charcoal (dibalik dari baseline)
 
     return GestureDetector(
       onTap: () => onTap(index),
@@ -244,7 +248,11 @@ class _NavItem extends StatelessWidget {
         child: Icon(
           icon,
           size: 26,
-          color: isSelected ? activeColor : Colors.grey.shade400,
+          color: isSelected
+              ? activeColor
+              : Colors
+                    .grey
+                    .shade600, // CHANGED: grey.shade400 -> shade600 biar keliatan di background terang
         ),
       ),
     );
@@ -267,7 +275,9 @@ class _AvatarNavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isSelected = currentIndex == index;
-    const activeColor = Color.fromARGB(255, 242, 218, 177);
+    const activeColor = Color(
+      0xFF363434,
+    ); // CHANGED: cream -> charcoal (dibalik dari baseline)
 
     return GestureDetector(
       onTap: () => onTap(index),
@@ -290,8 +300,14 @@ class _AvatarNavItem extends StatelessWidget {
               )
             : CircleAvatar(
                 radius: 14,
-                backgroundColor: Color(0xFFE8C99A),
-                child: Icon(Icons.person, color: Color(0xFF8B6F47), size: 16),
+                backgroundColor: Color(
+                  0xFF363434,
+                ), // CHANGED: warm sand -> charcoal (dibalik dari baseline)
+                child: Icon(
+                  Icons.person,
+                  color: Color(0xFFF2DAB1),
+                  size: 16,
+                ), // CHANGED: brown -> sand (dibalik dari baseline)
               ),
       ),
     );

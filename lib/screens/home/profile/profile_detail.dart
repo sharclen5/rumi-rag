@@ -131,21 +131,18 @@ class _ProfileDetailState extends State<ProfileDetail> {
   InputDecoration _inputDecoration() {
     return InputDecoration(
       filled: true,
-      fillColor: Colors.white.withOpacity(0.6),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 24.0,
-        vertical: 16.0,
-      ),
+      fillColor: const Color(0xFF2A2828),
+      hintStyle: const TextStyle(color: Color(0xFFF2DAB1)),
       border: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0xFFE8C99A), width: 1.5),
+        borderSide: const BorderSide(color: Color(0xFF4A4646), width: 1.5),
         borderRadius: BorderRadius.circular(50),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0xFFE8C99A), width: 1.5),
+        borderSide: const BorderSide(color: Color(0xFF4A4646), width: 1.5),
         borderRadius: BorderRadius.circular(50),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0xFFC8853A), width: 1.5),
+        borderSide: const BorderSide(color: Color(0xFFF2DAB1), width: 1.5),
         borderRadius: BorderRadius.circular(50),
       ),
     );
@@ -161,14 +158,14 @@ class _ProfileDetailState extends State<ProfileDetail> {
     final bottomClearance = 64 + 24 + systemNavInset + 16;
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 113, 222, 255),
       appBar: AppBar(
         centerTitle: false,
         elevation: 0,
-        backgroundColor: Color.fromARGB(255, 242, 218, 177),
+        backgroundColor: const Color.fromARGB(255, 32, 31, 31),
+        iconTheme: const IconThemeData(color: Color(0xFFF2DAB1)),
         title: const Text(
           "Update Profile",
-          style: TextStyle(color: Color(0xFF363434)),
+          style: TextStyle(color: Color(0xFFF2DAB1)),
         ),
       ),
 
@@ -177,7 +174,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFFF5EBD9), Color(0xFFFFFFFF)],
+            colors: [Color(0xFF363434), Color(0xFF1A1A1A)],
             stops: [0.0, 1.0],
           ),
         ),
@@ -200,6 +197,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                       text: "First Name",
                       child: TextFormField(
                         controller: _firstNameController,
+                        style: const TextStyle(color: Color(0xFFF2DAB1)),
                         decoration: _inputDecoration(),
                       ),
                     ),
@@ -208,6 +206,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                       text: "Last Name",
                       child: TextFormField(
                         controller: _lastNameController,
+                        style: const TextStyle(color: Color(0xFFF2DAB1)),
                         decoration: _inputDecoration(),
                       ),
                     ),
@@ -216,6 +215,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                       text: "Email",
                       child: TextFormField(
                         controller: _emailController,
+                        style: const TextStyle(color: Color(0xFFF2DAB1)),
                         decoration: _inputDecoration(),
                       ),
                     ),
@@ -224,6 +224,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                       text: "Phone",
                       child: TextFormField(
                         controller: _phoneController,
+                        style: const TextStyle(color: Color(0xFFF2DAB1)),
                         decoration: _inputDecoration(),
                       ),
                     ),
@@ -232,6 +233,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                       text: "Gender",
                       child: DropdownButtonFormField<String>(
                         value: _selectedGender,
+                        style: const TextStyle(color: Color(0xFFF2DAB1)),
                         decoration: _inputDecoration(),
                         items: const [
                           DropdownMenuItem(value: 'Male', child: Text('Male')),
@@ -256,8 +258,8 @@ class _ProfileDetailState extends State<ProfileDetail> {
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFF5F6F9),
-                        foregroundColor: const Color(0xFF757575),
+                        backgroundColor: const Color(0xFFF2DAB1),
+                        foregroundColor: const Color(0xFF363434),
                         minimumSize: const Size(double.infinity, 48),
                         shape: const StadiumBorder(),
                       ),
@@ -269,8 +271,8 @@ class _ProfileDetailState extends State<ProfileDetail> {
                     width: 160,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF363434),
-                        foregroundColor: Colors.white,
+                        backgroundColor: const Color(0xFFF2DAB1),
+                        foregroundColor: const Color(0xFF363434),
                         minimumSize: const Size(double.infinity, 48),
                         shape: const StadiumBorder(),
                       ),
@@ -338,15 +340,19 @@ class ProfileDetailPic extends StatelessWidget {
               ? CircleAvatar(radius: 50, backgroundImage: image)
               : CircleAvatar(
                   radius: 50,
-                  backgroundColor: Color(0xFFE8C99A),
-                  child: Icon(Icons.person, color: Color(0xFF8B6F47), size: 40),
+                  backgroundColor: const Color(0xFF363434),
+                  child: Icon(
+                    Icons.person,
+                    color: const Color(0xFFF2DAB1),
+                    size: 40,
+                  ),
                 ),
           InkWell(
             onTap: imageUploadBtnPress,
             child: const CircleAvatar(
               radius: 13,
-              backgroundColor: Color(0xFF363434),
-              child: Icon(Icons.add, color: Colors.white, size: 20),
+              backgroundColor: Color(0xFFF2DAB1),
+              child: Icon(Icons.add, color: Color(0xFF363434), size: 20),
             ),
           ),
         ],
@@ -372,7 +378,7 @@ class UserInfoEditField extends StatelessWidget {
             child: Text(
               text,
               style: const TextStyle(
-                color: Color(0xFF363434),
+                color: Color(0xFFF2DAB1),
                 fontWeight: FontWeight.w500,
               ),
             ),

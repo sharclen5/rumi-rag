@@ -32,10 +32,11 @@ class BabyPage extends StatelessWidget {
             appBar: AppBar(
               centerTitle: false,
               elevation: 0,
-              backgroundColor: Color.fromARGB(255, 242, 218, 177),
+              backgroundColor: const Color.fromARGB(255, 32, 31, 31),
+              iconTheme: const IconThemeData(color: Color(0xFFF2DAB1)),
               title: const Text(
                 "Data Bayi",
-                style: TextStyle(color: Color(0xFF363434)),
+                style: TextStyle(color: Color(0xFFF2DAB1)),
               ),
             ),
 
@@ -45,7 +46,7 @@ class BabyPage extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Color(0xFFF5EBD9), Color(0xFFFFFFFF)],
+                  colors: [Color(0xFF363434), Color(0xFF1A1A1A)],
                   stops: [0.0, 1.0],
                 ),
               ),
