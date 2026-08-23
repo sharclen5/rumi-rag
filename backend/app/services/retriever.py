@@ -46,7 +46,9 @@ def age_to_bucket(months: int) -> str:
     else:
         return "12-23bulan"
 
-def get_retriever(age_in_months: int, k: int = 5):
+# CHANGED: k dinaikin dari 5 ke 10 — biar lebih banyak resep yang ke-retrieve
+# dan LLM punya lebih banyak variasi buat dipilih tiap harinya
+def get_retriever(age_in_months: int, k: int = 10):
     bucket = age_to_bucket(age_in_months)
     # ADDED: filter pake $or, soalnya selain chunk yang match usia spesifik,
     # chunk yang ditag "all" (berlaku semua usia, misal prinsip umum/WHO rec)
@@ -63,6 +65,7 @@ def get_retriever(age_in_months: int, k: int = 5):
 # bukan list of dict kayak sebelumnya (pake .page_content bukan ['text'], .metadata tetep sama)
 if __name__ == "__main__":
     test_query = "resep MPASI untuk bayi 6 bulan"
+    retriever = get_retriever(age_in_months=6)
     results = retriever.invoke(test_query)
     for doc in results:
         print(f"[Sumber: {doc.metadata.get('source', 'unknown')}]")
