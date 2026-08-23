@@ -85,8 +85,10 @@ void showRagInfo(BuildContext context) {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
+                    // CHANGED: teks dibuat lebih natural dan mudah dipahami orang tua umum,
+                    // tanpa kehilangan informasi penting soal cara kerja RAG
                     Text(
-                      'RAG (Retrieval-Augmented Generation) adalah teknologi yang membantu Rumi memberikan rekomendasi MPASI yang lebih akurat.',
+                      'Versi ini menggunakan teknologi Retrieval-Augmented Generation atau RAG. Singkatnya, sebelum membuat rekomendasi, Rumi mencari dulu referensi dari sumber terpercaya seperti Buku KIA 2024, panduan WHO, dan buku resep MPASI Kemenkes.',
                       style: TextStyle(
                         fontSize: 13.5,
                         height: 1.5,
@@ -95,7 +97,7 @@ void showRagInfo(BuildContext context) {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Sebelum menjawab, sistem terlebih dahulu mencari referensi terpercaya seperti Buku KIA dan panduan WHO, lalu menyusun rekomendasi berdasarkan referensi tersebut, tidak hanya dari ingatan model AI saja.',
+                      'Hasilnya, rekomendasi yang kamu terima tidak hanya berdasarkan kemampuan AI secara umum, tetapi juga didukung oleh panduan gizi yang sudah terverifikasi.',
                       style: TextStyle(
                         fontSize: 13.5,
                         height: 1.5,
@@ -104,7 +106,7 @@ void showRagInfo(BuildContext context) {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'Ini membuat jawaban lebih relevan dan dapat dipertanggungjawabkan.',
+                      'Dengan begitu, rekomendasi yang kamu dapat lebih terarah dan didukung oleh sumber yang jelas.',
                       style: TextStyle(
                         fontSize: 13.5,
                         height: 1.5,
