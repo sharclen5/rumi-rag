@@ -44,25 +44,46 @@ Metode masak juga harus realistis untuk dapur rumahan (kukus, rebus, tim),
 tanpa alat khusus seperti oven atau blender mahal, kecuali blender/saringan
 biasa yang umum dimiliki.
 
+PENTING - Variasi menu:
+Daftar "Menu sebelumnya" di atas adalah semua menu yang sudah diberikan
+selama periode rekomendasi ini. JANGAN ulangi nama menu yang sama persis.
+Usahakan variasi bahan protein utama setiap hari (contoh: jangan ikan 2 hari
+berturut-turut, selang-seling antara ayam, ikan, telur, tahu, tempe, daging).
+Variasikan juga sumber karbohidrat (nasi, kentang, ubi, jagung, mie, roti)
+dan sayuran yang digunakan. Tujuannya agar bayi terpapar berbagai rasa dan
+nutrisi berbeda setiap harinya.
+
 PENTING - Format bahan (ingredients):
 Setiap item di "ingredients" HARUS menyertakan takaran, dengan format:
-"[jumlah] gr ([takaran rumah tangga]) [nama bahan]", contoh:
-"100 gr (10 sdm) nasi putih", "30 gr (3 sdm) daging ayam cincang",
-"10 gr (1 sdm) wortel". Untuk bahan cair gunakan "ml" sebagai
-pengganti "gr" (contoh: "200 ml kaldu ayam", "10 ml (1 sdm) santan kental").
-Gunakan takaran rumah tangga umum seperti sdt (sendok teh), sdm (sendok makan),
-butir, potong, siung, batang, lembar, sesuai jenis bahan — samakan gaya
-dengan resep MPASI Kemenkes RI. Sesuaikan jumlah total bahan dengan porsi
-untuk SATU kali makan sesuai usia bayi (bukan resep untuk banyak porsi).
+"[jumlah] gr ([takaran rumah tangga]) [nama bahan], [kondisi/persiapan bahan]",
+contoh: "100 gr (10 sdm) nasi putih, sudah dimasak", "30 gr (3 sdm) daging
+ayam, cincang halus", "20 gr (2 sdm) wortel, kupas dan potong dadu kecil",
+"10 gr (1 sdm) bayam, cuci bersih dan iris halus".
+Untuk bahan yang tidak perlu persiapan khusus, kondisi boleh dilewati
+(contoh: "10 ml (1 sdm) minyak goreng").
+Untuk bahan cair gunakan "ml" sebagai pengganti "gr".
+Gunakan takaran rumah tangga umum seperti sdt, sdm, butir, potong, siung,
+batang, lembar, sesuai jenis bahan.
+Sesuaikan jumlah total bahan dengan porsi untuk SATU kali makan sesuai
+usia bayi (bukan resep untuk banyak porsi).
 
 PENTING - Format langkah (steps):
-Setiap langkah di "steps" harus jelas dan actionable, mencakup: bahan apa yang
-dimasukkan/diproses, metode memasak (rebus, kukus, tim, tumis), dan penanda
-kematangan/tekstur (contoh: "hingga lunak", "hingga mengental", "hingga matang").
-Contoh: "Rebus wortel dan daging ayam cincang dalam kaldu hingga empuk",
-"Masukkan nasi, aduk hingga menjadi bubur kental", "Saring/haluskan sesuai
-tekstur usia bayi". Hindari langkah yang terlalu singkat/generik seperti
-"Masak semua bahan" tanpa keterangan cara dan bahan apa saja.
+Setiap langkah di "steps" harus mencakup SATU aksi saja — jangan gabungkan
+beberapa aksi dalam satu langkah. Setiap langkah harus menyebut: bahan spesifik
+yang diproses, metode memasak (rebus, kukus, tim, tumis), penanda kematangan
+atau tekstur, dan estimasi waktu (contoh: "± 5 menit", "± 10 menit").
+Jika ada langkah penyaringan atau penghalusan, tambahkan target tekstur yang
+sesuai usia bayi (contoh: "haluskan hingga tekstur bisa dihancurkan dengan
+lidah" untuk 6-8 bulan, "cincang kasar, tidak perlu dihaluskan" untuk 9-11
+bulan).
+Contoh langkah yang baik:
+"Panaskan minyak goreng di wajan dengan api kecil (± 1 menit)",
+"Tumis kunyit dan jahe hingga harum dan berubah warna (± 2 menit)",
+"Masukkan 30 gr daging ayam cincang, aduk hingga berubah warna (± 3 menit)",
+"Tambahkan 200 ml air, masak dengan api kecil hingga ayam empuk (± 10 menit)",
+"Haluskan dengan garpu atau saringan hingga tekstur lembut bisa ditelan bayi".
+Hindari langkah generik seperti "Masak semua bahan" atau menggabungkan
+lebih dari satu aksi dalam satu kalimat.
 
 PENTING - Format alasan (reason):
 Isi "reason" harus menjelaskan 2 hal sekaligus dalam 1-2 kalimat:
@@ -75,9 +96,11 @@ alergi, riwayat medis) jika relevan dengan menu tersebut — misalnya tekstur
 sesuai jumlah gigi/usia koreksi, aman dari alergi yang disebutkan, porsi
 sesuai berat/tinggi badan, atau penyesuaian akibat riwayat medis. Tidak
 semua data harus disebutkan di setiap menu, cukup yang benar-benar relevan.
-Jika relevan, kaitkan juga dengan rekomendasi gizi dari WHO, IDAI, atau
-Kemenkes RI (contoh: "sesuai anjuran WHO untuk konsumsi protein hewani
-harian"). Hindari alasan generik seperti "bergizi dan sehat untuk bayi"
+Gunakan konteks dari sumber terpercaya yang sudah disediakan di atas sebagai
+dasar alasan. Sebutkan sumbernya secara eksplisit (contoh: "menurut panduan
+WHO", "sesuai Buku KIA 2024", "berdasarkan rekomendasi Kemenkes RI") minimal
+satu kali per alasan. Ini yang membedakan rekomendasi ini dari rekomendasi
+umum. Hindari alasan generik seperti "bergizi dan sehat untuk bayi"
 tanpa penjelasan spesifik.
 
 PENTING - Nama menu:
