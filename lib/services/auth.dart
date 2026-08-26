@@ -110,6 +110,29 @@ class AuthService {
     }
   }
 
+  // Kirim email reset password
+  Future<String?> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return null; // null = sukses, konsisten sama pola return di atas
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      debugPrint(e.code);
+      switch (e.code) {
+        case 'user-not-found':
+          return 'Email tidak terdaftar.';
+        case 'invalid-email':
+          return 'Format email tidak valid.';
+        case 'network-request-failed':
+          return 'Koneksi gagal, periksa internet kamu.';
+        default:
+          return 'Gagal mengirim email reset: ${e.message}';
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+      return 'Terjadi kesalahan, coba lagi.';
+    }
+  }
+
   // Sign out
   Future signOut() async {
     try {

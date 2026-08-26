@@ -155,6 +155,143 @@ class _SignInState extends State<SignIn> {
     );
   }
 
+  void _showForgotPasswordDialog() {
+    // controller khusus buat dialog ini, biar ga nyampur sama login form
+    final resetEmailController = TextEditingController();
+    final dialogFormKey = GlobalKey<FormState>();
+    bool isSending = false;
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.4),
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          // StatefulBuilder biar bisa setState di dalam dialog (loading state)
+          builder: (dialogContext, setDialogState) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: _fieldBg,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: _fieldBorder, width: 1.5),
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Form(
+                  key: dialogFormKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Reset Password',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Poppins',
+                          color: _fieldText,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Masukkan email akunmu, kami akan kirim link reset.',
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontFamily: 'Poppins',
+                          color: Colors.grey.shade500,
+                          height: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: resetEmailController,
+                        keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(
+                          color: _fieldText,
+                          fontSize: 14,
+                          fontFamily: 'Poppins',
+                        ),
+                        decoration: _fieldDecoration('Email'),
+                        validator: (val) => val == null || val.trim().isEmpty
+                            ? 'Masukkan email'
+                            : null,
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 48,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _fieldText,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: isSending
+                              ? null // disable tombol pas lagi loading
+                              : () async {
+                                  if (!(dialogFormKey.currentState
+                                          ?.validate() ??
+                                      false))
+                                    return;
+                                  setDialogState(() => isSending = true);
+
+                                  final String? errorMsg = await _auth
+                                      .sendPasswordResetEmail(
+                                        resetEmailController.text.trim(),
+                                      );
+
+                                  if (!dialogContext.mounted) return;
+                                  Navigator.of(
+                                    dialogContext,
+                                  ).pop(); // tutup dialog
+
+                                  if (errorMsg != null) {
+                                    // tampil error di sign in screen
+                                    setState(() => error = errorMsg);
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          'Link reset dikirim ke ${resetEmailController.text.trim()}',
+                                        ),
+                                        backgroundColor: _brand,
+                                      ),
+                                    );
+                                  }
+                                },
+                          child: isSending
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Color(0xFF363434),
+                                  ),
+                                )
+                              : const Text(
+                                  'Kirim Link Reset',
+                                  style: TextStyle(
+                                    color: Color(0xFF363434),
+                                    fontSize: 14,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final systemNavInset = MediaQuery.of(context).padding.bottom;
@@ -258,7 +395,23 @@ class _SignInState extends State<SignIn> {
                                 : null,
                             onChanged: (val) => setState(() => password = val),
                           ),
-                          const SizedBox(height: 25),
+                          const SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: GestureDetector(
+                              onTap: _showForgotPasswordDialog,
+                              child: const Text(
+                                'Lupa Password?',
+                                style: TextStyle(
+                                  color: _brand,
+                                  fontSize: 12.5,
+                                  fontFamily: 'Poppins',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15),
                           // sign in button
                           ClipRRect(
                             borderRadius: const BorderRadius.all(
