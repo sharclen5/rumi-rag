@@ -42,6 +42,7 @@ class _TutorialMarkState extends State<TutorialMark> {
     babyId: _fakeBabyId,
     date: _todayStr(),
     createdAt: DateTime.now(),
+    source: 'baseline',
     meals: [
       Meal(time: '06.00', type: 'ASI', isEaten: true),
       Meal(

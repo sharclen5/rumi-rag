@@ -5,12 +5,14 @@ class Recommendation {
   final String date;
   final List<Meal> meals;
   final DateTime createdAt;
+  final String source;
 
   Recommendation({
     required this.babyId,
     required this.date,
     required this.meals,
     required this.createdAt,
+    required this.source,
   });
 
   // convert respon API ke objek Recommendation
@@ -26,6 +28,7 @@ class Recommendation {
           .map((meal) => Meal.fromJson(meal))
           .toList(),
       createdAt: DateTime.now(),
+      source: json['source'] ?? 'baseline',
     );
   }
 
@@ -38,6 +41,7 @@ class Recommendation {
           .map((meal) => Meal.fromJson(meal))
           .toList(),
       createdAt: DateTime.parse(data['created_at']),
+      source: data['source'] ?? 'baseline',
     );
   }
 
@@ -48,6 +52,7 @@ class Recommendation {
       'date': date,
       'meals': meals.map((meal) => meal.toJson()).toList(),
       'created_at': createdAt.toIso8601String(),
+      'source': source,
     };
   }
 }

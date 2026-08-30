@@ -10,6 +10,7 @@ import 'package:rumi/shared/bottomnavbar.dart';
 import 'package:rumi/screens/home/profile/profile_detail.dart';
 import 'package:rumi/screens/onboarding/tutorial_mark.dart';
 import 'package:rumi/screens/onboarding/intro_slides.dart';
+import 'package:rumi/screens/home/admin/admin_dashboard.dart';
 
 class ProfilePage extends StatelessWidget {
   final Function(int) onTabTapped;
@@ -74,6 +75,18 @@ class ProfilePage extends StatelessWidget {
                             ),
                           ),
                   ),
+                  // tampilkan menu Admin Dashboard hanya kalo role-nya admin
+                  if (userProfile?.role == 'admin')
+                    ProfileMenu(
+                      text: "Admin Dashboard",
+                      icon: const Icon(Icons.admin_panel_settings, size: 22),
+                      press: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const AdminDashboard(),
+                        ),
+                      ),
+                    ),
                   ProfileMenu(
                     text: "Data Bayi",
                     icon: Icon(Icons.child_care, size: 22),

@@ -76,7 +76,142 @@ class DatabaseService {
       gender: data['gender'] ?? '',
       email: data['email'] ?? '',
       photoUrl: data['photoUrl'],
+      role:
+          data['role'] ??
+          'user', // ← baca dari Firestore, fallback 'user' kalo field-nya belum ada
     );
+  }
+
+  // ambil role user sekali aja, buat route guarding di wrapper
+  Future<String> getUserRole() async {
+    final doc = await userDocument.get();
+    final data = doc.data() as Map<String, dynamic>?;
+    return data?['role'] ?? 'user'; // fallback 'user' kalo field belum ada
+  }
+
+  // ambil semua user buat admin dashboard — query langsung ke collection 'users'
+  Stream<List<UserProfile>> getAllUsers() {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs.map((doc) {
+            final data = doc.data();
+            return UserProfile(
+              uid: doc.id,
+              firstName: data['firstName'] ?? '',
+              lastName: data['lastName'] ?? '',
+              phone: data['phone'] ?? '',
+              gender: data['gender'] ?? '',
+              email: data['email'] ?? '',
+              photoUrl: data['photoUrl'],
+              role:
+                  data['role'] ??
+                  'user', // fallback 'user' kalo belum ada field-nya
+            );
+          }).toList(),
+        );
+  }
+
+  // [ADMIN] ambil semua bayi milik user tertentu — one-shot, bukan stream
+  Future<List<Baby>> getBabiesForUser(String targetUid) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('babies')
+        .doc(targetUid)
+        .collection('babyList')
+        .get();
+    return snapshot.docs.map((doc) {
+      final data = doc.data();
+      return Baby(
+        id: doc.id,
+        firstName: data['firstName'] ?? '',
+        middleName: data['middleName'] ?? '',
+        lastName: data['lastName'] ?? '',
+        gender: data['gender'] ?? '',
+        dateOfBirth: (data['dateOfBirth'] as Timestamp).toDate(),
+        weight: (data['weight'] as num).toDouble(),
+        height: (data['height'] as num).toDouble(),
+        isActive: data['isActive'] ?? false,
+        allergyIds: List<String>.from(data['allergyIds'] ?? []),
+        isPremature: data['isPremature'] ?? false,
+        gestationalAgeWeeks: data['gestationalAgeWeeks'],
+        isActivelyBreastfed: data['isActivelyBreastfed'] ?? true,
+        toothCount: data['toothCount'],
+        medicalHistory: data['medicalHistory'],
+      );
+    }).toList();
+  }
+
+  // [ADMIN] ambil rekomendasi milik bayi tertentu dari user tertentu
+  Stream<List<Recommendation>> getRecommendationsForBaby(
+    String targetUid,
+    String babyId,
+  ) {
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(targetUid)
+        .collection('recommendations')
+        .where('baby_id', isEqualTo: babyId)
+        .orderBy('date', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => Recommendation.fromFirestore(doc.data()))
+              .toList(),
+        );
+  }
+
+  // [ADMIN] update data user lain — termasuk role
+  Future<void> updateUserAsAdmin(
+    String targetUid,
+    String firstName,
+    String lastName,
+    String email,
+    String phone,
+    String gender,
+    String role,
+  ) async {
+    await FirebaseFirestore.instance.collection('users').doc(targetUid).set({
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'phone': phone,
+      'gender': gender,
+      'role': role,
+    }, SetOptions(merge: true));
+  }
+
+  // [ADMIN] hapus semua data user — recommendations, babies, user doc
+  Future<void> deleteUserData(String targetUid) async {
+    final batch = FirebaseFirestore.instance.batch();
+
+    // hapus semua recommendations
+    final recs = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(targetUid)
+        .collection('recommendations')
+        .get();
+    for (final doc in recs.docs) {
+      batch.delete(doc.reference);
+    }
+
+    // hapus semua bayi
+    final babies = await FirebaseFirestore.instance
+        .collection('babies')
+        .doc(targetUid)
+        .collection('babyList')
+        .get();
+    for (final doc in babies.docs) {
+      batch.delete(doc.reference);
+    }
+
+    // hapus doc babies/{targetUid} dan users/{targetUid}
+    batch.delete(
+      FirebaseFirestore.instance.collection('babies').doc(targetUid),
+    );
+    batch.delete(FirebaseFirestore.instance.collection('users').doc(targetUid));
+
+    await batch.commit();
   }
 
   // get user profile as a stream (auto-updates if data changes)

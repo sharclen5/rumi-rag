@@ -15,6 +15,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:rumi/shared/tour_keys.dart';
 import 'package:rumi/screens/onboarding/tutorial_mark.dart';
 import 'package:rumi/services/auth.dart';
+import 'package:rumi/screens/home/admin/admin_dashboard.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -27,6 +28,7 @@ class _WrapperState extends State<Wrapper> {
   int _currentIndex = 0;
   bool _cameFromOnboarding = false;
   bool _tourLaunchedThisSession = false;
+  bool _useAppAsAdmin = true;
 
   @override
   void initState() {
@@ -86,61 +88,83 @@ class _WrapperState extends State<Wrapper> {
       return Authenticate();
     }
 
-    // cek apakah user udah punya baby profile atau belum
-    return StreamBuilder<List<Baby>>(
-      stream: DatabaseService(uid: user.uid).babies,
-      builder: (context, babySnapshot) {
-        // masih nunggu data babies dari Firestore
-        if (babySnapshot.connectionState == ConnectionState.waiting) {
+    // cek role dulu sebelum routing ke halaman utama
+    return FutureBuilder<String>(
+      future: DatabaseService(uid: user.uid).getUserRole(),
+      builder: (context, roleSnapshot) {
+        if (roleSnapshot.connectionState == ConnectionState.waiting) {
           return Loading();
         }
 
-        final babies = babySnapshot.data ?? [];
+        final role = roleSnapshot.data ?? 'user';
 
-        // sudah ada baby -> tampilan normal, ga ada yang berubah
-        if (babies.isNotEmpty) {
-          if (_cameFromOnboarding && !_tourLaunchedThisSession) {
-            _tourLaunchedThisSession = true;
-            _cameFromOnboarding = false;
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (mounted) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const TutorialMark()),
-                );
-              }
-            });
-          }
-          final pages = [
-            Home(onTabTapped: (i) => setState(() => _currentIndex = i)),
-            RecommendationPage(
-              onTabTapped: (i) => setState(() => _currentIndex = i),
-            ),
-            const Placeholder(), // Buat Rencana slot — never actually rendered,
-            HistoryPage(onTabTapped: (i) => setState(() => _currentIndex = i)),
-            ProfilePage(onTabTapped: (i) => setState(() => _currentIndex = i)),
-          ];
-          return pages[_currentIndex];
+        // kalo admin, langsung ke dashboard admin
+        if (role == 'admin' && !_useAppAsAdmin) {
+          return AdminDashboard(
+            onEnterApp: () => setState(() => _useAppAsAdmin = true),
+          );
         }
-
-        // belum ada baby -> cek udah pernah liat intro apa belum
-        return FutureBuilder<bool>(
-          future: _hasSeenIntro(user.uid),
-          builder: (context, introSnapshot) {
-            if (introSnapshot.connectionState == ConnectionState.waiting) {
-              return Loading(); // CHANGED: konsisten pake Loading widget
+        // cek apakah user udah punya baby profile atau belum
+        return StreamBuilder<List<Baby>>(
+          stream: DatabaseService(uid: user.uid).babies,
+          builder: (context, babySnapshot) {
+            // masih nunggu data babies dari Firestore
+            if (babySnapshot.connectionState == ConnectionState.waiting) {
+              return Loading();
             }
 
-            final seenIntro = introSnapshot.data ?? false;
+            final babies = babySnapshot.data ?? [];
 
-            // pake IntroSlides beneran, bukan placeholder lagi
-            if (!seenIntro) {
-              return IntroSlides(onDone: () => _markIntroAsSeen(user.uid));
+            // sudah ada baby -> tampilan normal, ga ada yang berubah
+            if (babies.isNotEmpty) {
+              if (_cameFromOnboarding && !_tourLaunchedThisSession) {
+                _tourLaunchedThisSession = true;
+                _cameFromOnboarding = false;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const TutorialMark()),
+                    );
+                  }
+                });
+              }
+              final pages = [
+                Home(onTabTapped: (i) => setState(() => _currentIndex = i)),
+                RecommendationPage(
+                  onTabTapped: (i) => setState(() => _currentIndex = i),
+                ),
+                const Placeholder(), // Buat Rencana slot — never actually rendered,
+                HistoryPage(
+                  onTabTapped: (i) => setState(() => _currentIndex = i),
+                ),
+                ProfilePage(
+                  onTabTapped: (i) => setState(() => _currentIndex = i),
+                ),
+              ];
+              return pages[_currentIndex];
             }
 
-            // Add Baby form
-            _cameFromOnboarding = true;
-            return const AddBabyForms();
+            // belum ada baby -> cek udah pernah liat intro apa belum
+            return FutureBuilder<bool>(
+              future: _hasSeenIntro(user.uid),
+              builder: (context, introSnapshot) {
+                if (introSnapshot.connectionState == ConnectionState.waiting) {
+                  return Loading(); // CHANGED: konsisten pake Loading widget
+                }
+
+                final seenIntro = introSnapshot.data ?? false;
+
+                // pake IntroSlides beneran, bukan placeholder lagi
+                if (!seenIntro) {
+                  return IntroSlides(onDone: () => _markIntroAsSeen(user.uid));
+                }
+
+                // Add Baby form
+                _cameFromOnboarding = true;
+                return const AddBabyForms();
+              },
+            );
           },
         );
       },
