@@ -333,16 +333,6 @@ class _SignInState extends State<SignIn> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Log In',
-                            style: TextStyle(
-                              color:
-                                  _fieldText, // CHANGED: was Color(0xFF363434)
-                              fontSize: 27,
-                              fontFamily: 'Poppins',
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
                           const SizedBox(height: 20),
                           // email
                           TextFormField(
@@ -357,7 +347,7 @@ class _SignInState extends State<SignIn> {
                             ),
                             decoration: _fieldDecoration('Email'),
                             validator: (val) => val == null || val.isEmpty
-                                ? 'Enter an email'
+                                ? 'Masukkan email anda'
                                 : null,
                             onChanged: (val) => setState(() => email = val),
                           ),
@@ -391,7 +381,7 @@ class _SignInState extends State<SignIn> {
                               ),
                             ),
                             validator: (val) => val == null || val.length < 6
-                                ? 'Enter a password with at least 6 characters'
+                                ? 'Masukan kata sandi dengan minimal 6 karakter'
                                 : null,
                             onChanged: (val) => setState(() => password = val),
                           ),
@@ -426,7 +416,7 @@ class _SignInState extends State<SignIn> {
                                       _fieldText, // CHANGED: was Color(0xFF363434)
                                 ),
                                 child: const Text(
-                                  'Sign In',
+                                  'Masuk',
                                   style: TextStyle(
                                     color: Color(
                                       0xFF363434,
@@ -448,7 +438,7 @@ class _SignInState extends State<SignIn> {
                                     if (result == null) {
                                       setState(() {
                                         error =
-                                            'Could not sign in with those credentials';
+                                            'Tidak dapat masuk dengan data tersebut, silahkan coba lagi';
                                         loading = false;
                                       });
                                     }
@@ -468,7 +458,7 @@ class _SignInState extends State<SignIn> {
                           Row(
                             children: [
                               Text(
-                                'Don\'t have an account?',
+                                'Belum punya akun?',
                                 style: TextStyle(
                                   color: Colors
                                       .grey
@@ -482,7 +472,7 @@ class _SignInState extends State<SignIn> {
                               InkWell(
                                 onTap: () => widget.toggleView(),
                                 child: const Text(
-                                  'Sign Up',
+                                  'Daftar',
                                   style: TextStyle(
                                     color:
                                         _fieldText, // CHANGED: was Color(0xFF363434)

@@ -107,7 +107,7 @@ class _RegisterState extends State<Register> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            'Register',
+                            'Buat Akun Baru',
                             style: TextStyle(
                               color:
                                   _fieldText, // CHANGED: was Color(0xFF363434)
@@ -130,7 +130,7 @@ class _RegisterState extends State<Register> {
                             ),
                             decoration: _fieldDecoration('Email'),
                             validator: (val) => val == null || val.isEmpty
-                                ? 'Enter an email'
+                                ? 'Masukkan email anda'
                                 : null,
                             onChanged: (val) => setState(() => email = val),
                           ),
@@ -145,9 +145,9 @@ class _RegisterState extends State<Register> {
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
-                            decoration: _fieldDecoration('First Name'),
+                            decoration: _fieldDecoration('Nama Depan'),
                             validator: (val) => val == null || val.isEmpty
-                                ? 'Enter your first name'
+                                ? 'Masukkan nama depan anda'
                                 : null,
                             onChanged: (val) => setState(() => firstName = val),
                           ),
@@ -162,9 +162,9 @@ class _RegisterState extends State<Register> {
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
-                            decoration: _fieldDecoration('Last Name'),
+                            decoration: _fieldDecoration('Nama Belakang'),
                             validator: (val) => val == null || val.isEmpty
-                                ? 'Enter your last name'
+                                ? 'Masukan nama belakang anda'
                                 : null,
                             onChanged: (val) => setState(() => lastName = val),
                           ),
@@ -173,7 +173,7 @@ class _RegisterState extends State<Register> {
                           DropdownButtonFormField<String>(
                             value: gender.isEmpty ? null : gender,
                             hint: Text(
-                              'Select Gender',
+                              'Jenis Kelamin',
                               style: TextStyle(
                                 color: Colors.grey.shade500,
                               ), // CHANGED: hint jadi terang di bg gelap
@@ -186,17 +186,17 @@ class _RegisterState extends State<Register> {
                               fontFamily: 'Poppins',
                             ),
                             validator: (val) => val == null || val.isEmpty
-                                ? 'Select your gender'
+                                ? 'Pilih jenis kelamin anda'
                                 : null,
-                            decoration: _fieldDecoration('Select Gender'),
+                            decoration: _fieldDecoration('Jenis Kelamin'),
                             items: const [
                               DropdownMenuItem(
                                 value: 'Male',
-                                child: Text('Male'),
+                                child: Text('Laki-laki'),
                               ),
                               DropdownMenuItem(
                                 value: 'Female',
-                                child: Text('Female'),
+                                child: Text('Perempuan'),
                               ),
                             ],
                             onChanged: (val) => setState(() => gender = val!),
@@ -212,9 +212,9 @@ class _RegisterState extends State<Register> {
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w400,
                             ),
-                            decoration: _fieldDecoration('Phone Number'),
+                            decoration: _fieldDecoration('Nomor Telepon'),
                             validator: (val) => val == null || val.isEmpty
-                                ? 'Enter your phone number'
+                                ? 'Masukan nomor telepon anda'
                                 : null,
                             onChanged: (val) => setState(() => phone = val),
                           ),
@@ -247,7 +247,7 @@ class _RegisterState extends State<Register> {
                               ),
                             ),
                             validator: (val) => val == null || val.length < 6
-                                ? 'Enter a password with at least 6 characters'
+                                ? 'Masukan kata sandi dengan minimal 6 karakter'
                                 : null,
                             onChanged: (val) => setState(() => password = val),
                           ),
@@ -266,7 +266,7 @@ class _RegisterState extends State<Register> {
                                       _fieldText, // CHANGED: was Color(0xFF363434)
                                 ),
                                 child: const Text(
-                                  'Register',
+                                  'Daftar',
                                   style: TextStyle(
                                     color: Color(
                                       0xFF363434,
@@ -317,7 +317,7 @@ class _RegisterState extends State<Register> {
                           Row(
                             children: [
                               Text(
-                                'Already have an account?',
+                                'Sudah punya akun?',
                                 style: TextStyle(
                                   color: Colors
                                       .grey
@@ -331,7 +331,7 @@ class _RegisterState extends State<Register> {
                               InkWell(
                                 onTap: () => widget.toggleView(),
                                 child: const Text(
-                                  'Sign In',
+                                  'Masuk',
                                   style: TextStyle(
                                     color:
                                         _fieldText, // CHANGED: was Color(0xFF393939)

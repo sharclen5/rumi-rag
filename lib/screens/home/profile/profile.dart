@@ -61,7 +61,7 @@ class ProfilePage extends StatelessWidget {
                   ProfilePic(photoUrl: userProfile?.photoUrl),
                   const SizedBox(height: 20),
                   ProfileMenu(
-                    text: "Profile Detail",
+                    text: "Detail Profil",
                     icon: Icon(Icons.person, size: 22),
                     press: userProfile == null
                         ? null // disable button while loading
@@ -121,7 +121,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                   ),
                   ProfileMenu(
-                    text: "Log Out",
+                    text: "Keluar",
                     icon: Icon(Icons.logout, size: 22),
                     press: () async {
                       await _auth.signOut();

@@ -164,7 +164,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
         backgroundColor: const Color.fromARGB(255, 32, 31, 31),
         iconTheme: const IconThemeData(color: Color(0xFFF2DAB1)),
         title: const Text(
-          "Update Profile",
+          "Update Profil Anda",
           style: TextStyle(color: Color(0xFFF2DAB1)),
         ),
       ),
@@ -194,7 +194,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                   children: [
                     SizedBox(height: 20.0),
                     UserInfoEditField(
-                      text: "First Name",
+                      text: "Nama Depan",
                       child: TextFormField(
                         controller: _firstNameController,
                         style: const TextStyle(color: Color(0xFFF2DAB1)),
@@ -203,7 +203,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                     ),
                     SizedBox(height: 20.0),
                     UserInfoEditField(
-                      text: "Last Name",
+                      text: "Nama Belakang",
                       child: TextFormField(
                         controller: _lastNameController,
                         style: const TextStyle(color: Color(0xFFF2DAB1)),
@@ -221,7 +221,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                     ),
                     SizedBox(height: 20.0),
                     UserInfoEditField(
-                      text: "Phone",
+                      text: "Nomor Telepon",
                       child: TextFormField(
                         controller: _phoneController,
                         style: const TextStyle(color: Color(0xFFF2DAB1)),
@@ -230,16 +230,19 @@ class _ProfileDetailState extends State<ProfileDetail> {
                     ),
                     SizedBox(height: 20.0),
                     UserInfoEditField(
-                      text: "Gender",
+                      text: "Jenis Kelamin",
                       child: DropdownButtonFormField<String>(
                         value: _selectedGender,
                         style: const TextStyle(color: Color(0xFFF2DAB1)),
                         decoration: _inputDecoration(),
                         items: const [
-                          DropdownMenuItem(value: 'Male', child: Text('Male')),
+                          DropdownMenuItem(
+                            value: 'Male',
+                            child: Text('Laki-laki'),
+                          ),
                           DropdownMenuItem(
                             value: 'Female',
-                            child: Text('Female'),
+                            child: Text('Perempuan'),
                           ),
                         ],
                         onChanged: (value) =>
@@ -263,12 +266,12 @@ class _ProfileDetailState extends State<ProfileDetail> {
                         minimumSize: const Size(double.infinity, 48),
                         shape: const StadiumBorder(),
                       ),
-                      child: const Text("Cancel"),
+                      child: const Text("Batal"),
                     ),
                   ),
                   const SizedBox(width: 16.0),
                   SizedBox(
-                    width: 160,
+                    width: 120,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFF2DAB1),
@@ -279,7 +282,7 @@ class _ProfileDetailState extends State<ProfileDetail> {
                       onPressed: () {
                         if (user != null) _saveUpdate(user.uid);
                       },
-                      child: const Text("Save Update"),
+                      child: const Text("Simpan"),
                     ),
                   ),
                 ],
