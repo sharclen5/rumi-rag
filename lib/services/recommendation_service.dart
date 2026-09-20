@@ -38,7 +38,9 @@ class RecommendationService {
     required int days,
     List<String> previousMeals = const [],
   }) async {
-    final todayDocId = '${babyId}_$startDate';
+    // FIX: doc ID harus ikut suffix source, samain kayak yang ditulis backend.
+    // kalo nggak, pengecekan duplikat gak pernah ketemu dokumennya → selalu lolos
+    final todayDocId = '${babyId}_${startDate}_rag';
     final todayDoc = await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
