@@ -15,6 +15,7 @@ Data bayi:
 - Berat badan: {weight} kg
 - Tinggi badan: {height} cm
 - Jenis kelamin: {gender}
+- Status gizi (standar WHO/Permenkes No. 2/2020): {nutrition_status}
 - Masih menyusu ASI: {asi_status}
 - Jumlah gigi: {tooth_count_display}
 - Alergi: {allergies_display}
@@ -145,6 +146,39 @@ misal tim ayam wortel = ["karbohidrat", "protein_hewani", "sayuran"]).
 Untuk slot dengan type "ASI", foodGroup harus null.
 """)
 
+WEEKLY_SUMMARY_PROMPT = PromptTemplate.from_template("""
+Kamu adalah ahli gizi bayi. Berdasarkan rencana MPASI selama satu minggu
+yang sudah dibuat, tulis ringkasan singkat yang menjelaskan alasan di
+balik rencana ini kepada orang tua.
+
+Data bayi:
+- Usia koreksi: {corrected_age_in_months} bulan {premature_note}
+- Berat badan: {weight} kg
+- Tinggi badan: {height} cm
+- Status gizi (standar WHO/Permenkes No. 2/2020): {nutrition_status}
+- Masih menyusu ASI: {asi_status}
+- Alergi: {allergies_display}
+- Riwayat medis: {medical_history_display}
+
+Ringkasan menu yang sudah direncanakan selama 7 hari:
+{weekly_meals_summary}
+
+Instruksi:
+- Jelaskan KENAPA rencana ini cocok untuk bayi ini, kaitkan secara eksplisit
+  dengan status gizi di atas (misalnya kalau "Risiko Gizi Lebih", jelaskan
+  bagaimana rencana ini membantu menjaga kenaikan berat badan tetap sehat;
+  kalau "Gizi Kurang", jelaskan bagaimana rencana ini membantu mengejar
+  kebutuhan kalori/protein).
+- Kalau ada alergi atau riwayat medis, sebutkan bagaimana rencana ini
+  mempertimbangkan hal tersebut.
+- Tulis dalam Bahasa Indonesia yang hangat tapi tetap informatif, seperti
+  penjelasan dari ahli gizi ke orang tua — bukan bahasa klinis yang kaku.
+- Panjang maksimal 3-4 kalimat, satu paragraf saja.
+- Jangan gunakan format JSON, markdown, atau tanda kutip. Hanya teks biasa.
+- Jangan ulangi detail menu satu-satu (nama/bahan/langkah) — itu sudah ada
+  di halaman jadwal, fokus ke alasan dan gambaran besar saja.
+""")
+
 DAILY_TIP_PROMPT = PromptTemplate.from_template("""
 Kamu adalah asisten MPASI bernama "Rumi AI". Tugasmu adalah memberikan satu tips singkat untuk {parent_salutation} dari bayi bernama {baby_name}, berdasarkan kondisi berikut:
 
@@ -164,3 +198,4 @@ Instruksi:
 - Jangan gunakan format JSON, markdown, atau tanda kutip. Hanya teks biasa.
 - Jangan sebutkan angka berat/tinggi badan secara langsung, cukup gunakan sebagai pertimbangan konteks saja.
 """)
+

@@ -6,12 +6,16 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import date, timedelta
 from langchain_google_genai import ChatGoogleGenerativeAI
-from .prompts import MPASI_PROMPT
+from .prompts import MPASI_PROMPT, WEEKLY_SUMMARY_PROMPT
 # CHANGED: import get_retriever, bukan retriever langsung, soalnya sekarang butuh usia buat filter
 try:
     from .retriever import get_retriever
 except ImportError:
     from retriever import get_retriever
+try:
+    from .nutrition_status import get_nutrition_status
+except ImportError:
+    from nutrition_status import get_nutrition_status
 
 load_dotenv()  # loads GEMINI_API_KEY from .env
 
@@ -77,6 +81,7 @@ def _get_single_day(
         weight: float, 
         height: float, 
         gender: str, 
+        nutrition_status: str,
         is_premature: bool,                 
         is_actively_breastfed: bool,        
         tooth_count: int | None,            
@@ -109,6 +114,7 @@ def _get_single_day(
         weight=weight,
         height=height,
         gender=gender,
+        nutrition_status=nutrition_status,
         asi_status=asi_status,
         tooth_count_display=tooth_count_display,
         allergies_display=allergies_display,
@@ -155,6 +161,77 @@ def _get_single_day(
     print(f"[DEBUG RAW OUTPUT] {response_text[:2000]}")
 
     return _clean_json_text(response_text)
+
+# BARU: build ringkasan menu seminggu buat prompt summary, biar ga ngirim
+# full ingredients/steps (7 hari penuh bakal kepanjangan buat 1 prompt)
+def _build_weekly_meals_summary(results: list) -> str:
+    lines = []
+    for day in results:
+        meal_names = [
+            f"{meal['type']}: {meal['name']}" if meal.get('name') else meal['type']
+            for meal in day['meals']
+        ]
+        lines.append(f"{day['date']} - " + ", ".join(meal_names))
+    return "\n".join(lines)
+
+
+def _get_weekly_summary(
+        corrected_age_in_months: int,
+        weight: float,
+        height: float,
+        is_premature: bool,
+        nutrition_status: str,
+        is_actively_breastfed: bool,
+        allergies: list,
+        medical_history: str | None,
+        results: list,
+        ) -> str:
+
+    premature_note = '(bayi prematur)' if is_premature else ''
+    asi_status = 'Ya' if is_actively_breastfed else 'Tidak'
+    allergies_display = ', '.join(allergies) if allergies else 'Tidak ada'
+    medical_history_display = medical_history if medical_history else 'Tidak ada'
+    weekly_meals_summary = _build_weekly_meals_summary(results)
+
+    prompt = WEEKLY_SUMMARY_PROMPT.format(
+        corrected_age_in_months=corrected_age_in_months,
+        premature_note=premature_note,
+        weight=weight,
+        height=height,
+        nutrition_status=nutrition_status,
+        asi_status=asi_status,
+        allergies_display=allergies_display,
+        medical_history_display=medical_history_display,
+        weekly_meals_summary=weekly_meals_summary,
+    )
+
+    # sama pola retry+fallback kayak _get_single_day, biar konsisten
+    primary_llm = ChatGoogleGenerativeAI(
+        model="gemini-3.1-flash-lite",
+        google_api_key=os.getenv("GEMINI_API_KEY"),
+    ).with_retry(stop_after_attempt=5)
+
+    fallback_llm = ChatGoogleGenerativeAI(
+        model="gemini-3-flash",
+        google_api_key=os.getenv("GEMINI_API_KEY"),
+    ).with_retry(stop_after_attempt=5)
+
+    llm = primary_llm.with_fallbacks([fallback_llm])
+    response = llm.invoke(prompt)
+
+    if isinstance(response.content, list):
+        response_text = "".join(
+            block.get("text", "") if isinstance(block, dict) else str(block)
+            for block in response.content
+        )
+    else:
+        response_text = response.content
+
+    if not response_text or not response_text.strip():
+        raise RuntimeError("Gemini returned empty weekly summary")
+
+    # ini teks biasa, bukan JSON — jadi ga perlu _clean_json_text, cukup strip aja
+    return response_text.strip()
 
  # ADDED: allowed foodGroup values, kept in sync with prompt enum
 ALLOWED_FOOD_GROUPS = {
@@ -208,7 +285,14 @@ def get_weekly_recommendation(
         start_date: str,
         days: int = 7,
         ) -> list:
-    
+
+
+
+    # weight/height bayi ga berubah dalam satu minggu generate, jadi dihitung sekali aja di sini,
+    # bukan diulang tiap hari di dalem loop
+    nutrition_status = get_nutrition_status(weight, height, gender)
+    print(f"[gemini_service] Nutrition status: {nutrition_status}")  # BARU: debug log, gampang kecek pas deploy
+
     # retrieval sekali aja di sini, bukan tiap hari — soalnya profil bayi
     # (usia koreksi/alergi/gigi) ga berubah dalam satu minggu, jadi query-nya bakal sama terus
     query_parts = [f"MPASI untuk bayi usia {corrected_age_in_months} bulan"]
@@ -250,6 +334,7 @@ def get_weekly_recommendation(
             weight=weight,
             height=height,
             gender=gender,
+            nutrition_status=nutrition_status,
             is_premature=is_premature,
             is_actively_breastfed=is_actively_breastfed,
             tooth_count=tooth_count,
@@ -287,6 +372,35 @@ def get_weekly_recommendation(
         ])
 
         results.append({'date': current_date, 'meals': parsed['meals']})
+
+    # BARU: summary mingguan di-generate sekali di sini, setelah loop 7 hari
+    # selesai semua — bukan di tengah loop, biar dia liat gambaran utuh seminggu
+    weekly_summary = _get_weekly_summary(
+        corrected_age_in_months=corrected_age_in_months,
+        weight=weight,
+        height=height,
+        is_premature=is_premature,
+        nutrition_status=nutrition_status,
+        is_actively_breastfed=is_actively_breastfed,
+        allergies=allergies,
+        medical_history=medical_history,
+        results=results,
+    )
+
+    # BARU: simpan ke collection baru "weeklySummaries", TERPISAH dari
+    # "recommendations" — biar getRecommendationHistory() di Flutter ga
+    # ikut kebaca dokumen ini (soalnya dokumen ini ga punya field 'meals')
+    summary_doc_id = f'{baby_id}_{start_date}_rag'
+    db.collection('users').document(uid).collection('weeklySummaries').document(summary_doc_id).set({
+        'baby_id': baby_id,
+        'start_date': start_date,
+        'nutrition_status': nutrition_status,
+        'weekly_summary': weekly_summary,
+        'created_at': date.today().isoformat(),
+        'source': 'rag',
+    })
+
+    print(f'[gemini_service] Weekly summary saved to Firestore: {summary_doc_id}')
 
     return results
 # END ADDED
