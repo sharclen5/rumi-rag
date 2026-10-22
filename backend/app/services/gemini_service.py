@@ -358,6 +358,7 @@ def get_weekly_recommendation(
         db.collection('users').document(uid).collection('recommendations').document(doc_id).set({
             'baby_id': baby_id,
             'date': current_date,
+            'start_date': start_date,
             'meals': parsed['meals'],
             'created_at': date.today().isoformat(),
             'source': 'rag',

@@ -6,6 +6,7 @@ class Recommendation {
   final List<Meal> meals;
   final DateTime createdAt;
   final String source;
+  final String? startDate;
 
   Recommendation({
     required this.babyId,
@@ -13,6 +14,7 @@ class Recommendation {
     required this.meals,
     required this.createdAt,
     required this.source,
+    this.startDate,
   });
 
   // convert respon API ke objek Recommendation
@@ -42,6 +44,8 @@ class Recommendation {
           .toList(),
       createdAt: DateTime.parse(data['created_at']),
       source: data['source'] ?? 'baseline',
+      // null kalo dokumennya dibikin sebelum field ini ada di backend
+      startDate: data['start_date'],
     );
   }
 
@@ -53,6 +57,7 @@ class Recommendation {
       'meals': meals.map((meal) => meal.toJson()).toList(),
       'created_at': createdAt.toIso8601String(),
       'source': source,
+      if (startDate != null) 'start_date': startDate,
     };
   }
 }

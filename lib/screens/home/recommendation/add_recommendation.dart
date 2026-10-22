@@ -388,6 +388,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
                 Icons.child_care,
                 baby.isActivelyBreastfed ? 'Masih ASI' : 'Tidak ASI',
               ),
+              _infoRow(Icons.insights_outlined, baby.nutritionStatus),
               if (baby.toothCount != null)
                 _infoRow(
                   Icons.sentiment_satisfied_alt,

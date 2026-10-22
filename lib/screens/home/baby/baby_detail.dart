@@ -107,12 +107,35 @@ class BabyDetail extends StatelessWidget {
                             color: Color(0xFFF2DAB1),
                           ),
                         ),
-                        Text(
-                          '${baby.ageInMonths} bulan',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade400,
-                          ),
+                        Row(
+                          // ADDED: tag status gizi di samping umur, biar langsung keliatan
+                          // begitu popup dibuka — ga perlu scroll ke info rows di bawah
+                          children: [
+                            Text(
+                              '${baby.ageInMonths} bulan',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade400,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              '•',
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              baby.nutritionStatus,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFFD4A96A),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

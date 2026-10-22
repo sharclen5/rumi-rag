@@ -440,4 +440,22 @@ class DatabaseService {
               .toList(),
         );
   }
+
+    // reference to user's weeklySummaries subcollection — terpisah dari
+  // recommendations, baru dibikin khusus buat fitur weekly summary
+  CollectionReference get weeklySummaryCollection =>
+      userDocument.collection('weeklySummaries');
+
+  // ambil weekly summary buat satu bayi + minggu tertentu
+  // docId format: {babyId}_{start_date}_{source}, contoh: abc123_2025-01-15_rag
+  Future<Map<String, dynamic>?> getWeeklySummary(
+    String babyId,
+    String startDate,
+    String source,
+  ) async {
+    final docId = '${babyId}_${startDate}_$source';
+    final doc = await weeklySummaryCollection.doc(docId).get();
+    if (!doc.exists) return null;
+    return doc.data() as Map<String, dynamic>;
+  }
 }

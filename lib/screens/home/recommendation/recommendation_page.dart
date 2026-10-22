@@ -11,6 +11,7 @@ import 'package:rumi/shared/loading.dart';
 import 'package:rumi/screens/home/recommendation/add_recommendation.dart';
 import 'package:rumi/screens/home/recommendation/recommendation_detail.dart';
 import 'package:rumi/screens/home/recommendation/edit_schedule.dart';
+import 'package:rumi/shared/weekly_summary.dart';
 
 class RecommendationPage extends StatelessWidget {
   final Function(int) onTabTapped;
@@ -74,6 +75,14 @@ class _RecommendationViewState extends State<_RecommendationView> {
       'Desember',
     ];
     return months[month - 1];
+  }
+
+  // BARU: label rentang tanggal buat judul popup ringkasan mingguan,
+  // dihitung dari startDate + 6 hari (rencana selalu 7 hari)
+  String _weekRangeLabel(String startDate) {
+    final start = DateTime.parse(startDate);
+    final end = start.add(const Duration(days: 6));
+    return '${start.day} ${_monthName(start.month)} - ${end.day} ${_monthName(end.month)} ${end.year}';
   }
 
   String get _selectedDateStr =>
@@ -366,6 +375,50 @@ class _RecommendationViewState extends State<_RecommendationView> {
                               color: const Color.fromARGB(255, 122, 105, 95),
                               child: const Icon(
                                 Icons.edit_document,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // BARU: tombol ringkasan mingguan, cuma bisa ditap kalo
+                        // recommendation-nya punya startDate (dokumen lama sebelum
+                        // field ini ditambah bakal null, jadi tombol kasih snackbar aja)
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () async {
+                            if (_recommendation == null ||
+                                _lastFetchedBaby == null)
+                              return;
+
+                            final startDate = _recommendation!.startDate;
+                            if (startDate == null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Ringkasan mingguan tidak tersedia untuk rencana ini',
+                                  ),
+                                ),
+                              );
+                              return;
+                            }
+
+                            await handleShowWeeklySummary(
+                              context: context,
+                              uid: widget.uid,
+                              babyId: _lastFetchedBaby!.id,
+                              startDate: startDate,
+                              dateRangeLabel: _weekRangeLabel(startDate),
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              width: 48,
+                              height: 48,
+                              color: const Color.fromARGB(255, 122, 105, 95),
+                              child: const Icon(
+                                Icons.summarize,
                                 color: Colors.white,
                                 size: 24,
                               ),
