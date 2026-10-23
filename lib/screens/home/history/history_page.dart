@@ -288,6 +288,8 @@ class _HistoryViewState extends State<_HistoryView> {
                                 builder: (_) => CaptureDatePickerDialog(
                                   uid: widget.uid,
                                   babyId: activeBaby.id,
+                                  babyName: activeBaby
+                                      .fullName,
                                   source:
                                       'rag', // samain kayak source yang dipake _fetchRecommendation
                                 ),

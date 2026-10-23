@@ -32,7 +32,7 @@ class _AddBabyFormsState extends State<AddBabyForms> {
   static const _fieldBorder = Color(0xFF4A4646);
   static const _fieldText = Color(0xFFF2DAB1);
 
-  final List<String> genders = ['Male', 'Female'];
+  final List<String> genders = ['Laki-laki', 'Perempuan'];
 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _middleNameController = TextEditingController();

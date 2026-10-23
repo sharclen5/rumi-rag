@@ -9,12 +9,14 @@ enum _PickerView { yearMonths, monthDates }
 class CaptureDatePickerDialog extends StatefulWidget {
   final String uid;
   final String babyId;
+  final String babyName;
   final String source;
 
   const CaptureDatePickerDialog({
     super.key,
     required this.uid,
     required this.babyId,
+    required this.babyName,
     required this.source,
   });
 
@@ -315,7 +317,11 @@ class _CaptureDatePickerDialogState extends State<CaptureDatePickerDialog> {
                   ); // tutup picker dulu sebelum buka preview
                   showDialog(
                     context: context,
-                    builder: (_) => MealPreviewDialog(recommendation: rec),
+                    builder: (_) => MealPreviewDialog(
+                      recommendation: rec,
+                      babyName: widget
+                          .babyName, // BARU: tinggal lempar lagi ke preview
+                    ),
                   );
                 },
                 child: Container(

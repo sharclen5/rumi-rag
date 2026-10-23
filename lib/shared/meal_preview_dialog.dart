@@ -10,7 +10,12 @@ import 'package:rumi/models/recommendation.dart';
 /// "save as image" logic is built next phase — not throwaway preview UI.
 class MealPreviewDialog extends StatefulWidget {
   final Recommendation recommendation;
-  const MealPreviewDialog({super.key, required this.recommendation});
+  final String babyName;
+  const MealPreviewDialog({
+    super.key,
+    required this.recommendation,
+    required this.babyName, // BARU
+  });
 
   @override
   State<MealPreviewDialog> createState() => _MealPreviewDialogState();
@@ -93,9 +98,11 @@ class _MealPreviewDialogState extends State<MealPreviewDialog> {
               child: Row(
                 children: [
                   Expanded(
+                    // UBAH: dari Column 2-baris (date + "Pratinjau") jadi 1 Text doang,
+                    // soalnya date-nya sekarang pindah ke dalam RepaintBoundary
                     child: Text(
-                      'Pratinjau ${widget.recommendation.date}',
-                      style: const TextStyle(
+                      'Pratinjau',
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: _ink,
@@ -129,17 +136,69 @@ class _MealPreviewDialogState extends State<MealPreviewDialog> {
                   key:
                       _captureKey, // nempelin key buat dipanggil nanti pas capture
                   child: Container(
-                    color:
-                        _cardBg, // BARU: biar background gelap ikut ke-capture, soalnya RepaintBoundary sendiri ga ngegambar background apa-apa
+                    color: _cardBg,
                     child: Column(
-                      children: sortedMeals
-                          .map(
-                            (meal) => Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: _CompactMealRow(meal: meal),
+                      crossAxisAlignment: CrossAxisAlignment
+                          .start, // BARU: biar date rata kiri, bukan ketengah
+                      children: [
+                        Row(
+                          // BARU: bungkus header text jadi Row, biar logo bisa nempel di kanan
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Rekomendasi Menu',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: _ink,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    widget.babyName,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: _brand,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    _formatFullDate(widget.recommendation.date),
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: _ink.withOpacity(0.7),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          )
-                          .toList(),
+                            const SizedBox(
+                              width: 12,
+                            ), // jarak antara teks & logo
+                            Image.asset(
+                              // BARU: logo app di pojok kanan atas, ikut ke-capture
+                              'assets/images/logo_tp.png',
+                              width: 80,
+                              height: 80,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ), // jarak antara header & daftar meal
+                        ...sortedMeals.map(
+                          // UBAH: pake spread biar bisa gabung sama Text/SizedBox di atas dalam satu children list
+                          (meal) => Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: _CompactMealRow(meal: meal),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -232,4 +291,27 @@ int _timeToMinutes(String time) {
   final hour = int.tryParse(parts[0]) ?? 0;
   final minute = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
   return hour * 60 + minute;
+}
+
+// format "2026-08-13" jadi "13 Agustus 2026" buat judul di gambar hasil capture
+String _formatFullDate(String isoDate) {
+  const months = [
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember',
+  ];
+  final parts = isoDate.split('-'); // [yyyy, mm, dd]
+  final year = parts[0];
+  final month = int.tryParse(parts[1]) ?? 1;
+  final day = int.tryParse(parts[2]) ?? 1;
+  return '$day ${months[month - 1]} $year';
 }
