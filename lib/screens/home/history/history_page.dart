@@ -8,6 +8,7 @@ import 'package:rumi/services/database.dart';
 import 'package:rumi/shared/bottomnavbar.dart';
 import 'package:rumi/shared/calendar_strip.dart';
 import 'package:rumi/shared/loading.dart';
+import 'package:rumi/shared/capture_date_picker_dialog.dart';
 
 class HistoryPage extends StatelessWidget {
   final Function(int) onTabTapped;
@@ -279,7 +280,36 @@ class _HistoryViewState extends State<_HistoryView> {
                             ],
                           ),
                         ),
-                        if (activeBaby != null)
+                        if (activeBaby != null) ...[
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => CaptureDatePickerDialog(
+                                  uid: widget.uid,
+                                  babyId: activeBaby.id,
+                                  source:
+                                      'rag', // samain kayak source yang dipake _fetchRecommendation
+                                ),
+                              );
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                width: 48,
+                                height: 48,
+                                color: _brandDark,
+                                child: const Icon(
+                                  Icons.image_outlined,
+                                  color: Colors.white,
+                                  size: 22,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 8,
+                          ), // jarak biar ga nempel ke tombol "hari ini"
                           GestureDetector(
                             onTap: _jumpToToday,
                             child: ClipRRect(
@@ -298,6 +328,7 @@ class _HistoryViewState extends State<_HistoryView> {
                               ),
                             ),
                           ),
+                        ],
                       ],
                     ),
                   ),
