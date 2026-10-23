@@ -55,6 +55,16 @@ class _CaptureDatePickerDialogState extends State<CaptureDatePickerDialog> {
             uid: widget.uid,
           ).getRecommendationHistory(widget.babyId, widget.source),
           builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  'Gagal memuat riwayat: ${snapshot.error}',
+                  style: const TextStyle(color: _ink),
+                ),
+              );
+            }
+
             if (!snapshot.hasData) {
               return const Padding(
                 padding: EdgeInsets.all(32),
@@ -63,7 +73,8 @@ class _CaptureDatePickerDialogState extends State<CaptureDatePickerDialog> {
             }
 
             final grouped = groupRecommendationsByYearMonth(snapshot.data!);
-            _lastGrouped = grouped; // biar bisa dipakai _showYearDropdown di luar builder ini
+            _lastGrouped =
+                grouped; // biar bisa dipakai _showYearDropdown di luar builder ini
 
             if (!_yearInitialized) {
               _selectedYear = latestYearIn(
@@ -101,12 +112,17 @@ class _CaptureDatePickerDialogState extends State<CaptureDatePickerDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Pilih tanggal yang ingin digenerate',
+                  'Pilih Tanggal',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: _ink,
                   ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Pilih tanggal rencana makan yang ingin disimpan sebagai gambar',
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade400),
                 ),
                 const SizedBox(height: 8),
                 _buildHeaderToggle(),
@@ -165,7 +181,8 @@ class _CaptureDatePickerDialogState extends State<CaptureDatePickerDialog> {
 
   Future<void> _showYearDropdown() async {
     final years = _lastGrouped.keys.toList()..sort((a, b) => b.compareTo(a));
-    if (years.isEmpty) years.add(_selectedYear); // tetep ada 1 opsi walau belum ada data
+    if (years.isEmpty)
+      years.add(_selectedYear); // tetep ada 1 opsi walau belum ada data
 
     final picked = await showDialog<int>(
       context: context,
@@ -293,15 +310,19 @@ class _CaptureDatePickerDialogState extends State<CaptureDatePickerDialog> {
               final rec = pageItems[i];
               return GestureDetector(
                 onTap: () {
-                  Navigator.pop(context); // tutup picker dulu sebelum buka preview
+                  Navigator.pop(
+                    context,
+                  ); // tutup picker dulu sebelum buka preview
                   showDialog(
                     context: context,
                     builder: (_) => MealPreviewDialog(recommendation: rec),
                   );
                 },
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: _cardBorder.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(10),
@@ -361,8 +382,18 @@ class _CaptureDatePickerDialogState extends State<CaptureDatePickerDialog> {
 
   String _monthName(int month) {
     const months = [
-      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember',
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
     ];
     return months[month - 1];
   }
