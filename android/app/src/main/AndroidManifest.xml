@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- BARU: dibutuhin gal buat nyimpen gambar ke galeri di Android 9 (API 28) ke bawah —
+         Android 10+ udah pake scoped storage jadi permission ini otomatis ga perlu lagi -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
     <application
         android:label="Rumi RAG"
         android:name="${applicationName}"

@@ -131,12 +131,12 @@ class _MealPreviewDialogState extends State<MealPreviewDialog> {
             // scroll view cuma render yang keliatan di layar doang
             Flexible(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
                 child: RepaintBoundary(
                   key:
                       _captureKey, // nempelin key buat dipanggil nanti pas capture
                   child: Container(
                     color: _cardBg,
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment
                           .start, // BARU: biar date rata kiri, bukan ketengah
