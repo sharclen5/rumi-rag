@@ -535,7 +535,6 @@ class _AddRecommendationState extends State<AddRecommendation> {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: SizedBox(
         width: 160,
-        height: 32,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: _brand,
