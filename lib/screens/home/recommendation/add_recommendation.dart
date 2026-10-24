@@ -534,7 +534,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: SizedBox(
-        width: 160,
+        width: double.infinity,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: _brand,
@@ -545,7 +545,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
             ),
           ),
           onPressed: () => _submit(user?.uid ?? ''),
-          child: const Text('Buat Menu Sekarang'),
+          child: const Text('Generate'),
         ),
       ),
     );
