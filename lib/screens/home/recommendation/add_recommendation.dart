@@ -157,7 +157,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Gagal Membuat Rencana'),
+            title: const Text('Gagal Membuat Menu MPASI'),
             content: Text('$e'),
             actions: [
               TextButton(
@@ -184,7 +184,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
       builder: (context) => AlertDialog(
         title: const Text('Durasi Terbatas'),
         content: const Text(
-          'Untuk versi ini, Anda hanya bisa membuat rencana dengan durasi 1 Minggu.',
+          'Untuk versi ini, Anda hanya bisa membuat menu dengan durasi 1 Minggu.',
         ),
         actions: [
           TextButton(
@@ -275,7 +275,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
                     const SizedBox(height: 16),
 
                     const Text(
-                      'Durasi Rencana',
+                      'Durasi Menu',
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
@@ -312,7 +312,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
           const SizedBox(width: 10),
           const Expanded(
             child: Text(
-              'Buat Rencana Menu MPASI',
+              'Generate Menu MPASI',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -534,7 +534,8 @@ class _AddRecommendationState extends State<AddRecommendation> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: SizedBox(
-        width: double.infinity,
+        width: 160,
+        height: 32,
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: _brand,
@@ -545,7 +546,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
             ),
           ),
           onPressed: () => _submit(user?.uid ?? ''),
-          child: const Text('Buat Rencana'),
+          child: const Text('Buat Menu Sekarang'),
         ),
       ),
     );
@@ -575,7 +576,7 @@ class _AddRecommendationState extends State<AddRecommendation> {
               ),
               const SizedBox(height: 16),
               const Text(
-                'Membuat Rencana Menu',
+                'Membuat Menu MPASI',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,

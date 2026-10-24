@@ -333,6 +333,16 @@ class _SignInState extends State<SignIn> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          const Text(
+                            'Masuk ke Rumi',
+                            style: TextStyle(
+                              color:
+                                  _fieldText, // CHANGED: was Color(0xFF363434)
+                              fontSize: 27,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                           const SizedBox(height: 20),
                           // email
                           TextFormField(
